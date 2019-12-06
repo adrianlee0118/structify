@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">Structify</string>
+    <string name="enter_start_date">Semester Start Date</string>
+    <string name="enter_end_date">Semester End Date</string>
+    <string name="date_prompt">YYYY-MM-DD</string>
+    <string name="num_courses">Number of Courses</string>
+    <string name="weekday_hours">Study Hours per Weekday (M-F, how many hours per day can you study?)</string>
+    <string name="weekend_hours">Study Hours per Weekend (Sat/Sun, how many hours per day can you study?)</string>
 </resources>
