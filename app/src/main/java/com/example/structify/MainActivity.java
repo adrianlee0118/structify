@@ -1,21 +1,27 @@
 package com.example.structify;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
+import android.icu.text.SimpleDateFormat;
+import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
-import androidx.cardview.widget.CardView;
 import androidx.core.widget.NestedScrollView;
 
-import java.util.ArrayList;
+import java.text.ParseException;
+import java.time.DayOfWeek;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.util.Date;
 
 //This APP: Given semester start and end dates, the number of courses a student will take during the semester,
 //information on all exam and assignment dates and credit percentages (i.e. worth or weight),
@@ -30,7 +36,7 @@ import java.util.ArrayList;
 //studying begins 1 week before the day of.
 
 //Main activity: Basic overview inputs about the semester are input (dates, preferences).
-//Second Input Activity: Course data (exam/assignment dates and weights).
+//Second Input Activity: Course data (exam/assignment dates and weights). Dynamic GUI magic.
 //Display activity: Shows the study allocations on a calendarview and includes option to add study schedule to
 //Google Calendar via API.
 
@@ -40,18 +46,16 @@ public class MainActivity extends AppCompatActivity {
     private Button EnterCoursesBtn;
     private TextView start;
     private TextView end;
-    private TextView weekday;
-    private TextView weekend;
+    private EditText weekday;
+    private EditText weekend;
     private Spinner NumberCourses;
 
-    //Global variables that we will use continually in methods
-    private String startDate;
-    private String endDate;
+    //Global variables that we will use continually in methods. These four in particular are passed through the Intent
+    //to the second activity.
+    private Date StartDate;
+    private Date EndDate;
     private int NumCourses;
     private int StudyTime;
-
-    //The layout where we will put all of the dynamic UI-generated fields
-    private NestedScrollView Canvas;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,7 +69,6 @@ public class MainActivity extends AppCompatActivity {
         weekday = findViewById(R.id.WeekdayTime);
         weekend = findViewById(R.id.WeekendTime);
         NumberCourses = (Spinner) findViewById(R.id.NumCourses);
-        Canvas = findViewById(R.id.canvas);
 
         //Set dropdown content of spinner and its style (check layout, drawable and style resource files)
         String[] spinner = new String[]{"1","2","3","4","5","6","7","8"};
@@ -74,70 +77,68 @@ public class MainActivity extends AppCompatActivity {
         NumberCourses.setAdapter(adapter);
         NumberCourses.setPrompt("Please select");
 
-
-
-        //Find another Github Android app that shows a calendar view to reverse-engineer
-
-        //Use Calendar Trial to input reminders in to Google Maps API.
-
         setEnterCoursesBtnClick();
     }
 
     //Functionality for EnterCoursesBtn
     private void setEnterCoursesBtnClick(){
         EnterCoursesBtn.setOnClickListener(new View.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.O)
             @Override
             public void onClick(View v) {
-                startDate = start.getText().toString();
-                endDate = end.getText().toString();
-                StudyTime =
+
+                //Extract inputs
                 NumCourses = (int) NumberCourses.getSelectedItem();
 
-                //If inputs are no good...
-                if(NumCourses == 0){
-                    Toast.makeText(MainActivity.this,"Enter a valid input", Toast.LENGTH_SHORT).show();
-                }else{
+                //Count the weekdays and weekends and use it with study time preferences to calculate study time
+                int wkdy = 0, wknd = 0;
+                SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+                try {
+                    StartDate = formatter.parse(start.getText().toString());
+                } catch (ParseException e) {
+                    Log.d("setEnterCourseBtnClick","start date is not valid");
+                    Toast.makeText(MainActivity.this,"Enter valid start date",Toast.LENGTH_SHORT).show();
+                    e.printStackTrace();
+                }
+                try {
+                    EndDate = formatter.parse(end.getText().toString());
+                } catch (ParseException e) {
+                    Log.d("setEnterCourseBtnClick", "end date is not valid");
+                    Toast.makeText(MainActivity.this,"Enter valid end date",Toast.LENGTH_SHORT).show();
+                    e.printStackTrace();
+                }
+                LocalDate start = StartDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+                LocalDate end = EndDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+                for (LocalDate date = start; !date.isAfter(end); date = date.plusDays(1)) {
+                    if (date.getDayOfWeek() == DayOfWeek.SATURDAY || date.getDayOfWeek() == DayOfWeek.SUNDAY){
+                        wknd++;
+                    } else {
+                        wkdy++;
+                    }
+                }
+                StudyTime = Integer.parseInt(weekday.getText().toString())*wkdy +
+                        Integer.parseInt(weekend.getText().toString())*wknd;
 
-                    //Output the fields for entering course information plus a button for activating the calculation
-                    //and date storage functions
-                    //loadUrlData(inputVal);
+                //Dates have been checked. Study times and number of courses can not be negative.
+                if(NumCourses == 0 && StudyTime > 0){
+                    Toast.makeText(MainActivity.this,"Please double-check number of courses and study time " +
+                            "preferences are correct", Toast.LENGTH_SHORT).show();
+                } else if (end.isAfter(start)) {
+                    Toast.makeText(MainActivity.this,"Please make sure semester start date is before " +
+                            "semester end date",Toast.LENGTH_SHORT).show();
+                } else {
+                    //Create intent for next activity, move all important data over
+                    Toast.makeText(MainActivity.this,"Awesome!",Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(MainActivity.this, SecondInputActivity.class);
+                    intent.putExtra("StartDate", StartDate.getTime());
+                    intent.putExtra("EndDate",EndDate.getTime());
+                    intent.putExtra("NumCourses",NumCourses);
+                    intent.putExtra("StudyTime",StudyTime);
+                    startActivity(intent);
                 }
             }
         });
     }
-
-    //Create a CardView that contains a linear layout which contains a Textview which contains some
-    //data and return it. Basically the building blocks of the dynamic nested viewport.
-    //We will call this anytime we have some fields to add.
-    private View cardItemView(String str){
-        CardView cardView = new CardView(this);
-
-        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT);
-        layoutParams.setMargins(3,4,3,4);
-        cardView.setLayoutParams(layoutParams);
-        cardView.setRadius(8);
-        cardView.setCardElevation(8);
-
-
-        cardView.setUseCompatPadding(true);
-
-        // text view
-        TextView textView = new TextView(this);
-
-        LinearLayout.LayoutParams params1 = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT);
-
-        textView.setLayoutParams(params1);
-        textView.setText(str);
-        textView.setPadding(24,24,24,24);
-
-        cardView.addView(textView);
-
-        return cardView;
-
-    }
-
 
 }
 

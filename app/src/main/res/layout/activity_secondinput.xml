@@ -6,4 +6,9 @@
     android:layout_height="match_parent"
     tools:context=".SecondInputActivity">
 
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/canvas"
+        android:layout_width="match_parent"
+        android:layout_height="613dp" />
+
 </LinearLayout>

@@ -141,9 +141,4 @@
         android:layout_height="wrap_content"
         android:text="Enter Course Info!" />
 
-    <androidx.core.widget.NestedScrollView
-        android:id="@+id/canvas"
-        android:layout_width="match_parent"
-        android:layout_height="469dp"/>
-
 </LinearLayout>
