@@ -109,12 +109,20 @@ public class MainActivity extends AppCompatActivity {
                 }
                 LocalDate start = StartDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
                 LocalDate end = EndDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-                for (LocalDate date = start; !date.isAfter(end); date = date.plusDays(1)) {
-                    if (date.getDayOfWeek() == DayOfWeek.SATURDAY || date.getDayOfWeek() == DayOfWeek.SUNDAY){
-                        wknd++;
-                    } else {
-                        wkdy++;
+                try {
+                    if (end.isAfter(start)){
+                        for (LocalDate date = start; !date.isAfter(end); date = date.plusDays(1)) {
+                            if (date.getDayOfWeek() == DayOfWeek.SATURDAY || date.getDayOfWeek() == DayOfWeek.SUNDAY){
+                                wknd++;
+                            } else {
+                                wkdy++;
+                            }
+                        }
                     }
+                } catch (RuntimeException){
+                    Log.d("setEnterCouseBtnClick","start date is after end date");
+                    Toast.makeText(MainActivity.this,"Please make sure semester start date is before " +
+                            "semester end date",Toast.LENGTH_SHORT).show();
                 }
                 StudyTime = Integer.parseInt(weekday.getText().toString())*wkdy +
                         Integer.parseInt(weekend.getText().toString())*wknd;
@@ -123,9 +131,6 @@ public class MainActivity extends AppCompatActivity {
                 if(NumCourses == 0 && StudyTime > 0){
                     Toast.makeText(MainActivity.this,"Please double-check number of courses and study time " +
                             "preferences are correct", Toast.LENGTH_SHORT).show();
-                } else if (end.isAfter(start)) {
-                    Toast.makeText(MainActivity.this,"Please make sure semester start date is before " +
-                            "semester end date",Toast.LENGTH_SHORT).show();
                 } else {
                     //Create intent for next activity, move all important data over
                     Toast.makeText(MainActivity.this,"Awesome!",Toast.LENGTH_SHORT).show();
