@@ -31,7 +31,9 @@ public class SecondInputActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         Bundle extras = getIntent().getExtras();
+        StartDate = new Date();
         StartDate.setTime(extras.getLong("StartDate"));
+        EndDate = new Date();
         EndDate.setTime(extras.getLong("EndDate"));
         NumCourses = extras.getInt("NumCourses");
         StudyTime = extras.getInt("StudyTime");

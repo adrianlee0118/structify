@@ -119,7 +119,7 @@ public class MainActivity extends AppCompatActivity {
                             }
                         }
                     }
-                } catch (RuntimeException){
+                } catch (RuntimeException e){
                     Log.d("setEnterCouseBtnClick","start date is after end date");
                     Toast.makeText(MainActivity.this,"Please make sure semester start date is before " +
                             "semester end date",Toast.LENGTH_SHORT).show();
@@ -128,7 +128,7 @@ public class MainActivity extends AppCompatActivity {
                         Integer.parseInt(weekend.getText().toString())*wknd;
 
                 //Dates have been checked. Study times and number of courses can not be negative.
-                if(NumCourses == 0 && StudyTime > 0){
+                if(NumCourses == 0 || StudyTime == 0){
                     Toast.makeText(MainActivity.this,"Please double-check number of courses and study time " +
                             "preferences are correct", Toast.LENGTH_SHORT).show();
                 } else {

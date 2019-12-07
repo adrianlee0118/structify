@@ -141,11 +141,31 @@ public class UniversityCourse {
         return (CourseTime/100)*AssignmentsAndQuizzesWt;
     }
 
-    public Date calcMTDate(int howmany){
+    public void calcMTDate(int howmany){
         //Use startDate and endDate to create a Midterm date if not provided.
+        ArrayList<Date> result = new ArrayList<Date>();
+        long difference = (startDate.getTime()-endDate.getTime())/(howmany+1);
+        Date curr = new Date();
+        curr.setTime(startDate.getTime()+difference);
+        result.add(curr);
+        for (int i = 0; i < howmany; i++){
+            curr.setTime(curr.getTime()+difference);
+            result.add(curr);
+        }
+        MidtermDates =  result;
     }
 
-    public ArrayList<Date> calcAssignmentDates(int howmany){
+    public void calcAssignmentDates(int howmany){
         //Use startDate and endDate to create quiz and assignment dates.
+        ArrayList<Date> result = new ArrayList<Date>();
+        long difference = (startDate.getTime()-endDate.getTime())/(howmany+1);
+        Date curr = new Date();
+        curr.setTime(startDate.getTime()+difference);
+        result.add(curr);
+        for (int i = 0; i < howmany; i++){
+            curr.setTime(curr.getTime()+difference);
+            result.add(curr);
+        }
+        AssignmentAndQuizDates = result;
     }
 }

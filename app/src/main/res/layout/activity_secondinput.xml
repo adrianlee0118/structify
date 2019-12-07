@@ -6,9 +6,18 @@
     android:layout_height="match_parent"
     tools:context=".SecondInputActivity">
 
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/enter_courses"
+        android:textAlignment="center"
+        android:textSize="20sp"
+        android:textStyle="bold" />
+
     <androidx.core.widget.NestedScrollView
         android:id="@+id/canvas"
         android:layout_width="match_parent"
-        android:layout_height="613dp" />
+        android:layout_height="679dp" />
 
 </LinearLayout>
