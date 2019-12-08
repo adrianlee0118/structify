@@ -6,6 +6,6 @@
     <string name="num_courses">Number of Courses</string>
     <string name="weekday_hours">Study Hours per Weekday (M-F, how many hours per day can you study?)</string>
     <string name="weekend_hours">Study Hours per Weekend (Sat/Sun, how many hours per day can you study?)</string>
-    <string name="main_welcome">Welcome to the App! And congrats for getting a headstart on planning your semester :)</string>
+    <string name="main_welcome">Welcome to the App! And congrats for getting a headstart on planning your semester--first, put in your study preferences :)</string>
     <string name="enter_courses">Now, enter course information from your course syllabi.</string>
 </resources>

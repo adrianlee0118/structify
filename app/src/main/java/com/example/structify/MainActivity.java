@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.icu.text.SimpleDateFormat;
 import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -15,7 +14,6 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
-import androidx.core.widget.NestedScrollView;
 
 import java.text.ParseException;
 import java.time.DayOfWeek;
@@ -88,7 +86,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
 
                 //Extract inputs
-                NumCourses = (int) NumberCourses.getSelectedItem();
+                NumCourses = Integer.parseInt( NumberCourses.getSelectedItem().toString() );
 
                 //Count the weekdays and weekends and use it with study time preferences to calculate study time
                 int wkdy = 0, wknd = 0;
@@ -96,14 +94,12 @@ public class MainActivity extends AppCompatActivity {
                 try {
                     StartDate = formatter.parse(start.getText().toString());
                 } catch (ParseException e) {
-                    Log.d("setEnterCourseBtnClick","start date is not valid");
                     Toast.makeText(MainActivity.this,"Enter valid start date",Toast.LENGTH_SHORT).show();
                     e.printStackTrace();
                 }
                 try {
                     EndDate = formatter.parse(end.getText().toString());
                 } catch (ParseException e) {
-                    Log.d("setEnterCourseBtnClick", "end date is not valid");
                     Toast.makeText(MainActivity.this,"Enter valid end date",Toast.LENGTH_SHORT).show();
                     e.printStackTrace();
                 }
@@ -120,7 +116,6 @@ public class MainActivity extends AppCompatActivity {
                         }
                     }
                 } catch (RuntimeException e){
-                    Log.d("setEnterCouseBtnClick","start date is after end date");
                     Toast.makeText(MainActivity.this,"Please make sure semester start date is before " +
                             "semester end date",Toast.LENGTH_SHORT).show();
                 }
@@ -128,13 +123,13 @@ public class MainActivity extends AppCompatActivity {
                         Integer.parseInt(weekend.getText().toString())*wknd;
 
                 //Dates have been checked. Study times and number of courses can not be negative.
-                if(NumCourses == 0 || StudyTime == 0){
+                if(StudyTime == 0){
                     Toast.makeText(MainActivity.this,"Please double-check number of courses and study time " +
                             "preferences are correct", Toast.LENGTH_SHORT).show();
                 } else {
                     //Create intent for next activity, move all important data over
                     Toast.makeText(MainActivity.this,"Awesome!",Toast.LENGTH_SHORT).show();
-                    Intent intent = new Intent(MainActivity.this, SecondInputActivity.class);
+                    Intent intent = new Intent(MainActivity.this,SecondInputActivity.class);
                     intent.putExtra("StartDate", StartDate.getTime());
                     intent.putExtra("EndDate",EndDate.getTime());
                     intent.putExtra("NumCourses",NumCourses);

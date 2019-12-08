@@ -3,6 +3,7 @@ package com.example.structify;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -10,9 +11,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 import androidx.core.widget.NestedScrollView;
 
+import java.util.ArrayList;
 import java.util.Date;
 
-//The second page, where, given the number of courses, course data is input
+//The second page, where, given the number of courses, course data is input. The button will calculate
 
 public class SecondInputActivity extends AppCompatActivity {
 
@@ -22,13 +24,15 @@ public class SecondInputActivity extends AppCompatActivity {
     private int NumCourses;
     private int StudyTime;
 
+    private ArrayList<UniversityCourse> Semester;
+
     //The layout where we will put all of the dynamic UI-generated fields
     private NestedScrollView Canvas;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_secondinput);
 
         Bundle extras = getIntent().getExtras();
         StartDate = new Date();
@@ -39,6 +43,42 @@ public class SecondInputActivity extends AppCompatActivity {
         StudyTime = extras.getInt("StudyTime");
 
         Canvas = findViewById(R.id.canvas);
+
+        //Standard formatting for all the linear layouts we will add
+        LinearLayout.LayoutParams linearLayoutparams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT);
+        //Base linear layout
+        LinearLayout linearLayoutbase = new LinearLayout(this);
+        linearLayoutparams.setMargins(0,32,0,0);
+        linearLayoutparams.setLayoutDirection(LinearLayout.VERTICAL);
+        linearLayoutbase.setLayoutParams(linearLayoutparams);
+
+        //Create the input interface using Textview and editText modules containing fields to be filled out
+        for (int i = 0; i < NumCourses; i++){
+
+            //First level: Course name info
+            LinearLayout linearLayout0 = new LinearLayout(this);
+            linearLayoutparams.setMargins(0,8,0,0);
+            linearLayoutparams.setLayoutDirection(LinearLayout.HORIZONTAL);
+            linearLayout0.setLayoutParams(linearLayoutparams);
+            TextView c = new TextView(this);
+            c.setText("Course Name");
+            c.setTextSize(14);
+            //Bold
+            c.setPadding(8,0,0,0);
+            linearLayout0.addView(c);
+            EditText cc = new EditText(this);
+            cc.setHint("Enter course name");
+            cc.setTextSize(14);
+            cc.setPadding(8,0,0,0);
+            linearLayout0.addView(cc);
+            linearLayoutbase.addView(linearLayout0);
+
+            //Second Level: Final Wt, Midterm Wt, Assignments/Quiz Wts
+            LinearLayout linearLayout1 = new LinearLayout(this);
+        }
+
+        Canvas.addView(linearLayoutbase);
     }
 
     //Create a CardView that contains a linear layout which contains a Textview which contains some

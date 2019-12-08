@@ -4,14 +4,12 @@ import java.util.ArrayList;
 import java.util.Date;
 
 //A container class generated for each course that stores all of that course's information.
+//Parcelable so objects can be passed between 2nd and 3rd activities.
 
 public class UniversityCourse {
 
     //Course's name and possibly number as well
     private String CourseName;
-
-    //Timezone format: "America/Los_Angeles"
-    private String TimeZone;
 
     //Dates of items provided in course syllabus in String format "2020-01-18T09:00:00-08:00"
     //If these are not provided, can be calculated from start and end dates of semester
@@ -32,10 +30,17 @@ public class UniversityCourse {
     public UniversityCourse() {
     }
 
-    public UniversityCourse(String name, String timezone){
+    public UniversityCourse(String name, Date finex, int courwt, int finwt, int mtwt, int asgnwt, Date st,
+                            Date end){
 
         CourseName = name;
-        TimeZone = timezone;
+        CourseWt = courwt;
+        FinalDate = finex;
+        FinalWt = finwt;
+        MidtermWt = mtwt;
+        AssignmentsAndQuizzesWt = asgnwt;
+        startDate = st;
+        endDate = end;
     }
 
     public String getCourseName() {
@@ -44,14 +49,6 @@ public class UniversityCourse {
 
     public void setCourseName(String courseName) {
         CourseName = courseName;
-    }
-
-    public String getTimeZone() {
-        return TimeZone;
-    }
-
-    public void setTimeZone(String timeZone) {
-        TimeZone = timeZone;
     }
 
     public Date getFinalDate() {
