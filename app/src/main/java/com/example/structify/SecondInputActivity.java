@@ -1,6 +1,8 @@
 package com.example.structify;
 
+import android.graphics.Typeface;
 import android.os.Bundle;
+import android.view.ContextThemeWrapper;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
@@ -13,8 +15,13 @@ import androidx.core.widget.NestedScrollView;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Map;
 
-//The second page, where, given the number of courses, course data is input. The button will calculate
+import static android.graphics.Typeface.BOLD;
+
+//The second page, where, given the number of courses, course data is input. The button will store
+//all values from the editText fields. Since the editTexts are generated dynamically via java and thus can only
+//have integer ids, use a map to store variable names as strings, mapped to the int ids.
 
 public class SecondInputActivity extends AppCompatActivity {
 
@@ -24,6 +31,9 @@ public class SecondInputActivity extends AppCompatActivity {
     private int NumCourses;
     private int StudyTime;
 
+    //A Map for referencing EditText data by name, to be instantiated as fields are created
+    //An array to store the new UniversityCourse objects.
+    private Map<String,EditText> Data;
     private ArrayList<UniversityCourse> Semester;
 
     //The layout where we will put all of the dynamic UI-generated fields
@@ -44,38 +54,38 @@ public class SecondInputActivity extends AppCompatActivity {
 
         Canvas = findViewById(R.id.canvas);
 
-        //Standard formatting for all the linear layouts we will add
-        LinearLayout.LayoutParams linearLayoutparams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+        //Standard formatting for base linearLayout, other components' formats are defined in styles.xml
+        LinearLayout.LayoutParams base = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT);
-        //Base linear layout
+        base.setMargins(0,16,0,0);
+        base.setLayoutDirection(LinearLayout.VERTICAL);
         LinearLayout linearLayoutbase = new LinearLayout(this);
-        linearLayoutparams.setMargins(0,32,0,0);
-        linearLayoutparams.setLayoutDirection(LinearLayout.VERTICAL);
-        linearLayoutbase.setLayoutParams(linearLayoutparams);
+        linearLayoutbase.setLayoutParams(base);
 
         //Create the input interface using Textview and editText modules containing fields to be filled out
-        for (int i = 0; i < NumCourses; i++){
+        //for all of the courses
+        for (int i = 1; i <= NumCourses; i++){
 
             //First level: Course name info
-            LinearLayout linearLayout0 = new LinearLayout(this);
-            linearLayoutparams.setMargins(0,8,0,0);
-            linearLayoutparams.setLayoutDirection(LinearLayout.HORIZONTAL);
-            linearLayout0.setLayoutParams(linearLayoutparams);
-            TextView c = new TextView(this);
-            c.setText("Course Name");
-            c.setTextSize(14);
-            //Bold
-            c.setPadding(8,0,0,0);
+            LinearLayout linearLayout0 = new LinearLayout(new ContextThemeWrapper(this, R.style.layout_rows_style),null,0);
+            TextView c = new TextView(new ContextThemeWrapper(this,R.style.textview_style),null,0);
+            c.setText("Course " + Integer.toString(i)+ " Name");
             linearLayout0.addView(c);
-            EditText cc = new EditText(this);
+            EditText cc = new EditText(new ContextThemeWrapper(this,R.style.edittext_style),null,0);
             cc.setHint("Enter course name");
-            cc.setTextSize(14);
-            cc.setPadding(8,0,0,0);
             linearLayout0.addView(cc);
+            //Store the ID!
+            String tname = "Course" + Integer.toString(i)+"Name";
+            Data.put(tname, cc);
             linearLayoutbase.addView(linearLayout0);
 
             //Second Level: Final Wt, Midterm Wt, Assignments/Quiz Wts
-            LinearLayout linearLayout1 = new LinearLayout(this);
+            LinearLayout linearLayout1 = new LinearLayout(new ContextThemeWrapper(this, R.style.layout_rows_style),null,0);
+            TextView fwt = new TextView(new ContextThemeWrapper(this,R.style.textview_style),null,0);
+            fwt.setText("Final 1 Weight");
+            linearLayout0.addView(fwt);
+            EditText fwtt = new EditText(new ContextThemeWrapper(this,R.style.edittext_style),null,0);
+
         }
 
         Canvas.addView(linearLayoutbase);
