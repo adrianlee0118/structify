@@ -1,10 +1,12 @@
 package com.example.structify;
 
-import android.graphics.Typeface;
+import android.content.Context;
 import android.os.Bundle;
 import android.view.ContextThemeWrapper;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
@@ -13,8 +15,6 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 import androidx.core.widget.NestedScrollView;
-
-import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -42,23 +42,16 @@ public class SecondInputActivity extends AppCompatActivity {
     //Making dynamically created EditText fields readable.
     private Map<String,EditText> InputFieldIDs;
     private List<LinearLayout> Panels;  //not accessed, just to allow layouts to persist outside loops
-    private List<HorizontalScrollView> WtPanels;  //not accessed, just allowing layouts to persist
+    private List<HorizontalScrollView> HorPanels;  //not accessed, just allowing layouts to persist
     private List<TextView> Labels;      //not accessed, just to allow labels to persist outside loop
     private List<EditText> InputFields;
 
-    //All Course Data stored according to index (e.g. i=0 to i=7)
-    private ArrayList<String> CourseNames;
-    private ArrayList<Integer> CourseWeights;
-    private ArrayList<Integer> FinalWeights;
-    private ArrayList<Date> FinalDates;
-    private ArrayList<Integer> MTWeights;
-    private ArrayList<ArrayList<Date>> MTDates;
-    private ArrayList<Integer> AssignWts;
-    private ArrayList<ArrayList<Date>> AssignDates;
-
+    //Where we store input data
+    private ArrayList<UniversityCourse> Courses;
 
     //The layout where we will put all of the dynamic UI-generated fields
     private NestedScrollView Canvas;
+    private Button SubmitBtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,12 +78,29 @@ public class SecondInputActivity extends AppCompatActivity {
         LinearLayout linearLayoutbase = new LinearLayout(this);
         linearLayoutbase.setLayoutParams(base);
 
+        LinearLayout.LayoutParams course = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT);
+        course.setLayoutDirection(LinearLayout.VERTICAL);
+        course.setMargins(16,48,0,0);
+
+        LinearLayout.LayoutParams rows = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT);
+        rows.setLayoutDirection(LinearLayout.HORIZONTAL);
+        rows.setMargins(8,8,0,0);
+
+        HorizontalScrollView.LayoutParams horsc = new HorizontalScrollView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT);
+        horsc.setLayoutDirection(HorizontalScrollView.SCROLL_AXIS_HORIZONTAL);
+        horsc.setMargins(8,8,0,0);
+
+
         //Create the input interface using Textview and editText modules containing fields to be filled out
         //for all of the courses
         for (int i = 1; i <= NumCourses; i++){
 
             //First level: Course name info
-            LinearLayout linearLayout0 = new LinearLayout(new ContextThemeWrapper(this, R.style.layout_rows_style),null,0);
+            LinearLayout linearLayout0 = new LinearLayout(this);
+            linearLayout0.setLayoutParams(course);
             Panels.add(linearLayout0);
             TextView c = new TextView(new ContextThemeWrapper(this,R.style.textview_style),null,0);
             Labels.add(c);
@@ -106,8 +116,9 @@ public class SecondInputActivity extends AppCompatActivity {
             linearLayoutbase.addView(linearLayout0);
 
             //Second Level has 3 items in a side scroller: Final Wt, Midterm Wt, Assignments/Quiz Wts
-            HorizontalScrollView linearLayout1 = new HorizontalScrollView(new ContextThemeWrapper(this, R.style.layout_rows_style),null,0);
-            WtPanels.add(linearLayout1);
+            HorizontalScrollView linearLayout1 = new HorizontalScrollView(this);
+            linearLayout1.setLayoutParams(horsc);
+            HorPanels.add(linearLayout1);
             TextView fwt = new TextView(new ContextThemeWrapper(this,R.style.textview_style),null,0);
             Labels.add(fwt);
             fwt.setText("Final"+Integer.toString(i)+"Weight");
@@ -141,7 +152,8 @@ public class SecondInputActivity extends AppCompatActivity {
             linearLayoutbase.addView(linearLayout1);
 
             //3rd level: Final Exam Date
-            LinearLayout linearLayout2 = new LinearLayout(new ContextThemeWrapper(this, R.style.layout_rows_style),null,0);
+            LinearLayout linearLayout2 = new LinearLayout(this);
+            linearLayout2.setLayoutParams(rows);
             Panels.add(linearLayout2);
             TextView fd = new TextView(new ContextThemeWrapper(this,R.style.textview_style),null,0);
             Labels.add(fd);
@@ -155,13 +167,94 @@ public class SecondInputActivity extends AppCompatActivity {
             InputFieldIDs.put(tname, fdd);
             linearLayoutbase.addView(linearLayout2);
 
+            //4th level: Midterm Exam Date(s) - give two, if one is NULL inputted, no data
+            HorizontalScrollView linearLayout3 = new HorizontalScrollView(this);
+            linearLayout3.setLayoutParams(horsc);
+            HorPanels.add(linearLayout3);
+            TextView md = new TextView(new ContextThemeWrapper(this,R.style.textview_style),null,0);
+            Labels.add(md);
+            md.setText("MT "+Integer.toString(i)+" Date (if you know)");
+            linearLayout3.addView(md);
+            EditText mdd = new EditText(new ContextThemeWrapper(this,R.style.edittext_style),null,0);
+            InputFields.add(mdd);
+            mdd.setHint("YYYY-MM-DD");
+            linearLayout3.addView(mdd);
+            tname = "MT"+Integer.toString(i)+"Date";
+            InputFieldIDs.put(tname, mdd);
+            TextView mdii = new TextView(new ContextThemeWrapper(this,R.style.textview_style),null,0);
+            Labels.add(mdii);
+            mdii.setText("MT "+Integer.toString(i)+" Date ii (if you know)");
+            linearLayout3.addView(mdii);
+            EditText mddii = new EditText(new ContextThemeWrapper(this,R.style.edittext_style),null,0);
+            InputFields.add(mddii);
+            mddii.setHint("YYYY-MM-DD");
+            linearLayout3.addView(mddii);
+            tname = "MT"+Integer.toString(i)+"Dateii";
+            InputFieldIDs.put(tname, mddii);
+            linearLayoutbase.addView(linearLayout3);
 
-            linearLayoutbase.addView(linearLayout2);
+            //5th Level: Assignment Date(s) - give five
+            HorizontalScrollView linearLayout4 = new HorizontalScrollView(this);
+            linearLayout4.setLayoutParams(horsc);
+            HorPanels.add(linearLayout4);
+            TextView ad = new TextView(new ContextThemeWrapper(this,R.style.textview_style),null,0);
+            Labels.add(ad);
+            ad.setText("Assignment or Quiz "+Integer.toString(i)+" Dates (if you know)");
+            linearLayout4.addView(md);
 
+            EditText aid = new EditText(new ContextThemeWrapper(this,R.style.edittext_style),null,0);
+            InputFields.add(aid);
+            mdd.setHint("YYYY-MM-DD");
+            linearLayout4.addView(aid);
+            tname = "Assignment"+Integer.toString(i)+"Datei";
+            InputFieldIDs.put(tname, aid);
+
+            EditText aiid = new EditText(new ContextThemeWrapper(this,R.style.edittext_style),null,0);
+            InputFields.add(aiid);
+            mdd.setHint("YYYY-MM-DD");
+            linearLayout4.addView(aiid);
+            tname = "Assignment"+Integer.toString(i)+"Dateii";
+            InputFieldIDs.put(tname, aiid);
+
+            EditText aiiid = new EditText(new ContextThemeWrapper(this,R.style.edittext_style),null,0);
+            InputFields.add(aiiid);
+            mdd.setHint("YYYY-MM-DD");
+            linearLayout4.addView(aiiid);
+            tname = "Assignment"+Integer.toString(i)+"Dateiii";
+            InputFieldIDs.put(tname, aiiid);
+
+            EditText aivd = new EditText(new ContextThemeWrapper(this,R.style.edittext_style),null,0);
+            InputFields.add(aivd);
+            mdd.setHint("YYYY-MM-DD");
+            linearLayout4.addView(aivd);
+            tname = "Assignment"+Integer.toString(i)+"Dateiv";
+            InputFieldIDs.put(tname, aivd);
+
+            EditText avd = new EditText(new ContextThemeWrapper(this,R.style.edittext_style),null,0);
+            InputFields.add(avd);
+            mdd.setHint("YYYY-MM-DD");
+            linearLayout4.addView(avd);
+            tname = "Assignment"+Integer.toString(i)+"Dateii";
+            InputFieldIDs.put(tname, avd);
         }
 
         Canvas.addView(linearLayoutbase);
+
+        SubmitBtn = new Button(this);
+        Canvas.addView(SubmitBtn);
+
     }
+
+    private void setSubmitBtnClick(){
+        SubmitBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                //Read all data and create UniversityCourse objects
+            }
+        });
+    }
+
 
     //Create a CardView that contains a linear layout which contains a Textview which contains some
     //data and return it. Basically the building blocks of the dynamic nested viewport.

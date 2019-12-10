@@ -30,11 +30,10 @@ public class UniversityCourse {
     public UniversityCourse() {
     }
 
-    public UniversityCourse(String name, Date finex, int courwt, int finwt, int mtwt, int asgnwt, Date st,
+    public UniversityCourse(String name, Date finex, int finwt, int mtwt, int asgnwt, Date st,
                             Date end){
 
         CourseName = name;
-        CourseWt = courwt;
         FinalDate = finex;
         FinalWt = finwt;
         MidtermWt = mtwt;
