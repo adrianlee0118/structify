@@ -16,8 +16,15 @@
         android:textStyle="bold" />
 
     <androidx.core.widget.NestedScrollView
-        android:id="@+id/canvas"
+        android:id="@+id/canvas_scroller"
         android:layout_width="match_parent"
-        android:layout_height="679dp" />
+        android:layout_height="658dp" >
+
+        <LinearLayout
+            android:id="@+id/canvas"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"></LinearLayout>
+    </androidx.core.widget.NestedScrollView>
 
 </LinearLayout>
