@@ -18,7 +18,7 @@
     <androidx.core.widget.NestedScrollView
         android:id="@+id/canvas_scroller"
         android:layout_width="match_parent"
-        android:layout_height="658dp" >
+        android:layout_height="571dp">
 
         <LinearLayout
             android:id="@+id/canvas"
@@ -26,5 +26,11 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"></LinearLayout>
     </androidx.core.widget.NestedScrollView>
+
+    <Button
+        android:id="@+id/submit_details"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/submit_details" />
 
 </LinearLayout>

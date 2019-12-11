@@ -260,6 +260,7 @@ public class SecondInputActivity extends AppCompatActivity {
         }
     }
 
+
     private void setSubmitBtnClick(){
         SubmitBtn.setOnClickListener(new View.OnClickListener() {
             @Override
