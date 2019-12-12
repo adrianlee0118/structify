@@ -3,11 +3,13 @@ package com.example.structify;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.icu.text.SimpleDateFormat;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -24,14 +26,16 @@ import java.util.Date;
 //This APP: Given semester start and end dates, the number of courses a student will take during the semester,
 //information on all exam and assignment dates and credit percentages (i.e. worth or weight),
 //the target amount of time per weekday/weekend a student is willing to study and even the relative importances
-//of all of the courses, this app will generate a study schedule for a student in that semester that is underpinned
-//by important exam and assignment dates and allocates study time (that the student has specified) based on percentage
-// weight and relative importance over all courses that theoretically helps a student A) not miss an important due
-//date and B) not over-study or over-commit to a given assignment or test given its worth in the overall semester
-//overview. This app attempts to normalize the distribution of study time so that a student can ensure each assignment,
-//test and project receives an adequate amount of attention and study ranges are based on the rules: 1) Final exam
-//studying begins 2 weeks before the day of (allocated time distributed evenly over 13 days) and 2) Midterm exam
-//studying begins 1 week before the day of.
+//of all of the courses (course weights), this app will generate a study schedule for a student in that semester
+//that is underpinned by important exam and assignment dates and allocates study time (that the student has
+//specified) based on percentage weight and relative importance over all courses that theoretically helps a
+//student A) not miss an important due date and B) not over-study or over-commit to a given assignment or test
+//given its worth in the overall semester (percentage overall, applied to available time). This app attempts to
+//normalize the distribution of study time so that a student can ensure each assignment, test and project receives
+//an adequate and not excessive amount of attention and study ranges are based on the rules: 1) Final exam
+//studying begins 2 weeks before the day of (allocated time distributed evenly over 13 days), 2) Midterm exam
+//studying begins 1 week before the day of, and 3) Assignments are worked on for 3 days before due dates.
+//When dates are not known, this program assumes assignments or multiple midterms are spaced evenly through time.
 
 //Main activity: Basic overview inputs about the semester are input (dates, preferences).
 //Second Input Activity: Course data (exam/assignment dates and weights). Dynamic GUI magic.
@@ -47,6 +51,7 @@ public class MainActivity extends AppCompatActivity {
     private EditText weekday;
     private EditText weekend;
     private Spinner NumberCourses;
+    ProgressDialog mProgress;
 
     //Global variables that we will use continually in methods. These four in particular are passed through the Intent
     //to the second activity.
@@ -74,6 +79,9 @@ public class MainActivity extends AppCompatActivity {
         adapter.setDropDownViewResource(R.layout.spinner_item);
         NumberCourses.setAdapter(adapter);
         NumberCourses.setPrompt("Please select");
+
+        mProgress = new ProgressDialog(this);
+        mProgress.setMessage("Your course forms will be along in just a moment ... :)");
 
         setEnterCoursesBtnClick();
     }
@@ -135,10 +143,16 @@ public class MainActivity extends AppCompatActivity {
                     intent.putExtra("NumCourses",NumCourses);
                     intent.putExtra("StudyTime",StudyTime);
                     startActivity(intent);
+                    mProgress.show();
                 }
             }
         });
     }
 
+    //Hide keyboard when not in use
+    public  void hideKeyboard(View view) {
+        InputMethodManager imm = (InputMethodManager) this.getSystemService(INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+    }
 }
 

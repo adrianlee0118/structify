@@ -1,6 +1,7 @@
 package com.example.structify;
 
 import android.content.Context;
+import android.icu.text.SimpleDateFormat;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.ContextThemeWrapper;
@@ -12,10 +13,15 @@ import android.widget.EditText;
 import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 
+import java.lang.reflect.Array;
+import java.text.ParseException;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -36,6 +42,8 @@ public class SecondInputActivity extends AppCompatActivity {
     //Global variables that we will use continually in methods, passed through intent from MainActivity.
     private Date StartDate;
     private Date EndDate;
+    private LocalDate startdate;
+    private LocalDate enddate;
     private int NumCourses;
     private int StudyTime;
 
@@ -64,11 +72,14 @@ public class SecondInputActivity extends AppCompatActivity {
         StartDate.setTime(extras.getLong("StartDate"));
         EndDate = new Date();
         EndDate.setTime(extras.getLong("EndDate"));
+        startdate = StartDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+        enddate = EndDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
         NumCourses = extras.getInt("NumCourses");
         StudyTime = extras.getInt("StudyTime");
 
-        //Map for keeping track of dynamically generated edittexts
+        //Map for keeping track of dynamically generated edittexts and instantiate UniversityCourse storage
         InputFieldIDs = new HashMap<String,EditText>();
+        Courses = new ArrayList<UniversityCourse>();
 
         //Setting our base and creating inflater for inflating course_form template layout views
         Canvas = findViewById(R.id.canvas);
@@ -139,41 +150,115 @@ public class SecondInputActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                //Read all data and create UniversityCourse objects
+                //Read all data into UniversityCourse objects to be passed to the next activity, one object
+                //for each course inputted.
+                for (int i = 1; i <= NumCourses; i++){
+
+                    //Instance of data storage
+                    UniversityCourse temp = new UniversityCourse();
+
+                    //Add startdate and enddate
+                    temp.setStartDate(StartDate);
+                    temp.setEndDate(EndDate);
+
+                    //Add course name
+                    if (isEmpty(InputFieldIDs.get("Course "+Integer.toString(i)+" Name"))){
+                        Toast.makeText(SecondInputActivity.this,"You forgot to enter Course "
+                                +Integer.toString(i)+" Name", Toast.LENGTH_SHORT).show();
+                        return;
+                    } else {
+                        temp.setCourseName(InputFieldIDs.get("Course "+Integer.toString(i)+" Name").getText().toString());
+                    }
+
+                    //Add course weight, check all weights are filled and add to 100 in first go around
+                    if (i == 1){
+                        int sum = 0;
+                        for (int j = 1; j <= NumCourses; j++){
+                            if (isEmpty(InputFieldIDs.get("Course "+Integer.toString(j)+" Weight"))){
+                                Toast.makeText(SecondInputActivity.this,"You forgot to enter Course "
+                                        +Integer.toString(j)+" Weight",Toast.LENGTH_SHORT).show();
+                                return;
+                            }
+                            sum+=Integer.parseInt(InputFieldIDs.get("Course "+Integer.toString(j)+" Weight").getText().toString());
+                        }
+                        if (sum != 100){
+                            Toast.makeText(SecondInputActivity.this,"Your course weights don't sum " +
+                                    "to 100!",Toast.LENGTH_SHORT).show();
+                            return;
+                        } else {
+                            temp.setCourseWt(Integer.parseInt(InputFieldIDs.get("Course "+Integer.toString(i)+" Weight").getText().toString()));
+                        }
+                    } else {
+                        temp.setCourseWt(Integer.parseInt(InputFieldIDs.get("Course "+Integer.toString(i)+" Weight").getText().toString()));
+                    }
+
+                    //Add final, midterm and assignment weights if they add up to 100
+                    if (Integer.parseInt(InputFieldIDs.get("Course "+Integer.toString(i)+" Final Weight").getText().toString())
+                            +Integer.parseInt(InputFieldIDs.get("Course "+Integer.toString(i)+" Midterm Weight").getText().toString())
+                            +Integer.parseInt(InputFieldIDs.get("Course "+Integer.toString(i)+" Assignment Weight").getText().toString())
+                            !=100){
+                        Toast.makeText(SecondInputActivity.this,"Your Final, Midterm and Assignment " +
+                                "Weights for Course "+Integer.toString(i)+" don't add up to 100.",
+                                Toast.LENGTH_SHORT).show();
+                        return;
+                    } else {
+                        temp.setFinalWt(Integer.parseInt(InputFieldIDs.get("Course "+Integer.toString(i)+" Final Weight").getText().toString()));
+                        temp.setMidtermWt(Integer.parseInt(InputFieldIDs.get("Course "+Integer.toString(i)+" Midterm Weight").getText().toString()));
+                        temp.setAssignmentsAndQuizzesWt(Integer.parseInt(InputFieldIDs.get("Course "+Integer.toString(i)+" Assignment Weight").getText().toString()));
+                    }
+
+                    //Add final exam date if it's filled and in semester range
+                    SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+                    if (isEmpty(InputFieldIDs.get("Course "+Integer.toString(i)+" Final Date"))){
+                        Toast.makeText(SecondInputActivity.this,"You forgot to enter Course "+Integer.toString(i)+" Final Date",Toast.LENGTH_SHORT).show();
+                        return;
+                    } else {
+                        try {
+                            Date fd = formatter.parse(InputFieldIDs.get("Course "+Integer.toString(i)+" Final Date").getText().toString());
+                            LocalDate finaldate = fd.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+                            if (!finaldate.isBefore(startdate) && !finaldate.isAfter(enddate)){
+                                temp.setFinalDate(fd);
+                            } else {
+                                Toast.makeText(SecondInputActivity.this,"Make sure Course "
+                                        +Integer.toString(i)+" Final Date is in range",Toast.LENGTH_SHORT).show();
+                                return;
+                            }
+                        } catch (ParseException e) {
+                            Toast.makeText(SecondInputActivity.this,"Please enter a valid Final Date " +
+                                    "for Course "+Integer.toString(i),Toast.LENGTH_SHORT).show();
+                            e.printStackTrace();
+                            return;
+                        }
+                    }
+
+                    //Add midterm dates if filled and in range, or use number of midterms to calculate
+                    if (isEmpty(InputFieldIDs.get("Course "+Integer.toString(i)+" Midterm Date 1")) &&
+                            isEmpty(InputFieldIDs.get("Course "+Integer.toString(i)+" Midterm Date 2")) &&
+                            isEmpty(InputFieldIDs.get("Course "+Integer.toString(i)+" Number Midterms"))){
+                        Toast.makeText(SecondInputActivity.this,"Please enter some information about"+
+                                " Course "+Integer.toString(i)+" Midterm Exam(s)",Toast.LENGTH_SHORT).show();
+                        return;
+                    } else
+
+                    InputFieldIDs.get("Course "+Integer.toString(i)+" Midterm Date 1");
+                    InputFieldIDs.get("Course "+Integer.toString(i)+" Midterm Date 2");
+                    InputFieldIDs.get("Course "+Integer.toString(i)+" Number Midterms");
+                    InputFieldIDs.get("Course "+Integer.toString(i)+" Assignment 1 Date");
+                    InputFieldIDs.get("Course "+Integer.toString(i)+" Assignment 2 Date");
+                    InputFieldIDs.get("Course "+Integer.toString(i)+" Assignment 3 Date");
+                    InputFieldIDs.get("Course "+Integer.toString(i)+" Assignment 4 Date");
+                    InputFieldIDs.get("Course "+Integer.toString(i)+" Assignment 5 Date");
+                    InputFieldIDs.get("Course "+Integer.toString(i)+" Assignment 6 Date");
+                    InputFieldIDs.get("Course "+Integer.toString(i)+" Number Assignments");
+
+                    Courses.add(temp);
+                }
             }
         });
     }
 
-
-    //Create a CardView that contains a linear layout which contains a Textview which contains some
-    //data and return it. Basically the building blocks of the dynamic nested viewport.
-    //We will call this anytime we have some fields to add.
-    private View cardItemView(String str){
-        CardView cardView = new CardView(this);
-
-        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT);
-        layoutParams.setMargins(3,4,3,4);
-        cardView.setLayoutParams(layoutParams);
-        cardView.setRadius(8);
-        cardView.setCardElevation(8);
-
-
-        cardView.setUseCompatPadding(true);
-
-        // text view
-        TextView textView = new TextView(this);
-
-        LinearLayout.LayoutParams params1 = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT);
-
-        textView.setLayoutParams(params1);
-        textView.setText(str);
-        textView.setPadding(24,24,24,24);
-
-        cardView.addView(textView);
-
-        return cardView;
-
+    //For checking if EditText fields are empty
+    private boolean isEmpty(EditText etText) {
+        return etText.getText().toString().trim().length() == 0;
     }
 }
