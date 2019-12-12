@@ -13,12 +13,14 @@
         android:text="@string/enter_courses"
         android:textAlignment="center"
         android:textSize="20sp"
-        android:textStyle="bold" />
+        android:textStyle="bold"
+        android:layout_weight="1"/>
 
     <androidx.core.widget.NestedScrollView
         android:id="@+id/canvas_scroller"
         android:layout_width="match_parent"
-        android:layout_height="571dp">
+        android:layout_height="497dp"
+        android:layout_weight="1">
 
         <LinearLayout
             android:id="@+id/canvas"
@@ -31,6 +33,7 @@
         android:id="@+id/submit_details"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/submit_details" />
+        android:text="@string/submit_details"
+        android:layout_weight="1"/>
 
 </LinearLayout>

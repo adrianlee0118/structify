@@ -1,8 +1,10 @@
 package com.example.structify;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.ContextThemeWrapper;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -65,192 +67,63 @@ public class SecondInputActivity extends AppCompatActivity {
         NumCourses = extras.getInt("NumCourses");
         StudyTime = extras.getInt("StudyTime");
 
-        //Instantiate storage
-        Panels = new ArrayList<LinearLayout>();
-        HorPanels = new ArrayList<HorizontalScrollView>();
-        Labels = new ArrayList<TextView>();
-        InputFields = new ArrayList<EditText>();
+        //Map for keeping track of dynamically generated edittexts
         InputFieldIDs = new HashMap<String,EditText>();
 
-        //Setting our base
+        //Setting our base and creating inflater for inflating course_form template layout views
         Canvas = findViewById(R.id.canvas);
+        LayoutInflater vi = (LayoutInflater) getApplicationContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
-        //Setting standard layout parameters for dynamically generated views
-        LinearLayout.LayoutParams rows = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT);
-        rows.setLayoutDirection(LinearLayout.HORIZONTAL);
-        rows.setMargins(8,8,0,0);
+        for (int i = NumCourses; i >= 1; i--){
 
-        HorizontalScrollView.LayoutParams horsc = new HorizontalScrollView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT);
-        horsc.setLayoutDirection(HorizontalScrollView.SCROLL_AXIS_HORIZONTAL);
-        horsc.setMargins(8,8,0,0);
+            //Inflate an instance of course form for every course
+            View current = vi.inflate(R.layout.course_form,null);
 
+            //Map field IDs for later access
+            TextView course = current.findViewById(R.id.textView1);
+            course.setText("Course "+Integer.toString(i)+" Name");
+            EditText course_name = current.findViewById(R.id.course_name);
+            EditText course_weight = current.findViewById(R.id.course_weight);
+            EditText final_weight = current.findViewById(R.id.final_weight);
+            EditText midterm_weight = current.findViewById(R.id.midterm_weight);
+            EditText assignment_weight = current.findViewById(R.id.assignment_weight);
+            EditText final_date = current.findViewById(R.id.final_date);
+            EditText midterm_date1 = current.findViewById(R.id.midterm_date1);
+            EditText midterm_date2 = current.findViewById(R.id.midterm_date2);
+            EditText number_midterms = current.findViewById(R.id.number_midterms);
+            EditText assignment1 = current.findViewById(R.id.assignment1);
+            EditText assignment2 = current.findViewById(R.id.assignment2);
+            EditText assignment3 = current.findViewById(R.id.assignment3);
+            EditText assignment4 = current.findViewById(R.id.assignment4);
+            EditText assignment5 = current.findViewById(R.id.assignment5);
+            EditText assignment6 = current.findViewById(R.id.assignment6);
+            EditText number_assignments = current.findViewById(R.id.number_assignments);
 
-        //Create the input interface using Textview and editText modules containing fields to be filled out
-        //for all of the courses
-        for (int i = 1; i <= NumCourses; i++){
+            InputFieldIDs.put("Course "+Integer.toString(i)+" Name",course_name);
+            InputFieldIDs.put("Course "+Integer.toString(i)+" Weight",course_weight);
+            InputFieldIDs.put("Course "+Integer.toString(i)+" Final Weight",final_weight);
+            InputFieldIDs.put("Course "+Integer.toString(i)+" Midterm Weight",midterm_weight);
+            InputFieldIDs.put("Course "+Integer.toString(i)+" Assignment Weight",assignment_weight);
+            InputFieldIDs.put("Course "+Integer.toString(i)+" Final Date",final_date);
+            InputFieldIDs.put("Course "+Integer.toString(i)+" Midterm Date 1",midterm_date1);
+            InputFieldIDs.put("Course "+Integer.toString(i)+" Midterm Date 2",midterm_date2);
+            InputFieldIDs.put("Course "+Integer.toString(i)+" Number Midterms",number_midterms);
+            InputFieldIDs.put("Course "+Integer.toString(i)+" Assignment 1 Date",assignment1);
+            InputFieldIDs.put("Course "+Integer.toString(i)+" Assignment 2 Date",assignment2);
+            InputFieldIDs.put("Course "+Integer.toString(i)+" Assignment 3 Date",assignment3);
+            InputFieldIDs.put("Course "+Integer.toString(i)+" Assignment 4 Date",assignment4);
+            InputFieldIDs.put("Course "+Integer.toString(i)+" Assignment 5 Date",assignment5);
+            InputFieldIDs.put("Course "+Integer.toString(i)+" Assignment 6 Date",assignment6);
+            InputFieldIDs.put("Course "+Integer.toString(i)+" Number Assignments",number_assignments);
 
-            //First level: Course name info
-            LinearLayout linearLayout0 = new LinearLayout(this);
-            linearLayout0.setLayoutParams(rows);
-            Panels.add(linearLayout0);
-            TextView c = new TextView(new ContextThemeWrapper(this,R.style.textview_style),null,0);
-            Labels.add(c);
-            c.setText("Course " + Integer.toString(i)+ " Name");
-            linearLayout0.addView(c);
-            EditText cc = new EditText(new ContextThemeWrapper(this,R.style.edittext_style),null,0);
-            InputFields.add(cc);
-            cc.setHint("Enter course "+Integer.toString(i)+" name");
-            linearLayout0.addView(cc);
-            //Store the ID!
-            String tname = "Course" + Integer.toString(i)+"Name";
-            InputFieldIDs.put(tname, cc);
-            Canvas.addView(linearLayout0);
+            current.setPadding(0,0,0,100);
 
-
-            //Second Level has 3 items in a side scroller: Final Wt, Midterm Wt, Assignments/Quiz Wts
-            HorizontalScrollView linearLayout1 = new HorizontalScrollView(this);
-            linearLayout1.setLayoutParams(horsc);
-            LinearLayout linearLayout1a = new LinearLayout(this);
-            linearLayout1a.setLayoutParams(rows);
-            HorPanels.add(linearLayout1);
-            Panels.add(linearLayout1a);
-            TextView fwt = new TextView(new ContextThemeWrapper(this,R.style.textview_style),null,0);
-            Labels.add(fwt);
-            fwt.setText("Final"+Integer.toString(i)+"Weight");
-            linearLayout1a.addView(fwt);
-            EditText fwtt = new EditText(new ContextThemeWrapper(this,R.style.edittext_style),null,0);
-            InputFields.add(fwtt);
-            fwtt.setHint("Enter percentage");
-            linearLayout1a.addView(fwtt);
-            tname = "Course"+Integer.toString(i)+"FinalWt";
-            InputFieldIDs.put(tname,fwtt);
-            TextView mtwt = new TextView(new ContextThemeWrapper(this,R.style.textview_style),null,0);
-            Labels.add(mtwt);
-            mtwt.setText("Midterm"+Integer.toString(i)+"Weight");
-            linearLayout1a.addView(mtwt);
-            EditText mtwtt = new EditText(new ContextThemeWrapper(this,R.style.edittext_style),null,0);
-            InputFields.add(mtwtt);
-            mtwtt.setHint("Enter percentage");
-            linearLayout1a.addView(mtwtt);
-            tname = "Course"+Integer.toString(i)+"MidtermWt";
-            InputFieldIDs.put(tname,mtwtt);
-            TextView aswt = new TextView(new ContextThemeWrapper(this,R.style.textview_style),null,0);
-            Labels.add(aswt);
-            aswt.setText("AssignmentandQuiz"+Integer.toString(i)+"Weight");
-            linearLayout1a.addView(aswt);
-            EditText aswtt = new EditText(new ContextThemeWrapper(this,R.style.edittext_style),null,0);
-            InputFields.add(aswtt);
-            aswtt.setHint("Enter percentage");
-            linearLayout1a.addView(aswtt);
-            tname = "Course"+Integer.toString(i)+"AssignmentWt";
-            InputFieldIDs.put(tname,aswtt);
-            linearLayout1.addView(linearLayout1a);
-            Canvas.addView(linearLayout1);
-
-
-            //3rd level: Final Exam Date
-            LinearLayout linearLayout2 = new LinearLayout(this);
-            linearLayout2.setLayoutParams(rows);
-            Panels.add(linearLayout2);
-            TextView fd = new TextView(new ContextThemeWrapper(this,R.style.textview_style),null,0);
-            Labels.add(fd);
-            fd.setText("Final " + Integer.toString(i)+ " Date");
-            linearLayout2.addView(fd);
-            EditText fdd = new EditText(new ContextThemeWrapper(this,R.style.edittext_style),null,0);
-            InputFields.add(fdd);
-            fdd.setHint("YYYY-MM-DD");
-            linearLayout2.addView(fdd);
-            tname = "Final" + Integer.toString(i)+"Date";
-            InputFieldIDs.put(tname, fdd);
-            Canvas.addView(linearLayout2);
-
-
-            //4th level: Midterm Exam Date(s) - give two, if one is NULL inputted, no data
-            HorizontalScrollView linearLayout3 = new HorizontalScrollView(this);
-            linearLayout3.setLayoutParams(horsc);
-            LinearLayout linearLayout3a = new LinearLayout(this);
-            linearLayout3a.setLayoutParams(rows);
-            Panels.add(linearLayout3a);
-            HorPanels.add(linearLayout3);
-
-            TextView md = new TextView(new ContextThemeWrapper(this,R.style.textview_style),null,0);
-            Labels.add(md);
-            md.setText("MT "+Integer.toString(i)+" Date (if you know)");
-            linearLayout3a.addView(md);
-            EditText mdd = new EditText(new ContextThemeWrapper(this,R.style.edittext_style),null,0);
-            InputFields.add(mdd);
-            mdd.setHint("YYYY-MM-DD");
-            linearLayout3a.addView(mdd);
-            tname = "MT"+Integer.toString(i)+"Date";
-            InputFieldIDs.put(tname, mdd);
-            TextView mdii = new TextView(new ContextThemeWrapper(this,R.style.textview_style),null,0);
-            Labels.add(mdii);
-            mdii.setText("MT "+Integer.toString(i)+" Date ii (if you know)");
-            linearLayout3a.addView(mdii);
-            EditText mddii = new EditText(new ContextThemeWrapper(this,R.style.edittext_style),null,0);
-            InputFields.add(mddii);
-            mddii.setHint("YYYY-MM-DD");
-            linearLayout3a.addView(mddii);
-            tname = "MT"+Integer.toString(i)+"Dateii";
-            InputFieldIDs.put(tname, mddii);
-            linearLayout3.addView(linearLayout3a);
-            Canvas.addView(linearLayout3);
-
-
-            //5th Level: Assignment Date(s) - give five
-            HorizontalScrollView linearLayout4 = new HorizontalScrollView(this);
-            linearLayout4.setLayoutParams(horsc);
-            LinearLayout linearLayout4a = new LinearLayout(this);
-            Panels.add(linearLayout4a);
-            HorPanels.add(linearLayout4);
-            TextView ad = new TextView(new ContextThemeWrapper(this,R.style.textview_style),null,0);
-            Labels.add(ad);
-            ad.setText("Assignment or Quiz "+Integer.toString(i)+" Dates (if you know)");
-            linearLayout4a.addView(ad);
-
-            EditText aid = new EditText(new ContextThemeWrapper(this,R.style.edittext_style),null,0);
-            InputFields.add(aid);
-            mdd.setHint("YYYY-MM-DD");
-            linearLayout4a.addView(aid);
-            tname = "Assignment"+Integer.toString(i)+"Datei";
-            InputFieldIDs.put(tname, aid);
-
-            EditText aiid = new EditText(new ContextThemeWrapper(this,R.style.edittext_style),null,0);
-            InputFields.add(aiid);
-            mdd.setHint("YYYY-MM-DD");
-            linearLayout4a.addView(aiid);
-            tname = "Assignment"+Integer.toString(i)+"Dateii";
-            InputFieldIDs.put(tname, aiid);
-
-            EditText aiiid = new EditText(new ContextThemeWrapper(this,R.style.edittext_style),null,0);
-            InputFields.add(aiiid);
-            mdd.setHint("YYYY-MM-DD");
-            linearLayout4a.addView(aiiid);
-            tname = "Assignment"+Integer.toString(i)+"Dateiii";
-            InputFieldIDs.put(tname, aiiid);
-
-            EditText aivd = new EditText(new ContextThemeWrapper(this,R.style.edittext_style),null,0);
-            InputFields.add(aivd);
-            mdd.setHint("YYYY-MM-DD");
-            linearLayout4a.addView(aivd);
-            tname = "Assignment"+Integer.toString(i)+"Dateiv";
-            InputFieldIDs.put(tname, aivd);
-
-            EditText avd = new EditText(new ContextThemeWrapper(this,R.style.edittext_style),null,0);
-            InputFields.add(avd);
-            mdd.setHint("YYYY-MM-DD");
-            linearLayout4a.addView(avd);
-            tname = "Assignment"+Integer.toString(i)+"Dateii";
-            InputFieldIDs.put(tname, avd);
-
-            linearLayout4.addView(linearLayout4a);
-            Canvas.addView(linearLayout4);
+            //Add the inflated view
+            Canvas.addView(current, 0, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         }
 
-        SubmitBtn = new Button(this);
-        Canvas.addView(SubmitBtn);
+        SubmitBtn = findViewById(R.id.submit_details);
+        setSubmitBtnClick();
 
         Iterator it = InputFieldIDs.entrySet().iterator();
         while (it.hasNext()) {
