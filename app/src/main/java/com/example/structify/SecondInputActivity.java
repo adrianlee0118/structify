@@ -238,21 +238,96 @@ public class SecondInputActivity extends AppCompatActivity {
                         Toast.makeText(SecondInputActivity.this,"Please enter some information about"+
                                 " Course "+Integer.toString(i)+" Midterm Exam(s)",Toast.LENGTH_SHORT).show();
                         return;
-                    } else
+                    } else if (isEmpty(InputFieldIDs.get("Course "+Integer.toString(i)+" Midterm Date 1")) &&
+                            isEmpty(InputFieldIDs.get("Course "+Integer.toString(i)+" Midterm Date 2"))) {
+                        temp.calcMTDate(Integer.parseInt(InputFieldIDs.get("Course "+Integer.toString(i)+" Number Midterms").getText().toString()));
+                    } else {
+                        ArrayList<Date> MTD = new ArrayList<Date>();
 
-                    InputFieldIDs.get("Course "+Integer.toString(i)+" Midterm Date 1");
-                    InputFieldIDs.get("Course "+Integer.toString(i)+" Midterm Date 2");
-                    InputFieldIDs.get("Course "+Integer.toString(i)+" Number Midterms");
-                    InputFieldIDs.get("Course "+Integer.toString(i)+" Assignment 1 Date");
-                    InputFieldIDs.get("Course "+Integer.toString(i)+" Assignment 2 Date");
-                    InputFieldIDs.get("Course "+Integer.toString(i)+" Assignment 3 Date");
-                    InputFieldIDs.get("Course "+Integer.toString(i)+" Assignment 4 Date");
-                    InputFieldIDs.get("Course "+Integer.toString(i)+" Assignment 5 Date");
-                    InputFieldIDs.get("Course "+Integer.toString(i)+" Assignment 6 Date");
-                    InputFieldIDs.get("Course "+Integer.toString(i)+" Number Assignments");
+                        for (int j = 1; j <= 2; j++){
+
+                            if (!isEmpty(InputFieldIDs.get("Course "+Integer.toString(i)+" Midterm Date "
+                                    +Integer.toString(j)))){
+                                try {
+                                    Date mt = formatter.parse(InputFieldIDs.get("Course "+Integer.toString(i)+" Midterm Date 1").getText().toString());
+                                    LocalDate midtermdate = mt.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+                                    if (!midtermdate.isBefore(startdate) && !midtermdate.isAfter(enddate)){
+                                        MTD.add(mt);
+                                    } else {
+                                        Toast.makeText(SecondInputActivity.this,"Make sure Course "
+                                                        +Integer.toString(i)+" Midterm Dates are in range",
+                                                Toast.LENGTH_SHORT).show();
+                                        return;
+                                    }
+                                } catch (ParseException e) {
+                                    Toast.makeText(SecondInputActivity.this,"Please enter valid " +
+                                                    "Midterm Dates for Course "+Integer.toString(i),
+                                            Toast.LENGTH_SHORT).show();
+                                    e.printStackTrace();
+                                    return;
+                                }
+                            }
+                        }
+
+                        temp.setMidtermDates(MTD);
+                    }
+
+                    //Add assignment dates if they are worth credit and if dates are valid or calculate them, same as above
+                    if (Integer.parseInt(InputFieldIDs.get("Course "+Integer.toString(i)+" Assignment Weight").getText().toString())
+                            != 0 && isEmpty(InputFieldIDs.get("Course "+Integer.toString(i)+" Assignment 1 Date"))
+                            && isEmpty(InputFieldIDs.get("Course "+Integer.toString(i)+" Assignment 2 Date"))
+                            && isEmpty(InputFieldIDs.get("Course "+Integer.toString(i)+" Assignment 3 Date"))
+                            && isEmpty(InputFieldIDs.get("Course "+Integer.toString(i)+" Assignment 4 Date"))
+                            && isEmpty(InputFieldIDs.get("Course "+Integer.toString(i)+" Assignment 5 Date"))
+                            && isEmpty(InputFieldIDs.get("Course "+Integer.toString(i)+" Assignment 6 Date"))
+                            && isEmpty(InputFieldIDs.get("Course "+Integer.toString(i)+" Number Assignments"))){
+                        Toast.makeText(SecondInputActivity.this,"Please enter some information about"+
+                                " Course "+Integer.toString(i)+" Assignment(s)",Toast.LENGTH_SHORT).show();
+                        return;
+                    } else if (isEmpty(InputFieldIDs.get("Course "+Integer.toString(i)+" Assignment 1 Date"))
+                            && isEmpty(InputFieldIDs.get("Course "+Integer.toString(i)+" Assignment 2 Date"))
+                            && isEmpty(InputFieldIDs.get("Course "+Integer.toString(i)+" Assignment 3 Date"))
+                            && isEmpty(InputFieldIDs.get("Course "+Integer.toString(i)+" Assignment 4 Date"))
+                            && isEmpty(InputFieldIDs.get("Course "+Integer.toString(i)+" Assignment 5 Date"))
+                            && isEmpty(InputFieldIDs.get("Course "+Integer.toString(i)+" Assignment 6 Date"))) {
+                        temp.calcAssignmentDates(Integer.parseInt(InputFieldIDs.get("Course "+Integer.toString(i)+" Number Assignments").getText().toString()));
+                    } else {
+                        ArrayList<Date> AD = new ArrayList<Date>();
+
+                        for (int j = 1; j <= 6; j++){
+
+                            if (!isEmpty(InputFieldIDs.get("Course "+Integer.toString(i)+" Assignment "
+                                    + Integer.toString(j)+" Date"))){
+                                try {
+                                    Date ad = formatter.parse(InputFieldIDs.get("Course "+Integer.toString(i)+" Midterm Date 1").getText().toString());
+                                    LocalDate assigndate = ad.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+                                    if (!assigndate.isBefore(startdate) && !assigndate.isAfter(enddate)){
+                                        AD.add(ad);
+                                    } else {
+                                        Toast.makeText(SecondInputActivity.this,"Make sure Course "
+                                                        +Integer.toString(i)+" Assignment Dates are in range",
+                                                Toast.LENGTH_SHORT).show();
+                                        return;
+                                    }
+                                } catch (ParseException e) {
+                                    Toast.makeText(SecondInputActivity.this,"Please enter valid " +
+                                                    "Assignment Dates for Course "+Integer.toString(i),
+                                            Toast.LENGTH_SHORT).show();
+                                    e.printStackTrace();
+                                    return;
+                                }
+                            }
+                        }
+
+                        temp.setAssignmentAndQuizDates(AD);
+                    }
 
                     Courses.add(temp);
+                    Log.d("SecondInputActivity","Added "+temp.getCourseName()+" to UniversityCourses");
                 }
+
+                //Intents or Parcelable or Bundle to send Courses ArrayList or UniversityCourse objects
+                //individually to next Calendar Provider Activity! :):)
             }
         });
     }
