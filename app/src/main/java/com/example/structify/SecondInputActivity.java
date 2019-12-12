@@ -227,7 +227,6 @@ public class SecondInputActivity extends AppCompatActivity {
                             Toast.makeText(SecondInputActivity.this,"Please enter a valid Final Date " +
                                     "for Course "+Integer.toString(i),Toast.LENGTH_SHORT).show();
                             e.printStackTrace();
-                            return;
                         }
                     }
 
@@ -264,7 +263,6 @@ public class SecondInputActivity extends AppCompatActivity {
                                                     "Midterm Dates for Course "+Integer.toString(i),
                                             Toast.LENGTH_SHORT).show();
                                     e.printStackTrace();
-                                    return;
                                 }
                             }
                         }
@@ -314,7 +312,6 @@ public class SecondInputActivity extends AppCompatActivity {
                                                     "Assignment Dates for Course "+Integer.toString(i),
                                             Toast.LENGTH_SHORT).show();
                                     e.printStackTrace();
-                                    return;
                                 }
                             }
                         }
@@ -327,7 +324,8 @@ public class SecondInputActivity extends AppCompatActivity {
                 }
 
                 //Intents or Parcelable or Bundle to send Courses ArrayList or UniversityCourse objects
-                //individually to next Calendar Provider Activity! :):)
+                //individually to next Calendar Provider Activity! :):) Also, deal with zero weight values.
+                //Throw exception instead of returning when conditions not met
             }
         });
     }
