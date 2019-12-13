@@ -9,4 +9,7 @@
     <string name="main_welcome">Welcome to the App! And congrats for getting a headstart on planning your semester--first, put in your study preferences :)</string>
     <string name="enter_courses">Now, enter course information from your course syllabi.</string>
     <string name="submit_details">Submit Details</string>
+    <string name="summary">Overall Summary</string>
+    <string name="preview_calendar">Is this correct? Preview Calendar</string>
+    <string name="course_by_course">Course-by-Course Breakdown</string>
 </resources>

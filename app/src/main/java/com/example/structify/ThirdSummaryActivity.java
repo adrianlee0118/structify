@@ -1,7 +1,7 @@
 package com.example.structify;
 
-import android.content.Intent;
 import android.os.Bundle;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -11,9 +11,14 @@ import java.util.ArrayList;
 
 public class ThirdSummaryActivity extends AppCompatActivity {
 
+    //data from previous two activities
     private int NumCourses;
     private int StudyTime;
     private ArrayList<UniversityCourse> Courses;
+
+    //for showing summary information
+    private TextView OverallSummary;
+    private TextView CourseSummary;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,6 +34,10 @@ public class ThirdSummaryActivity extends AppCompatActivity {
             Courses.add(temp_course);
         }
 
-        //Put summaries into the GUI
+        OverallSummary = findViewById(R.id.overall_summary);
+        CourseSummary = findViewById(R.id.course_summary);
+
+        //Put summaries into the GUI fields
+        
     }
 }
