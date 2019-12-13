@@ -9,7 +9,6 @@ import android.icu.text.SimpleDateFormat;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -134,8 +133,10 @@ public class MainActivity extends AppCompatActivity {
                 if(StudyTime == 0){
                     Toast.makeText(MainActivity.this,"Please double-check number of courses and study time " +
                             "preferences are correct", Toast.LENGTH_SHORT).show();
+                    throw new RuntimeException();
                 } else {
                     //Create intent for next activity, move all important data over
+                    mProgress.show();
                     Toast.makeText(MainActivity.this,"Awesome!",Toast.LENGTH_SHORT).show();
                     Intent intent = new Intent(MainActivity.this,SecondInputActivity.class);
                     intent.putExtra("StartDate", StartDate.getTime());
@@ -143,16 +144,11 @@ public class MainActivity extends AppCompatActivity {
                     intent.putExtra("NumCourses",NumCourses);
                     intent.putExtra("StudyTime",StudyTime);
                     startActivity(intent);
-                    mProgress.show();
+                    mProgress.cancel();
                 }
             }
         });
     }
 
-    //Hide keyboard when not in use
-    public  void hideKeyboard(View view) {
-        InputMethodManager imm = (InputMethodManager) this.getSystemService(INPUT_METHOD_SERVICE);
-        imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
-    }
 }
 

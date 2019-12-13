@@ -1,12 +1,17 @@
 package com.example.structify;
 
+import android.content.Context;
+import android.os.Bundle;
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import java.util.ArrayList;
 import java.util.Date;
 
 //A container class generated for each course that stores all of that course's information.
 //Parcelable so objects can be passed between 2nd and 3rd activities.
 
-public class UniversityCourse {
+public class UniversityCourse implements Parcelable {
 
     //Course's name and possibly number as well
     private String CourseName;
@@ -26,6 +31,8 @@ public class UniversityCourse {
     //Semester dates to help make default exam/assignment dates if they are not provided
     private Date startDate;
     private Date endDate;
+
+
 
     public UniversityCourse() {
     }
@@ -163,5 +170,102 @@ public class UniversityCourse {
             result.add(curr);
         }
         AssignmentAndQuizDates = result;
+    }
+
+    //Parcelable methods: The Parcelable properties enable objects of the UniversityCourse class to be passed
+    //from one activity to the next through intents.
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    //Write data from a UniversityCourse into a parcel to be passed in intent.
+    //The order of reading in a constructor from parcel below will retrieve data in the same order it was
+    //written here.
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(CourseName);
+        dest.writeLong(FinalDate.getTime());
+
+        //Dates must be passed as longs
+        dest.writeInt(MidtermDates.size()); //this is needed for constructing the array we will write this data into
+        long[] mtdateslong = new long[MidtermDates.size()];
+        for (int i = 0; i < MidtermDates.size(); i++){
+            mtdateslong[i] = MidtermDates.get(i).getTime();
+        }
+        dest.writeLongArray(mtdateslong);
+
+        dest.writeInt(AssignmentAndQuizDates.size());
+        long[] assigndateslong = new long[AssignmentAndQuizDates.size()];
+        for (int i = 0; i < AssignmentAndQuizDates.size(); i++){
+            assigndateslong[i] = AssignmentAndQuizDates.get(i).getTime();
+        }
+        dest.writeLongArray(assigndateslong);
+
+        dest.writeInt(FinalWt);
+        dest.writeInt(MidtermWt);
+        dest.writeInt(AssignmentsAndQuizzesWt);
+        dest.writeInt(CourseWt);
+
+        dest.writeLong(startDate.getTime());
+        dest.writeLong(endDate.getTime());
+
+    }
+
+    //All Parcelables must have a CREATOR that implements these two methods
+    //Used to regenerate the object in a new activity
+    public static final Parcelable.Creator<UniversityCourse> CREATOR = new Parcelable.Creator<UniversityCourse>() {
+        public UniversityCourse createFromParcel(Parcel in) {
+            return new UniversityCourse(in);
+        }
+
+        public UniversityCourse[] newArray(int size) {
+            return new UniversityCourse[size];
+        }
+    };
+
+    //Constructor that takes a Parcel and gives you an object populated with its values
+    //Data must be read in same order that they were written in
+    private UniversityCourse(Parcel in) {
+        CourseName = in.readString();
+
+        //Time read as long, translated back into dates.
+        long fdtime = in.readLong();
+        FinalDate = new Date();
+        FinalDate.setTime(fdtime);
+
+        int sizemt = in.readInt();
+        long[] mtdateslong = new long[sizemt];
+        in.readLongArray(mtdateslong);
+        MidtermDates = new ArrayList<Date>();
+        for (int i = 0; i < mtdateslong.length; i++){
+            Date mt = new Date();
+            mt.setTime(mtdateslong[i]);
+            MidtermDates.add(mt);
+        }
+
+        int sizeass = in.readInt();
+        long[] adateslong = new long[sizeass];
+        in.readLongArray(adateslong);
+        AssignmentAndQuizDates = new ArrayList<Date>();
+        for (int i = 0; i < adateslong.length; i++){
+            Date ass = new Date();
+            ass.setTime(adateslong[i]);
+            MidtermDates.add(ass);
+        }
+
+        FinalWt = in.readInt();
+        MidtermWt = in.readInt();
+        AssignmentsAndQuizzesWt = in.readInt();
+        CourseWt = in.readInt();
+
+        long sdate = in.readLong();
+        startDate = new Date();
+        startDate.setTime(sdate);
+
+        long edate = in.readLong();
+        endDate = new Date();
+        endDate.setTime(edate);
     }
 }

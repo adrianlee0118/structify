@@ -1,24 +1,20 @@
 package com.example.structify;
 
 import android.content.Context;
+import android.content.Intent;
 import android.icu.text.SimpleDateFormat;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.util.Log;
-import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.cardview.widget.CardView;
-
-import java.lang.reflect.Array;
 import java.text.ParseException;
 import java.time.LocalDate;
 import java.time.ZoneId;
@@ -42,22 +38,18 @@ public class SecondInputActivity extends AppCompatActivity {
     //Global variables that we will use continually in methods, passed through intent from MainActivity.
     private Date StartDate;
     private Date EndDate;
-    private LocalDate startdate;
+    private LocalDate startdate;  //for checking before/after
     private LocalDate enddate;
     private int NumCourses;
     private int StudyTime;
 
     //Making dynamically created EditText fields readable.
     private Map<String,EditText> InputFieldIDs;
-    private List<LinearLayout> Panels;  //not accessed, just to allow layouts to persist outside loops
-    private List<HorizontalScrollView> HorPanels;  //not accessed, just allowing layouts to persist
-    private List<TextView> Labels;      //not accessed, just to allow labels to persist outside loop
-    private List<EditText> InputFields;
 
-    //Where we store input data
+    //Where we will store input data
     private ArrayList<UniversityCourse> Courses;
 
-    //The layout where we will put all of the dynamic UI-generated fields
+    //The layout where we will put all of the dynamic UI-generated fields plus the enable button
     private LinearLayout Canvas;
     private Button SubmitBtn;
 
@@ -87,7 +79,7 @@ public class SecondInputActivity extends AppCompatActivity {
 
         for (int i = NumCourses; i >= 1; i--){
 
-            //Inflate an instance of course form for every course
+            //Inflate an instance of course form template layout for every course
             View current = vi.inflate(R.layout.course_form,null);
 
             //Map field IDs for later access
@@ -147,6 +139,7 @@ public class SecondInputActivity extends AppCompatActivity {
 
     private void setSubmitBtnClick(){
         SubmitBtn.setOnClickListener(new View.OnClickListener() {
+
             @Override
             public void onClick(View v) {
 
@@ -165,7 +158,7 @@ public class SecondInputActivity extends AppCompatActivity {
                     if (isEmpty(InputFieldIDs.get("Course "+Integer.toString(i)+" Name"))){
                         Toast.makeText(SecondInputActivity.this,"You forgot to enter Course "
                                 +Integer.toString(i)+" Name", Toast.LENGTH_SHORT).show();
-                        return;
+                        throw new RuntimeException();
                     } else {
                         temp.setCourseName(InputFieldIDs.get("Course "+Integer.toString(i)+" Name").getText().toString());
                     }
@@ -177,19 +170,33 @@ public class SecondInputActivity extends AppCompatActivity {
                             if (isEmpty(InputFieldIDs.get("Course "+Integer.toString(j)+" Weight"))){
                                 Toast.makeText(SecondInputActivity.this,"You forgot to enter Course "
                                         +Integer.toString(j)+" Weight",Toast.LENGTH_SHORT).show();
-                                return;
+                                throw new RuntimeException();
                             }
                             sum+=Integer.parseInt(InputFieldIDs.get("Course "+Integer.toString(j)+" Weight").getText().toString());
                         }
                         if (sum != 100){
                             Toast.makeText(SecondInputActivity.this,"Your course weights don't sum " +
                                     "to 100!",Toast.LENGTH_SHORT).show();
-                            return;
+                            throw new RuntimeException();
                         } else {
-                            temp.setCourseWt(Integer.parseInt(InputFieldIDs.get("Course "+Integer.toString(i)+" Weight").getText().toString()));
+                            if (Integer.parseInt(InputFieldIDs.get("Course "+Integer.toString(i)+" Weight").getText().toString())
+                            !=0){
+                                temp.setCourseWt(Integer.parseInt(InputFieldIDs.get("Course "+Integer.toString(i)+" Weight").getText().toString()));
+                            } else {
+                                Toast.makeText(SecondInputActivity.this,"Course " + Integer.toString(i)
+                                        + " Final Weight cannot equal zero",Toast.LENGTH_SHORT).show();
+                                throw new RuntimeException();
+                            }
                         }
                     } else {
-                        temp.setCourseWt(Integer.parseInt(InputFieldIDs.get("Course "+Integer.toString(i)+" Weight").getText().toString()));
+                        if (Integer.parseInt(InputFieldIDs.get("Course "+Integer.toString(i)+" Weight").getText().toString())
+                                !=0){
+                            temp.setCourseWt(Integer.parseInt(InputFieldIDs.get("Course "+Integer.toString(i)+" Weight").getText().toString()));
+                        } else {
+                            Toast.makeText(SecondInputActivity.this,"Course " + Integer.toString(i)
+                                    + " Final Weight cannot equal zero",Toast.LENGTH_SHORT).show();
+                            throw new RuntimeException();
+                        }
                     }
 
                     //Add final, midterm and assignment weights if they add up to 100
@@ -200,7 +207,7 @@ public class SecondInputActivity extends AppCompatActivity {
                         Toast.makeText(SecondInputActivity.this,"Your Final, Midterm and Assignment " +
                                 "Weights for Course "+Integer.toString(i)+" don't add up to 100.",
                                 Toast.LENGTH_SHORT).show();
-                        return;
+                        throw new RuntimeException();
                     } else {
                         temp.setFinalWt(Integer.parseInt(InputFieldIDs.get("Course "+Integer.toString(i)+" Final Weight").getText().toString()));
                         temp.setMidtermWt(Integer.parseInt(InputFieldIDs.get("Course "+Integer.toString(i)+" Midterm Weight").getText().toString()));
@@ -211,7 +218,7 @@ public class SecondInputActivity extends AppCompatActivity {
                     SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
                     if (isEmpty(InputFieldIDs.get("Course "+Integer.toString(i)+" Final Date"))){
                         Toast.makeText(SecondInputActivity.this,"You forgot to enter Course "+Integer.toString(i)+" Final Date",Toast.LENGTH_SHORT).show();
-                        return;
+                        throw new RuntimeException();
                     } else {
                         try {
                             Date fd = formatter.parse(InputFieldIDs.get("Course "+Integer.toString(i)+" Final Date").getText().toString());
@@ -236,7 +243,7 @@ public class SecondInputActivity extends AppCompatActivity {
                             isEmpty(InputFieldIDs.get("Course "+Integer.toString(i)+" Number Midterms"))){
                         Toast.makeText(SecondInputActivity.this,"Please enter some information about"+
                                 " Course "+Integer.toString(i)+" Midterm Exam(s)",Toast.LENGTH_SHORT).show();
-                        return;
+                        throw new RuntimeException();
                     } else if (isEmpty(InputFieldIDs.get("Course "+Integer.toString(i)+" Midterm Date 1")) &&
                             isEmpty(InputFieldIDs.get("Course "+Integer.toString(i)+" Midterm Date 2"))) {
                         temp.calcMTDate(Integer.parseInt(InputFieldIDs.get("Course "+Integer.toString(i)+" Number Midterms").getText().toString()));
@@ -256,7 +263,7 @@ public class SecondInputActivity extends AppCompatActivity {
                                         Toast.makeText(SecondInputActivity.this,"Make sure Course "
                                                         +Integer.toString(i)+" Midterm Dates are in range",
                                                 Toast.LENGTH_SHORT).show();
-                                        return;
+                                        throw new RuntimeException();
                                     }
                                 } catch (ParseException e) {
                                     Toast.makeText(SecondInputActivity.this,"Please enter valid " +
@@ -281,7 +288,7 @@ public class SecondInputActivity extends AppCompatActivity {
                             && isEmpty(InputFieldIDs.get("Course "+Integer.toString(i)+" Number Assignments"))){
                         Toast.makeText(SecondInputActivity.this,"Please enter some information about"+
                                 " Course "+Integer.toString(i)+" Assignment(s)",Toast.LENGTH_SHORT).show();
-                        return;
+                        throw new RuntimeException();
                     } else if (isEmpty(InputFieldIDs.get("Course "+Integer.toString(i)+" Assignment 1 Date"))
                             && isEmpty(InputFieldIDs.get("Course "+Integer.toString(i)+" Assignment 2 Date"))
                             && isEmpty(InputFieldIDs.get("Course "+Integer.toString(i)+" Assignment 3 Date"))
@@ -305,7 +312,7 @@ public class SecondInputActivity extends AppCompatActivity {
                                         Toast.makeText(SecondInputActivity.this,"Make sure Course "
                                                         +Integer.toString(i)+" Assignment Dates are in range",
                                                 Toast.LENGTH_SHORT).show();
-                                        return;
+                                        throw new RuntimeException();
                                     }
                                 } catch (ParseException e) {
                                     Toast.makeText(SecondInputActivity.this,"Please enter valid " +
@@ -323,9 +330,15 @@ public class SecondInputActivity extends AppCompatActivity {
                     Log.d("SecondInputActivity","Added "+temp.getCourseName()+" to UniversityCourses");
                 }
 
-                //Intents or Parcelable or Bundle to send Courses ArrayList or UniversityCourse objects
-                //individually to next Calendar Provider Activity! :):) Also, deal with zero weight values.
-                //Throw exception instead of returning when conditions not met
+                //Pass the UniversityCourse objects to the next activity.
+                Intent intent = new Intent().setClass(getBaseContext (), ThirdSummaryActivity.class);
+                intent.putExtra("StudyTime",StudyTime);
+                intent.putExtra("NumCourses",NumCourses);
+                for (int i = 1; i <= NumCourses; i++){
+                    intent.putExtra("Course "+i,(Parcelable)Courses.get(i-1));
+                }
+                startActivity(intent);
+
             }
         });
     }
