@@ -14,6 +14,22 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
+        <activity android:name=".YourCalendarActivity"
+            android:parentActivityName=".ThirdSummaryActivity">
+            <!-- The meta-data tag is required if you support API level 15 and lower -->
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".ThirdSummaryActivity" />
+        </activity>
+
+        <activity android:name=".ThirdSummaryActivity"
+            android:parentActivityName=".SecondInputActivity">
+            <!-- The meta-data tag is required if you support API level 15 and lower -->
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".SecondInputActivity" />
+        </activity>
+
         <activity android:name=".SecondInputActivity"
             android:parentActivityName=".MainActivity">
             <!-- The meta-data tag is required if you support API level 15 and lower -->

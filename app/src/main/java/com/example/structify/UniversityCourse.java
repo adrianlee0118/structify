@@ -23,10 +23,10 @@ public class UniversityCourse implements Parcelable {
     private ArrayList<Date> AssignmentAndQuizDates;
 
     //Percentage weights of respective items as shown in the course syllabus.
-    private int FinalWt;
-    private int MidtermWt;
-    private int AssignmentsAndQuizzesWt;
-    private int CourseWt; //the portion of total available study time you wish to allocate to this particular course.
+    private double FinalWt;
+    private double MidtermWt;
+    private double AssignmentsAndQuizzesWt;
+    private double CourseWt; //the portion of total available study time you wish to allocate to this particular course.
 
     //Semester dates to help make default exam/assignment dates if they are not provided
     private Date startDate;
@@ -37,7 +37,8 @@ public class UniversityCourse implements Parcelable {
     public UniversityCourse() {
     }
 
-    public UniversityCourse(String name, Date finex, int finwt, int mtwt, int asgnwt, Date st,
+    //This constructor not used
+    public UniversityCourse(String name, Date finex, double finwt, double mtwt, double asgnwt, Date st,
                             Date end){
 
         CourseName = name;
@@ -81,35 +82,35 @@ public class UniversityCourse implements Parcelable {
         AssignmentAndQuizDates = assignmentAndQuizDates;
     }
 
-    public int getFinalWt() {
+    public double getFinalWt() {
         return FinalWt;
     }
 
-    public void setFinalWt(int finalWt) {
+    public void setFinalWt(double finalWt) {
         FinalWt = finalWt;
     }
 
-    public int getMidtermWt() {
+    public double getMidtermWt() {
         return MidtermWt;
     }
 
-    public void setMidtermWt(int midtermWt) {
+    public void setMidtermWt(double midtermWt) {
         MidtermWt = midtermWt;
     }
 
-    public int getAssignmentsAndQuizzesWt() {
+    public double getAssignmentsAndQuizzesWt() {
         return AssignmentsAndQuizzesWt;
     }
 
-    public void setAssignmentsAndQuizzesWt(int assignmentsAndQuizzesWt) {
+    public void setAssignmentsAndQuizzesWt(double assignmentsAndQuizzesWt) {
         AssignmentsAndQuizzesWt = assignmentsAndQuizzesWt;
     }
 
-    public int getCourseWt() {
+    public double getCourseWt() {
         return CourseWt;
     }
 
-    public void setCourseWt(int courseWt) {
+    public void setCourseWt(double courseWt) {
         CourseWt = courseWt;
     }
 
@@ -129,17 +130,17 @@ public class UniversityCourse implements Parcelable {
         this.endDate = endDate;
     }
 
-    public int FinalAllocation(int CourseTime){
+    public double FinalAllocation(double CourseTime){
 
         return (CourseTime/100)*FinalWt;
     }
 
-    public int MidtermAllocation(int CourseTime){
+    public double MidtermAllocation(double CourseTime){
 
         return (CourseTime/100)*MidtermWt;
     }
 
-    public int AssignmentAllocation(int CourseTime){
+    public double AssignmentAllocation(double CourseTime){
 
         return (CourseTime/100)*AssignmentsAndQuizzesWt;
     }
@@ -203,10 +204,10 @@ public class UniversityCourse implements Parcelable {
         }
         dest.writeLongArray(assigndateslong);
 
-        dest.writeInt(FinalWt);
-        dest.writeInt(MidtermWt);
-        dest.writeInt(AssignmentsAndQuizzesWt);
-        dest.writeInt(CourseWt);
+        dest.writeDouble(FinalWt);
+        dest.writeDouble(MidtermWt);
+        dest.writeDouble(AssignmentsAndQuizzesWt);
+        dest.writeDouble(CourseWt);
 
         dest.writeLong(startDate.getTime());
         dest.writeLong(endDate.getTime());
@@ -255,10 +256,10 @@ public class UniversityCourse implements Parcelable {
             MidtermDates.add(ass);
         }
 
-        FinalWt = in.readInt();
-        MidtermWt = in.readInt();
-        AssignmentsAndQuizzesWt = in.readInt();
-        CourseWt = in.readInt();
+        FinalWt = in.readDouble();
+        MidtermWt = in.readDouble();
+        AssignmentsAndQuizzesWt = in.readDouble();
+        CourseWt = in.readDouble();
 
         long sdate = in.readLong();
         startDate = new Date();
