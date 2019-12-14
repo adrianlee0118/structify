@@ -138,7 +138,7 @@ public class ThirdSummaryActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                Intent intent = new Intent().setClass(getBaseContext (), YourCalendarActivity.class);
+                Intent intent = new Intent(ThirdSummaryActivity.this, YourCalendarActivity.class);
                 intent.putExtra("NumCourses",NumCourses);
                 for (int i = 1; i <= NumCourses; i++){
                     intent.putExtra("Course "+i,(Parcelable)Courses.get(i-1));

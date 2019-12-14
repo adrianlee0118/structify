@@ -125,15 +125,17 @@ public class SecondInputActivity extends AppCompatActivity {
             Canvas.addView(current, 0, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         }
 
-        SubmitBtn = findViewById(R.id.submit_details);
-        setSubmitBtnClick();
-
         Iterator it = InputFieldIDs.entrySet().iterator();
         while (it.hasNext()) {
             Map.Entry pair = (Map.Entry)it.next();
             Log.d("SecondActivity","Added "+pair.getKey()+ " -> " + pair.getValue() + " to InputFieldIDs");
             it.remove(); // avoids a ConcurrentModificationException
         }
+
+        SubmitBtn = findViewById(R.id.submit_details);
+        setSubmitBtnClick();
+
+        Log.d("SecondAcvtivity","Button Clicked");
     }
 
 
@@ -143,6 +145,7 @@ public class SecondInputActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
+                Log.d("SecondActivity", "Click Activity started");
                 //Read all data into UniversityCourse objects to be passed to the next activity, one object
                 //for each course inputted.
                 for (int i = 1; i <= NumCourses; i++){
@@ -331,7 +334,7 @@ public class SecondInputActivity extends AppCompatActivity {
                 }
 
                 //Pass the UniversityCourse objects to the next activity.
-                Intent intent = new Intent().setClass(getBaseContext (), ThirdSummaryActivity.class);
+                Intent intent = new Intent(SecondInputActivity.this, ThirdSummaryActivity.class);
                 intent.putExtra("StudyTime",StudyTime);
                 intent.putExtra("NumCourses",NumCourses);
                 for (int i = 1; i <= NumCourses; i++){
