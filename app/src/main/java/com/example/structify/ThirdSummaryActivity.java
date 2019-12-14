@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.os.Parcelable;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Button;
 
 import androidx.appcompat.app.AppCompatActivity;
 import java.time.LocalDate;
@@ -45,7 +46,6 @@ public class ThirdSummaryActivity extends AppCompatActivity {
 
         OverallSummary = findViewById(R.id.overall_summary);
         CourseSummary = findViewById(R.id.course_summary);
-        PreviewCalendarBtn = findViewById(R.id.CalendarBtn);
 
         //Put summaries into the GUI fields
         String overall_message = "";
@@ -128,6 +128,7 @@ public class ThirdSummaryActivity extends AppCompatActivity {
         OverallSummary.setText(overall_message);
         CourseSummary.setText(course_message);
 
+        PreviewCalendarBtn = findViewById(R.id.PreviewCalendarBtn);
         setPreviewCalendarBtnClick();
     }
 
@@ -138,6 +139,7 @@ public class ThirdSummaryActivity extends AppCompatActivity {
             public void onClick(View v) {
 
                 Intent intent = new Intent().setClass(getBaseContext (), YourCalendarActivity.class);
+                intent.putExtra("NumCourses",NumCourses);
                 for (int i = 1; i <= NumCourses; i++){
                     intent.putExtra("Course "+i,(Parcelable)Courses.get(i-1));
                 }
