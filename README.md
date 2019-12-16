@@ -1,0 +1,2 @@
+# Structify
+Takes course syllabi deliverable dates and component weights and study time preferences into account to construct semester or yearly schedules for up to 8 courses. The schedule can be used as a guideline for workflow sequence and time allocation in studying for various subjects over the course of a college semester or for organizing and juggling deliverables over a certain period of time within some other context. 
