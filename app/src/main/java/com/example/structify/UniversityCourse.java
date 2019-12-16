@@ -1,9 +1,8 @@
 package com.example.structify;
 
-import android.content.Context;
-import android.os.Bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -132,29 +131,32 @@ public class UniversityCourse implements Parcelable {
 
     public double FinalAllocation(double CourseTime){
 
-        return (CourseTime/100)*FinalWt;
+        return Math.round(((CourseTime/100)*FinalWt)*10)/10.0;
     }
 
     public double MidtermAllocation(double CourseTime){
 
-        return (CourseTime/100)*MidtermWt;
+        return Math.round(((CourseTime/100)*MidtermWt)*10)/10.0;
     }
 
     public double AssignmentAllocation(double CourseTime){
 
-        return (CourseTime/100)*AssignmentsAndQuizzesWt;
+        return Math.round(((CourseTime/100)*AssignmentsAndQuizzesWt)*10)/10.0;
     }
 
     public void calcMTDate(int howmany){
         //Use startDate and endDate to create a Midterm date if not provided.
         ArrayList<Date> result = new ArrayList<Date>();
-        long difference = (startDate.getTime()-endDate.getTime())/(howmany+1);
-        Date curr = new Date();
-        curr.setTime(startDate.getTime()+difference);
-        result.add(curr);
+        long difference = Math.abs((startDate.getTime()-endDate.getTime()))/(howmany+1);
+        long curr = startDate.getTime()+difference;
+        Date temp = new Date();
+        temp.setTime(curr);
+        result.add(temp);
         for (int i = 0; i < howmany; i++){
-            curr.setTime(curr.getTime()+difference);
-            result.add(curr);
+            curr+=difference;
+            Date temp1 = new Date();
+            temp1.setTime(curr);
+            result.add(temp1);
         }
         MidtermDates =  result;
     }
@@ -162,13 +164,16 @@ public class UniversityCourse implements Parcelable {
     public void calcAssignmentDates(int howmany){
         //Use startDate and endDate to create quiz and assignment dates.
         ArrayList<Date> result = new ArrayList<Date>();
-        long difference = (startDate.getTime()-endDate.getTime())/(howmany+1);
-        Date curr = new Date();
-        curr.setTime(startDate.getTime()+difference);
-        result.add(curr);
-        for (int i = 0; i < howmany; i++){
-            curr.setTime(curr.getTime()+difference);
-            result.add(curr);
+        long difference = Math.abs((startDate.getTime()-endDate.getTime()))/(howmany+1);
+        long curr = startDate.getTime()+difference;
+        Date temp = new Date();
+        temp.setTime(curr);
+        result.add(temp);
+        for (int i = 0; i < howmany-1; i++){
+            curr+=difference;
+            Date temp1 = new Date();
+            temp1.setTime(curr);
+            result.add(temp1);
         }
         AssignmentAndQuizDates = result;
     }
@@ -253,7 +258,7 @@ public class UniversityCourse implements Parcelable {
         for (int i = 0; i < adateslong.length; i++){
             Date ass = new Date();
             ass.setTime(adateslong[i]);
-            MidtermDates.add(ass);
+            AssignmentAndQuizDates.add(ass);
         }
 
         FinalWt = in.readDouble();

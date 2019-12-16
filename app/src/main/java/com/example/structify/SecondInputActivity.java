@@ -71,6 +71,10 @@ public class SecondInputActivity extends AppCompatActivity {
         NumCourses = extras.getInt("NumCourses");
         StudyTime = extras.getInt("StudyTime");
 
+        Log.d("Second","StartDate after Main is "+StartDate.toString());
+        Log.d("Second","EndDate after Main is "+EndDate.toString());
+
+
         //Map for keeping track of dynamically generated edittexts and instantiate UniversityCourse storage
         InputFieldIDs = new HashMap<String,EditText>();
         InputFields = new ArrayList<EditText>();
@@ -175,6 +179,7 @@ public class SecondInputActivity extends AppCompatActivity {
                         throw new RuntimeException();
                     } else {
                         temp.setCourseName(InputFieldIDs.get("Course "+Integer.toString(i)+" Name").getText().toString());
+                        Log.d("Second","Got Course "+Integer.toString(i)+" Name");
                     }
 
                     //Add course weight, check all weights are filled and add to 100 in first go around
@@ -195,6 +200,7 @@ public class SecondInputActivity extends AppCompatActivity {
                         } else {
                             if (Integer.parseInt(InputFieldIDs.get("Course "+Integer.toString(i)+" Weight").getText().toString())
                             !=0){
+                                Log.d("Second","Got Course "+Integer.toString(i)+" Weight");
                                 temp.setCourseWt(Integer.parseInt(InputFieldIDs.get("Course "+Integer.toString(i)+" Weight").getText().toString()));
                             } else {
                                 Toast.makeText(SecondInputActivity.this,"Course " + Integer.toString(i)
@@ -205,6 +211,7 @@ public class SecondInputActivity extends AppCompatActivity {
                     } else {
                         if (Integer.parseInt(InputFieldIDs.get("Course "+Integer.toString(i)+" Weight").getText().toString())
                                 !=0){
+                            Log.d("Second","Got Course "+Integer.toString(i)+" Weight");
                             temp.setCourseWt(Integer.parseInt(InputFieldIDs.get("Course "+Integer.toString(i)+" Weight").getText().toString()));
                         } else {
                             Toast.makeText(SecondInputActivity.this,"Course " + Integer.toString(i)
@@ -223,6 +230,7 @@ public class SecondInputActivity extends AppCompatActivity {
                                 Toast.LENGTH_SHORT).show();
                         throw new RuntimeException();
                     } else {
+                        Log.d("Second","Got Course "+Integer.toString(i)+" exam and assign weights");
                         temp.setFinalWt(Integer.parseInt(InputFieldIDs.get("Course "+Integer.toString(i)+" Final Weight").getText().toString()));
                         temp.setMidtermWt(Integer.parseInt(InputFieldIDs.get("Course "+Integer.toString(i)+" Midterm Weight").getText().toString()));
                         temp.setAssignmentsAndQuizzesWt(Integer.parseInt(InputFieldIDs.get("Course "+Integer.toString(i)+" Assignment Weight").getText().toString()));
@@ -238,6 +246,7 @@ public class SecondInputActivity extends AppCompatActivity {
                             Date fd = formatter.parse(InputFieldIDs.get("Course "+Integer.toString(i)+" Final Date").getText().toString());
                             LocalDate finaldate = fd.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
                             if (!finaldate.isBefore(startdate) && !finaldate.isAfter(enddate)){
+                                Log.d("Second","Got Course "+Integer.toString(i)+" Final Date");
                                 temp.setFinalDate(fd);
                             } else {
                                 Toast.makeText(SecondInputActivity.this,"Make sure Course "
@@ -260,6 +269,7 @@ public class SecondInputActivity extends AppCompatActivity {
                         throw new RuntimeException();
                     } else if (TextUtils.isEmpty(InputFieldIDs.get("Course "+Integer.toString(i)+" Midterm Date 1").getText().toString().trim()) &&
                             TextUtils.isEmpty(InputFieldIDs.get("Course "+Integer.toString(i)+" Midterm Date 2").getText().toString().trim())) {
+                        Log.d("Second","Calculated Course "+Integer.toString(i)+" Midterm Dates");
                         temp.calcMTDate(Integer.parseInt(InputFieldIDs.get("Course "+Integer.toString(i)+" Number Midterms").getText().toString()));
                     } else {
                         ArrayList<Date> MTD = new ArrayList<Date>();
@@ -288,6 +298,7 @@ public class SecondInputActivity extends AppCompatActivity {
                             }
                         }
 
+                        Log.d("Second","Got Course "+Integer.toString(i)+" Midterm Dates");
                         temp.setMidtermDates(MTD);
                     }
 
@@ -309,6 +320,7 @@ public class SecondInputActivity extends AppCompatActivity {
                             && TextUtils.isEmpty(InputFieldIDs.get("Course "+Integer.toString(i)+" Assignment 4 Date").getText().toString().trim())
                             && TextUtils.isEmpty(InputFieldIDs.get("Course "+Integer.toString(i)+" Assignment 5 Date").getText().toString().trim())
                             && TextUtils.isEmpty(InputFieldIDs.get("Course "+Integer.toString(i)+" Assignment 6 Date").getText().toString().trim())) {
+                        Log.d("Second","Calculated Course "+Integer.toString(i)+" Assign Dates");
                         temp.calcAssignmentDates(Integer.parseInt(InputFieldIDs.get("Course "+Integer.toString(i)+" Number Assignments").getText().toString()));
                     } else {
                         ArrayList<Date> AD = new ArrayList<Date>();
@@ -337,6 +349,7 @@ public class SecondInputActivity extends AppCompatActivity {
                             }
                         }
 
+                        Log.d("Second","Got Course "+Integer.toString(i)+"Assign Dates");
                         temp.setAssignmentAndQuizDates(AD);
                     }
 

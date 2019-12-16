@@ -3,6 +3,7 @@ package com.example.structify;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Button;
@@ -61,7 +62,7 @@ public class ThirdSummaryActivity extends AppCompatActivity {
         overall_message += "Total available study time for the semester from all weekdays and weekends is "+
                 StudyTime+" hours. This is distributed over all "+NumCourses+" courses as follows:"+"\n"+"\n";
 
-        for (int i = 1; i <= NumCourses; i++){
+        for (int i = 0; i < NumCourses; i++){
             double course_time = (Courses.get(i).getCourseWt()*StudyTime)/100;
 
             overall_message += "Total study time for "+Courses.get(i).getCourseName()+" will be "+
@@ -70,7 +71,7 @@ public class ThirdSummaryActivity extends AppCompatActivity {
 
             course_message += "Study time for "+Courses.get(i).getCourseName()+"'s final exam will be "+
                     (Courses.get(i).FinalAllocation(course_time)+" hours, given Final Weight in semester of "+
-                    Courses.get(i).getCourseWt()+"%."+"\n"+"\n");
+                    Courses.get(i).getFinalWt()+"%."+"\n"+"\n");
             LocalDate fdate = Courses.get(i).getFinalDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
             course_message += "The final exam will take place on "+fdate.getMonth().getDisplayName(TextStyle.FULL, Locale.US)
                     +" "+fdate.getDayOfMonth()+"."+"\n"+"\n";
@@ -104,7 +105,7 @@ public class ThirdSummaryActivity extends AppCompatActivity {
                 for (int j = 0; j < Courses.get(i).getAssignmentAndQuizDates().size(); j++){
                     if (j == Courses.get(i).getAssignmentAndQuizDates().size()-1){
                         course_message += ", and ";
-                    } else {
+                    } else if (j != 0){
                         course_message += ", ";
                     }
                     LocalDate adate = Courses.get(i).getAssignmentAndQuizDates().get(j).toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
@@ -114,7 +115,7 @@ public class ThirdSummaryActivity extends AppCompatActivity {
             } else {
                 LocalDate adate = Courses.get(i).getAssignmentAndQuizDates().get(0).toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
                 course_message += "The midterm exam will take place on "+adate.getMonth().getDisplayName(TextStyle.FULL, Locale.US)
-                        +" "+adate.getDayOfMonth()+"."+"\n"+"\n"+"\n";
+                        +" "+adate.getDayOfMonth()+"."+"\n"+"\n"+"\n"+"\n";
             }
 
         }
