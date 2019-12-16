@@ -22,8 +22,6 @@ import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 
 //The second page, where, given the number of courses, course data is input. The button will store
@@ -279,7 +277,7 @@ public class SecondInputActivity extends AppCompatActivity {
                             if (!TextUtils.isEmpty(InputFieldIDs.get("Course "+Integer.toString(i)+" Midterm Date "
                                     +Integer.toString(j)).getText().toString().trim())){
                                 try {
-                                    Date mt = formatter.parse(InputFieldIDs.get("Course "+Integer.toString(i)+" Midterm Date 1").getText().toString());
+                                    Date mt = formatter.parse(InputFieldIDs.get("Course "+Integer.toString(i)+" Midterm Date "+Integer.toString(j)).getText().toString());
                                     LocalDate midtermdate = mt.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
                                     if (!midtermdate.isBefore(startdate) && !midtermdate.isAfter(enddate)){
                                         MTD.add(mt);

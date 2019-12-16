@@ -3,7 +3,6 @@ package com.example.structify;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
-import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Button;
@@ -84,7 +83,7 @@ public class ThirdSummaryActivity extends AppCompatActivity {
                 for (int j = 0; j < Courses.get(i).getMidtermDates().size(); j++){
                     if (j == Courses.get(i).getMidtermDates().size()-1){
                         course_message += ", and ";
-                    } else {
+                    } else if (j != 0){
                         course_message += ", ";
                     }
                     LocalDate mdate = Courses.get(i).getMidtermDates().get(j).toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
@@ -111,11 +110,15 @@ public class ThirdSummaryActivity extends AppCompatActivity {
                     LocalDate adate = Courses.get(i).getAssignmentAndQuizDates().get(j).toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
                     course_message += adate.getMonth().getDisplayName(TextStyle.FULL, Locale.US) +" "+adate.getDayOfMonth();
                 }
-                course_message += "."+"\n"+"\n"+"\n";
+                course_message += "."+"\n"+"\n";
+                course_message += "---------------------";
+                course_message += "."+"\n"+"\n";
             } else {
                 LocalDate adate = Courses.get(i).getAssignmentAndQuizDates().get(0).toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
                 course_message += "The midterm exam will take place on "+adate.getMonth().getDisplayName(TextStyle.FULL, Locale.US)
-                        +" "+adate.getDayOfMonth()+"."+"\n"+"\n"+"\n"+"\n";
+                        +" "+adate.getDayOfMonth()+"."+"\n"+"\n";
+                course_message += "---------------------";
+                course_message += "."+"\n"+"\n";
             }
 
         }
