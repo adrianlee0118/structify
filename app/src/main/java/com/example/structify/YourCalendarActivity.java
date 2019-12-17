@@ -1,6 +1,7 @@
 package com.example.structify;
 
 import android.os.Bundle;
+import android.provider.CalendarContract;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -26,6 +27,6 @@ public class YourCalendarActivity extends AppCompatActivity {
         }
 
         //Make the calendar preview!
-        
+
     }
 }
