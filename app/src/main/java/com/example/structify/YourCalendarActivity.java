@@ -6,11 +6,14 @@ import android.provider.CalendarContract;
 import androidx.appcompat.app.AppCompatActivity;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 
 public class YourCalendarActivity extends AppCompatActivity {
 
+    //Course data from previous activities
     private int NumCourses;
     private ArrayList<UniversityCourse> Courses;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState){
@@ -27,6 +30,7 @@ public class YourCalendarActivity extends AppCompatActivity {
         }
 
         //Make the calendar preview!
+
 
     }
 }
