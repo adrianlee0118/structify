@@ -12,4 +12,5 @@
     <string name="summary">Overall Summary</string>
     <string name="preview_calendar">Is this correct? Preview Calendar</string>
     <string name="course_by_course">Course-by-Course Breakdown</string>
+    <string name="import_GC">Import to Google Calendar</string>
 </resources>

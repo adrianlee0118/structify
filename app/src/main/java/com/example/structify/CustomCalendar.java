@@ -4,7 +4,6 @@ import android.content.Context;
 import android.icu.text.SimpleDateFormat;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
-import android.widget.Button;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -32,7 +31,7 @@ public class CustomCalendar extends LinearLayout {
 
     private void assignUiElements() {
         // layout is inflated, assign local variables to components
-        header = findViewById(R.id.calendar_header);
+        header = findViewById(R.id.headings);
         btnPrev = findViewById(R.id.calendar_prev_button);
         btnNext = findViewById(R.id.calendar_next_button);
         txtDateYear = findViewById(R.id.date_display_year);
@@ -61,7 +60,8 @@ public class CustomCalendar extends LinearLayout {
 
         // determine the cell for current month's beginning
         calendar.set(Calendar.DAY_OF_MONTH, 1);                            //Set the day to the 1st of month
-        int monthBeginningCell = calendar.get(Calendar.DAY_OF_WEEK) - 1;   //shift 1 because days of week 1-indexed from Sunday, the int is for 0-indexing in our ArrayList
+        int monthBeginningCell = calendar.get(Calendar.DAY_OF_WEEK) - 1;   //shift 1 because days of week 1-indexed from Sunday, the int is for 0-indexing in our ArrayList from the first Sunday
+        //sample was shift 2 (minus 2) because they indexed 0 at Monday not Sunday.
 
         // Subtract days (adding a negative day is move back in time) so that we start from a Sunday
         calendar.add(Calendar.DAY_OF_MONTH, -monthBeginningCell);

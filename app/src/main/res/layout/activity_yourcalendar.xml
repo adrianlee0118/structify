@@ -8,6 +8,7 @@
     tools:context=".YourCalendarActivity">
 
     <RelativeLayout
+        android:id="@+id/header"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
@@ -66,7 +67,7 @@
     </RelativeLayout>
 
     <LinearLayout
-        android:id="@+id/calendar_header"
+        android:id="@+id/headings"
         android:layout_width="match_parent"
         android:layout_height="30dp"
         android:gravity="center_vertical"
@@ -128,5 +129,17 @@
             android:textColor="#222222"
             android:text="SAT"/>
     </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/calendar_canvas"
+        android:layout_width="match_parent"
+        android:layout_height="515dp"
+        android:orientation="vertical"></LinearLayout>
+
+    <Button
+        android:id="@+id/import_to_google_calendar_button"
+        android:layout_width="match_parent"
+        android:layout_height="112dp"
+        android:text="@string/import_GC" />
 
 </LinearLayout>
