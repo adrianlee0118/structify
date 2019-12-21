@@ -12,6 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
+        android:layout_weight="1"
         android:gravity="center_horizontal">
 
         <ImageButton
@@ -70,6 +71,7 @@
         android:id="@+id/headings"
         android:layout_width="match_parent"
         android:layout_height="30dp"
+        android:layout_weight="1"
         android:gravity="center_vertical"
         android:orientation="horizontal">
 
@@ -78,68 +80,70 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center_horizontal"
-            android:textColor="#222222"
-            android:text="SUN"/>
+            android:text="SUN"
+            android:textColor="#222222" />
 
         <TextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center_horizontal"
-            android:textColor="#222222"
-            android:text="MON"/>
+            android:text="MON"
+            android:textColor="#222222" />
 
         <TextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center_horizontal"
-            android:textColor="#222222"
-            android:text="TUES"/>
+            android:text="TUES"
+            android:textColor="#222222" />
 
         <TextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center_horizontal"
-            android:textColor="#222222"
-            android:text="WED"/>
+            android:text="WED"
+            android:textColor="#222222" />
 
         <TextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center_horizontal"
-            android:textColor="#222222"
-            android:text="THURS"/>
+            android:text="THURS"
+            android:textColor="#222222" />
 
         <TextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center_horizontal"
-            android:textColor="#222222"
-            android:text="FRI"/>
+            android:text="FRI"
+            android:textColor="#222222" />
 
         <TextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center_horizontal"
-            android:textColor="#222222"
-            android:text="SAT"/>
+            android:text="SAT"
+            android:textColor="#222222" />
     </LinearLayout>
 
     <LinearLayout
         android:id="@+id/calendar_canvas"
         android:layout_width="match_parent"
         android:layout_height="515dp"
+        android:layout_weight="1"
         android:orientation="vertical"></LinearLayout>
 
     <Button
         android:id="@+id/import_to_google_calendar_button"
         android:layout_width="match_parent"
         android:layout_height="112dp"
+        android:layout_weight="1"
         android:text="@string/import_GC" />
 
 </LinearLayout>
