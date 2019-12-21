@@ -2,15 +2,20 @@ package com.example.structify;
 
 import android.os.Bundle;
 import android.provider.CalendarContract;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Map;
 
 public class YourCalendarActivity extends AppCompatActivity {
 
@@ -19,7 +24,9 @@ public class YourCalendarActivity extends AppCompatActivity {
     private ArrayList<UniversityCourse> Courses;
 
     //Storing all dates paired with their events and study reminders encapsulated in SemesterDays
-    private HashMap<Date,SemesterDays> CalendarIndex;
+    //We will use the data structured in this way to dictate the arrangement of the dynamic UI.
+    private Map<Date,SemesterDays> CalendarIndex;
+    private ArrayList<SemesterDays> CalendarInfo;
 
     //UI components to be manipulated
     private TextView Year;
@@ -49,8 +56,17 @@ public class YourCalendarActivity extends AppCompatActivity {
         NextMonthButton = findViewById(R.id.calendar_next_button);
         CalendarCanvas = findViewById(R.id.calendar_canvas);
 
-        //Initialize all days in the HashMap
-
+        //Initialize all days in the HashMap, attached to SemesterDays that are blank but with day of week index
+        LocalDate start = Courses.get(0).getStartDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+        LocalDate end = Courses.get(0).getEndDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+        CalendarInfo = new ArrayList<SemesterDays>();
+        CalendarIndex = new HashMap<Date, SemesterDays>();
+        for (LocalDate date = start; !date.isAfter(end); date = date.plusDays(1)) {
+            SemesterDays temp = new SemesterDays();
+            CalendarInfo.add(temp);
+            Date t = java.util.Date.from(date.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant());
+            CalendarIndex.put(t,CalendarInfo.get(CalendarInfo.size()-1));
+        }
 
         //Store all events and reminders in the SemesterDays instances contained in the Hashmap
         for (int i = 1; i <= NumCourses; i++){
