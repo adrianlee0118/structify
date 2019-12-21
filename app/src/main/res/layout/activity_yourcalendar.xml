@@ -135,14 +135,14 @@
     <LinearLayout
         android:id="@+id/calendar_canvas"
         android:layout_width="match_parent"
-        android:layout_height="515dp"
+        android:layout_height="529dp"
         android:layout_weight="1"
         android:orientation="vertical"></LinearLayout>
 
     <Button
         android:id="@+id/import_to_google_calendar_button"
         android:layout_width="match_parent"
-        android:layout_height="112dp"
+        android:layout_height="75dp"
         android:layout_weight="1"
         android:text="@string/import_GC" />
 

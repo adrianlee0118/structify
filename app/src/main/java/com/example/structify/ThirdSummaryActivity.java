@@ -147,6 +147,7 @@ public class ThirdSummaryActivity extends AppCompatActivity {
                 for (int i = 1; i <= NumCourses; i++){
                     intent.putExtra("Course "+i,(Parcelable)Courses.get(i-1));
                 }
+                intent.putExtra("StudyTime",StudyTime);
                 startActivity(intent);
             }
         });
