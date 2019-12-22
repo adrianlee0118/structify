@@ -1,7 +1,11 @@
 package com.example.structify;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.provider.CalendarContract;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
@@ -34,6 +38,7 @@ public class YourCalendarActivity extends AppCompatActivity {
     private TextView Month;
     private ImageButton PreviousMonthButton;
     private ImageButton NextMonthButton;
+    private Button ImportGoogleCalendarBtn;
     private LinearLayout CalendarCanvas;
 
     @Override
@@ -128,8 +133,58 @@ public class YourCalendarActivity extends AppCompatActivity {
         }
 
         //Inflate the weekviews in the calendars with all reminders and events as per the information in the Map
+        UpdateCalendarCanvas(Courses.get(0).getStartDate());
 
+        //Set the button functionality to toggle months and to add events to Google Calendar!
+        SetPrevMonthButtonClick();
+        SetNextMonthButtonClick();
+        SetImportGoogleCalendarButtonClick();
+    }
 
-        //Display the Calendar preview and set the button functionality to add events to Google Calendar!
+    //Populate CalendarCanvas area with calendar_row inflated layouts with reminders
+    public void UpdateCalendarCanvas(Date current_date){
+
+        //Inflate enough rows to populate the calendar area for the month the current date is in
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(current_date);
+        int current_month = calendar.get(Calendar.MONTH);
+        while(calendar.get(Calendar.MONTH)==current_month){
+            LayoutInflater vi = (LayoutInflater) getApplicationContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            vi.inflate(R.layout.calendar_row,null);
+        }
+    }
+
+    private void SetPrevMonthButtonClick() {
+        PreviousMonthButton.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                //Do Stuff
+            }
+
+        });
+    }
+
+    private void SetNextMonthButtonClick() {
+        NextMonthButton.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                //Do Stuff
+            }
+
+        });
+    }
+
+    //Button that imports all events in the CalendarInfoArrayList to Google Calendar
+    private void SetImportGoogleCalendarButtonClick() {
+        ImportGoogleCalendarBtn.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                //Do Stuff
+            }
+
+        });
     }
 }

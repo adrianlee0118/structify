@@ -7,8 +7,6 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import org.w3c.dom.Text;
-
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -72,7 +70,7 @@ public class CalendarRow extends LinearLayout {
     public void updateCalendarRow(Map<Date,SemesterDays> CalendarIndex,Date beginning) {
 
         //Set starting depth
-        depth = 5;
+        depth = 0;
 
         //Set day of month labels in top row
         Calendar calendar = Calendar.getInstance();
@@ -109,10 +107,11 @@ public class CalendarRow extends LinearLayout {
 
             //Create or extend existing textboxes
             for (int j = 0; j < ER.size(); j++){
+                if (j == 0){
 
-                
-                RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(LayoutParams.WRAP_CONTENT,LayoutParams.WRAP_CONTENT);
-                lp.setMargins(0,0,0,0);
+
+                }
+
             }
         }
     }
