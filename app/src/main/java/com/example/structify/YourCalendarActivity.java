@@ -2,13 +2,12 @@ package com.example.structify;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.provider.CalendarContract;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -142,6 +141,7 @@ public class YourCalendarActivity extends AppCompatActivity {
     }
 
     //Populate CalendarCanvas area with calendar_row inflated layouts with reminders
+    //current_date should be beginning of month
     public void UpdateCalendarCanvas(Date current_date){
 
         //Inflate enough rows to populate the calendar area for the month the current date is in
@@ -150,7 +150,50 @@ public class YourCalendarActivity extends AppCompatActivity {
         int current_month = calendar.get(Calendar.MONTH);
         while(calendar.get(Calendar.MONTH)==current_month){
             LayoutInflater vi = (LayoutInflater) getApplicationContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            vi.inflate(R.layout.calendar_row,null);
+            View current_row = vi.inflate(R.layout.calendar_row,null);
+
+            //Set the day numbers on the row view
+            TextView Sunday = current_row.findViewById(R.id.sunday_number);
+            TextView Monday = current_row.findViewById(R.id.monday_number);
+            TextView Tuesday = current_row.findViewById(R.id.tuesday_number);
+            TextView Wednesday = current_row.findViewById(R.id.wednesday_number);
+            TextView Thursday = current_row.findViewById(R.id.thursday_number);
+            TextView Friday = current_row.findViewById(R.id.friday_number);
+            TextView Saturday = current_row.findViewById(R.id.saturday_number);
+            RelativeLayout Events = current_row.findViewById(R.id.events);
+
+            //If first day is not a Sunday, move to the Sunday
+            if(CalendarIndex.get(calendar.getTime()).getDay_of_week()!=1){
+                calendar.add(Calendar.DAY_OF_MONTH,-(CalendarIndex.get(calendar.getTime()).getDay_of_week()-1));
+            }
+
+            int DayOfMonth = calendar.get(Calendar.DAY_OF_MONTH);
+            Sunday.setText(Integer.toString(DayOfMonth));
+            calendar.add(Calendar.DAY_OF_MONTH,1);
+            DayOfMonth = calendar.get(Calendar.DAY_OF_MONTH);
+            Monday.setText(Integer.toString(DayOfMonth));
+            calendar.add(Calendar.DAY_OF_MONTH,1);
+            DayOfMonth = calendar.get(Calendar.DAY_OF_MONTH);
+            Tuesday.setText(Integer.toString(DayOfMonth));
+            calendar.add(Calendar.DAY_OF_MONTH,1);
+            DayOfMonth = calendar.get(Calendar.DAY_OF_MONTH);
+            Wednesday.setText(Integer.toString(DayOfMonth));
+            calendar.add(Calendar.DAY_OF_MONTH,1);
+            DayOfMonth = calendar.get(Calendar.DAY_OF_MONTH);
+            Thursday.setText(Integer.toString(DayOfMonth));
+            calendar.add(Calendar.DAY_OF_MONTH,1);
+            DayOfMonth = calendar.get(Calendar.DAY_OF_MONTH);
+            Friday.setText(Integer.toString(DayOfMonth));
+            calendar.add(Calendar.DAY_OF_MONTH,1);
+            DayOfMonth = calendar.get(Calendar.DAY_OF_MONTH);
+            Saturday.setText(Integer.toString(DayOfMonth));
+
+            //Create textview reminders in the row view and set left, depth positions and width
+            for (int i = 1; i <= 7; i++){
+
+            }
+
+            CalendarCanvas.addView(current_row);
         }
     }
 
