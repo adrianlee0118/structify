@@ -89,6 +89,7 @@ public class YourCalendarActivity extends AppCompatActivity {
 
             //Add reminders and studying to SemesterDay objects in the Map
             CalendarIndex.get(fd).addExamEvent(name+" Final Exam");
+            CalendarIndex.get(fd).addExamCourse(i);
             Calendar calendar = Calendar.getInstance();
             calendar.setTime(fd);
             for (int k = 1; k <=13; k++){
@@ -96,33 +97,38 @@ public class YourCalendarActivity extends AppCompatActivity {
                 Date sd = calendar.getTime();
                 CalendarIndex.get(sd).addStudyReminder("Study "+Math.round((fa/13)*10)/10.0+" hours per day for "
                         +name+"'s Final Exam");
+                CalendarIndex.get(sd).addStudyCourse(i);
             }
 
             for (int j = 0; j < md.size(); j++){
                 CalendarIndex.get(md.get(j)).addExamEvent(name+" Midterm Exam "+Integer.toString(j+1));
+                CalendarIndex.get(md.get(j)).addExamCourse(i);
                 calendar.setTime(md.get(j));
                 for (int k = 1; k <=6; k++){
                     calendar.set(Calendar.DAY_OF_MONTH,-1);
                     Date sd = calendar.getTime();
                     CalendarIndex.get(md.get(j)).addStudyReminder("Study "+Math.round((ma/6)*10)/10.0+" hours "
                             +"per day for " +name+"'s Midterm Exam "+Integer.toString(j+1));
+                    CalendarIndex.get(md.get(j)).addStudyCourse(i);
                 }
             }
 
             for (int j = 0; j < ad.size(); j++){
                 CalendarIndex.get(ad.get(j)).addExamEvent(name+" Assignment "+Integer.toString(j+1)+" Due");
+                CalendarIndex.get(ad.get(j)).addExamCourse(i);
                 calendar.setTime(ad.get(j));
                 for (int k = 1; k <=3; k++){
                     calendar.set(Calendar.DAY_OF_MONTH,-1);
                     Date sd = calendar.getTime();
                     CalendarIndex.get(ad.get(j)).addStudyReminder("Spend "+Math.round((aa/3)*10)/10.0+" hours "
                             +"per day on " +name+"'s Assignment "+Integer.toString(j+1));
+                    CalendarIndex.get(ad.get(j)).addStudyCourse(i);
                 }
             }
         }
 
         //Inflate the weekviews in the calendars with all reminders and events as per the information in the Map
-        
+
 
         //Display the Calendar preview and set the button functionality to add events to Google Calendar!
     }

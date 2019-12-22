@@ -15,7 +15,8 @@ public class SemesterDays {
     //Store all exam or assignment due dates and study reminders.
     private ArrayList<String> ExamEvents;
     private ArrayList<String> StudyReminders;
-    private ArrayList<Double> StudyTimes;     //correspond via indices to StudyReminders
+    private ArrayList<Integer> ExamCourseID;           //Correspond via indices to ExamEvents
+    private ArrayList<Integer> StudyCourseID;          //correspond via indices to StudyReminders
 
     //Check if there are exams or if there is any studying to do.
     private boolean Exams;
@@ -24,6 +25,8 @@ public class SemesterDays {
     public SemesterDays(){
         ExamEvents = new ArrayList<String>();
         StudyReminders = new ArrayList<String>();
+        ExamCourseID = new ArrayList<Integer>();
+        StudyCourseID = new ArrayList<Integer>();
         Exams = false;
         Studying = false;
     }
@@ -52,12 +55,20 @@ public class SemesterDays {
         StudyReminders = studyReminders;
     }
 
-    public ArrayList<Double> getStudyTimes() {
-        return StudyTimes;
+    public ArrayList<Integer> getExamCourseID() {
+        return ExamCourseID;
     }
 
-    public void setStudyTimes(ArrayList<Double> studyTimes) {
-        StudyTimes = studyTimes;
+    public void setExamCourseID(ArrayList<Integer> examCourseID) {
+        ExamCourseID = examCourseID;
+    }
+
+    public ArrayList<Integer> getStudyCourseID() {
+        return StudyCourseID;
+    }
+
+    public void setStudyCourseID(ArrayList<Integer> studyCourseID) {
+        StudyCourseID = studyCourseID;
     }
 
     public boolean isExams() {
@@ -96,4 +107,11 @@ public class SemesterDays {
         }
     }
 
+    public void addExamCourse(int course){
+        ExamCourseID.add(course);
+    }
+
+    public void addStudyCourse(int course){
+        StudyCourseID.add(course);
+    }
 }
