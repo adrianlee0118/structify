@@ -1,7 +1,9 @@
 package com.example.structify;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -34,6 +36,10 @@ public class YourCalendarActivity extends AppCompatActivity {
     //We will use the data structured in this way to dictate the arrangement of the dynamic UI.
     private Map<Date,SemesterDays> CalendarIndex;
     private ArrayList<SemesterDays> CalendarInfo;
+
+    //Lookups
+    private final String[] MonthLookup = {"Jan","Feb","Mar","Apr","May","Jun","July","Aug","Sep","Oct","Nov","Dec"};
+    private final int[] ColorLookup = {Color.RED,Color.BLUE,Color.YELLOW,Color.GREEN,Color.MAGENTA,Color.CYAN,Color.BLACK,Color.GRAY};
 
     //UI components to be manipulated
     private TextView Year;
@@ -89,10 +95,8 @@ public class YourCalendarActivity extends AppCompatActivity {
             double aa = Courses.get(i).AssignmentAllocation(course_time)/(Courses.get(i).getAssignmentAndQuizDates().size());
             String name = Courses.get(i).getCourseName();
             Date fd = Courses.get(i).getFinalDate();
-            ArrayList<Date> md = new ArrayList<Date>();
-            md = Courses.get(i).getMidtermDates();
-            ArrayList<Date> ad = new ArrayList<Date>();
-            ad = Courses.get(i).getAssignmentAndQuizDates();
+            ArrayList<Date> md = Courses.get(i).getMidtermDates();
+            ArrayList<Date> ad = Courses.get(i).getAssignmentAndQuizDates();
 
             //Add reminders and studying to SemesterDay objects in the Map
             CalendarIndex.get(fd).addExamEvent(name+" Final Exam");
@@ -156,9 +160,14 @@ public class YourCalendarActivity extends AppCompatActivity {
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(current_date);
         Year.setText(calendar.get(Calendar.YEAR));
-        Month.setText(calendar.get(Calendar.MONTH));
+        Month.setText(MonthLookup[calendar.get(Calendar.MONTH)]);
         int current_month = calendar.get(Calendar.MONTH);
+        //From this point onward, current_date is used to keep track of the first day of the week of interest as we build the GUI week by week using calendar_row layouts
         while(calendar.get(Calendar.MONTH)==current_month){
+
+            //Clear CalendarCanvas
+            CalendarCanvas.removeAllViews();
+
             LayoutInflater vi = (LayoutInflater) getApplicationContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             View current_row = vi.inflate(R.layout.calendar_row,null);
 
@@ -215,7 +224,7 @@ public class YourCalendarActivity extends AppCompatActivity {
 
                     int DayWidth = 58;
                     int AddDepth = 10;
-                    int margin_top = 0; //tracking top margin for new textviews, text should be size 10
+                    int margin_top = 0; //tracking top margin for new textviews
 
                     //Create textviews for events, assign colors and add to CalendarEvents, mapped to RowRef
                     for (int j = 0; j < CalendarIndex.get(calendar.getTime()).getExamEvents().size(); j++){
@@ -268,13 +277,17 @@ public class YourCalendarActivity extends AppCompatActivity {
 
                 }
 
+                //Go to next day now that events and reminders for the current day have been added
                 calendar.add(Calendar.DAY_OF_MONTH,1);
             }
 
+            //Now that the whole week's GUI has been built, add it to CalendarCanvas and move to the next day, the first day of the next month.
             CalendarCanvas.addView(current_row);
             calendar.add(Calendar.DAY_OF_MONTH,1);
             current_date = calendar.getTime();
         }
+
+        Log.d("YourCalendarActivity","End of UpdateCalendarCanvas reached");
     }
 
     private void SetPrevMonthButtonClick() {
@@ -283,7 +296,13 @@ public class YourCalendarActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                //Do Stuff
+                int month = Integer.parseInt(Month.getText().toString());
+                Calendar calendar = Calendar.getInstance();
+                calendar.set(Calendar.MONTH, month);
+                calendar.add(Calendar.MONTH,-1);
+                UpdateCalendarCanvas(calendar.getTime());
+
+                Log.d("YourCalendarActivity","LastMonth method successfully run");
             }
 
         });
@@ -295,7 +314,13 @@ public class YourCalendarActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                //Do Stuff
+                int month = Integer.parseInt(Month.getText().toString());
+                Calendar calendar = Calendar.getInstance();
+                calendar.set(Calendar.MONTH, month);
+                calendar.add(Calendar.MONTH,1);
+                UpdateCalendarCanvas(calendar.getTime());
+
+                Log.d("YourCalendarActivity","NextMonth method successfully run");
             }
 
         });
