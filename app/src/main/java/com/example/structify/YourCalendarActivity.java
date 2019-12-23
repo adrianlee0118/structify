@@ -211,8 +211,21 @@ public class YourCalendarActivity extends AppCompatActivity {
 
                 if (CalendarIndex.get(calendar.getTime())!= null){
 
+                    int margin_top = 0; //tracking top margin for new textviews, text should be size 10
+
+                    //Create textviews for events, assign colors and add to CalendarEvents, mapped to RowRef
+                    for (int j = 0; j < CalendarIndex.get(calendar.getTime()).getExamEvents().size(); j++){
+
+                    }
+
+                    //Create textviews for reminders, assign colors and add to CalendarEvents, mapped to RowRef
+                    for (int j = 0; j < CalendarIndex.get(calendar.getTime()).getStudyReminders().size(); j++){
+                        
+                    }
 
                 }
+
+                calendar.add(Calendar.DAY_OF_MONTH,1);
             }
 
             CalendarCanvas.addView(current_row);
@@ -226,6 +239,7 @@ public class YourCalendarActivity extends AppCompatActivity {
 
             @Override
             public void onClick(View v) {
+
                 //Do Stuff
             }
 
@@ -237,6 +251,7 @@ public class YourCalendarActivity extends AppCompatActivity {
 
             @Override
             public void onClick(View v) {
+
                 //Do Stuff
             }
 
@@ -249,6 +264,7 @@ public class YourCalendarActivity extends AppCompatActivity {
 
             @Override
             public void onClick(View v) {
+
                 //Do Stuff
             }
 
