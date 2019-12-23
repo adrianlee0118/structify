@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import java.lang.reflect.Array;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.ArrayList;
@@ -26,6 +27,9 @@ public class YourCalendarActivity extends AppCompatActivity {
     private int NumCourses;
     private ArrayList<UniversityCourse> Courses;
     private int StudyTime;
+
+    //Store textviews from calendar rows so that they persist and can be referenced
+    ArrayList<TextView> CalendarEvents;
 
     //Storing all dates paired with their events and study reminders encapsulated in SemesterDays
     //We will use the data structured in this way to dictate the arrangement of the dynamic UI.
@@ -111,9 +115,9 @@ public class YourCalendarActivity extends AppCompatActivity {
                 for (int k = 1; k <=6; k++){
                     calendar.set(Calendar.DAY_OF_MONTH,-1);
                     Date sd = calendar.getTime();
-                    CalendarIndex.get(md.get(j)).addStudyReminder("Study "+Math.round((ma/6)*10)/10.0+" hours "
+                    CalendarIndex.get(sd).addStudyReminder("Study "+Math.round((ma/6)*10)/10.0+" hours "
                             +"per day for " +name+"'s Midterm Exam "+Integer.toString(j+1));
-                    CalendarIndex.get(md.get(j)).addStudyCourse(i);
+                    CalendarIndex.get(sd).addStudyCourse(i);
                 }
             }
 
@@ -124,14 +128,15 @@ public class YourCalendarActivity extends AppCompatActivity {
                 for (int k = 1; k <=3; k++){
                     calendar.set(Calendar.DAY_OF_MONTH,-1);
                     Date sd = calendar.getTime();
-                    CalendarIndex.get(ad.get(j)).addStudyReminder("Spend "+Math.round((aa/3)*10)/10.0+" hours "
+                    CalendarIndex.get(sd).addStudyReminder("Spend "+Math.round((aa/3)*10)/10.0+" hours "
                             +"per day on " +name+"'s Assignment "+Integer.toString(j+1));
-                    CalendarIndex.get(ad.get(j)).addStudyCourse(i);
+                    CalendarIndex.get(sd).addStudyCourse(i);
                 }
             }
         }
 
         //Inflate the weekviews in the calendars with all reminders and events as per the information in the Map
+        CalendarEvents = new ArrayList<TextView>();
         UpdateCalendarCanvas(Courses.get(0).getStartDate());
 
         //Set the button functionality to toggle months and to add events to Google Calendar!
@@ -145,8 +150,11 @@ public class YourCalendarActivity extends AppCompatActivity {
     public void UpdateCalendarCanvas(Date current_date){
 
         //Inflate enough rows to populate the calendar area for the month the current date is in
+        //Set text of headers
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(current_date);
+        Year.setText(calendar.get(Calendar.YEAR));
+        Month.setText(calendar.get(Calendar.MONTH));
         int current_month = calendar.get(Calendar.MONTH);
         while(calendar.get(Calendar.MONTH)==current_month){
             LayoutInflater vi = (LayoutInflater) getApplicationContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -162,7 +170,7 @@ public class YourCalendarActivity extends AppCompatActivity {
             TextView Saturday = current_row.findViewById(R.id.saturday_number);
             RelativeLayout Events = current_row.findViewById(R.id.events);
 
-            //If first day is not a Sunday, move to the Sunday
+            //If first day is not a Sunday, move to the previous Sunday
             if(CalendarIndex.get(calendar.getTime()).getDay_of_week()!=1){
                 calendar.add(Calendar.DAY_OF_MONTH,-(CalendarIndex.get(calendar.getTime()).getDay_of_week()-1));
             }
@@ -188,12 +196,28 @@ public class YourCalendarActivity extends AppCompatActivity {
             DayOfMonth = calendar.get(Calendar.DAY_OF_MONTH);
             Saturday.setText(Integer.toString(DayOfMonth));
 
+            //Reset to beginning day of month and move to last Sunday before the 1st if needed
+            calendar.setTime(current_date);
+            if(CalendarIndex.get(calendar.getTime()).getDay_of_week()!=1){
+                calendar.add(Calendar.DAY_OF_MONTH,-(CalendarIndex.get(calendar.getTime()).getDay_of_week()-1));
+            }
+
+            //Create Map to keep track of the Textviews generated in the row, which will be stored in the
+            //global ArrayList variable to ensure that the views persist
+            Map<String,TextView> RowRef = new HashMap<String,TextView>();
+
             //Create textview reminders in the row view and set left, depth positions and width
             for (int i = 1; i <= 7; i++){
 
+                if (CalendarIndex.get(calendar.getTime())!= null){
+
+
+                }
             }
 
             CalendarCanvas.addView(current_row);
+            calendar.add(Calendar.DAY_OF_MONTH,1);
+            current_date = calendar.getTime();
         }
     }
 
