@@ -12,7 +12,6 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import java.lang.reflect.Array;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.ArrayList;
@@ -100,6 +99,7 @@ public class YourCalendarActivity extends AppCompatActivity {
             CalendarIndex.get(fd).addExamCourse(i);
             Calendar calendar = Calendar.getInstance();
             calendar.setTime(fd);
+            //As per rules, studying for final exams spans two weeks and so reminders on all those days must be added
             for (int k = 1; k <=13; k++){
                 calendar.set(Calendar.DAY_OF_MONTH,-1);
                 Date sd = calendar.getTime();
@@ -112,6 +112,7 @@ public class YourCalendarActivity extends AppCompatActivity {
                 CalendarIndex.get(md.get(j)).addExamEvent(name+" Midterm Exam "+Integer.toString(j+1));
                 CalendarIndex.get(md.get(j)).addExamCourse(i);
                 calendar.setTime(md.get(j));
+                //As per rules, studying for midterm exams spans 1 week and so reminders on those days must be added
                 for (int k = 1; k <=6; k++){
                     calendar.set(Calendar.DAY_OF_MONTH,-1);
                     Date sd = calendar.getTime();
@@ -125,6 +126,7 @@ public class YourCalendarActivity extends AppCompatActivity {
                 CalendarIndex.get(ad.get(j)).addExamEvent(name+" Assignment "+Integer.toString(j+1)+" Due");
                 CalendarIndex.get(ad.get(j)).addExamCourse(i);
                 calendar.setTime(ad.get(j));
+                //As per rules, studying and working on assignments and quiz level tests spans 3 days and reminders must be added
                 for (int k = 1; k <=3; k++){
                     calendar.set(Calendar.DAY_OF_MONTH,-1);
                     Date sd = calendar.getTime();
@@ -211,16 +213,57 @@ public class YourCalendarActivity extends AppCompatActivity {
 
                 if (CalendarIndex.get(calendar.getTime())!= null){
 
+                    int DayWidth = 58;
+                    int AddDepth = 10;
                     int margin_top = 0; //tracking top margin for new textviews, text should be size 10
 
                     //Create textviews for events, assign colors and add to CalendarEvents, mapped to RowRef
                     for (int j = 0; j < CalendarIndex.get(calendar.getTime()).getExamEvents().size(); j++){
-
+                        //We don't have to check if a previous day has the same event--the way inputs are designed,
+                        //events are unique and only last one day.
+                        TextView temp = new TextView(this);
+                        LinearLayout.LayoutParams tparams = new LinearLayout.LayoutParams(this,null);
+                        //set position at left of current day with current depth margin_top
+                        tparams.setMargins((i-1)*DayWidth,margin_top,0,0);
+                        margin_top+=AddDepth;
+                        temp.setLayoutParams(tparams);
+                        //make textbox occupy width of the current day in current_row, set text and color
+                        temp.setText(CalendarIndex.get(calendar.getTime()).getExamEvents().get(j));
+                        temp.setWidth(DayWidth);
+                        temp.setHighlightColor(2);
+                        //Add textbox to list for reference and to the view
+                        CalendarEvents.add(temp);
+                        RowRef.put(CalendarIndex.get(calendar.getTime()).getExamEvents().get(j),temp);
+                        Events.addView(temp);
                     }
 
                     //Create textviews for reminders, assign colors and add to CalendarEvents, mapped to RowRef
                     for (int j = 0; j < CalendarIndex.get(calendar.getTime()).getStudyReminders().size(); j++){
-                        
+                        //We need to check if previous days in the row have the reminder in question because
+                        //they last for periods longer than a day (they are stored by name in RowRef)
+                        //If the reminder does not exist in the row, make a new textbox
+                        if (!RowRef.containsKey(CalendarIndex.get(calendar.getTime()).getStudyReminders().get(j))){
+                            TextView temp = new TextView(this);
+                            LinearLayout.LayoutParams tparams = new LinearLayout.LayoutParams(this,null);
+                            //set position at left of current day with current depth margin_top
+                            tparams.setMargins((i-1)*DayWidth,margin_top,0,0);
+                            margin_top+=AddDepth;
+                            temp.setLayoutParams(tparams);
+                            //make textbox occupy width of the current day in current_row, set text and color
+                            temp.setText(CalendarIndex.get(calendar.getTime()).getStudyReminders().get(j));
+                            temp.setWidth(DayWidth);
+                            temp.setHighlightColor(2);
+                            //Add textbox to list for reference and to the view
+                            CalendarEvents.add(temp);
+                            RowRef.put(CalendarIndex.get(calendar.getTime()).getStudyReminders().get(j),temp);
+                            Events.addView(temp);
+                        } else {
+                            //If the reminder already exists in the row, extend the existing textbox
+                            int new_width = RowRef.get(CalendarIndex.get(calendar.getTime()).getStudyReminders().get(j)).getWidth()
+                                    +DayWidth;
+                            RowRef.get(CalendarIndex.get(calendar.getTime()).getStudyReminders().get(j)).setWidth(new_width);
+
+                        }
                     }
 
                 }
