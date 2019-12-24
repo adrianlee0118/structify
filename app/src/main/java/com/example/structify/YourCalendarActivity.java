@@ -9,7 +9,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -29,15 +28,18 @@ public class YourCalendarActivity extends AppCompatActivity {
     private ArrayList<UniversityCourse> Courses;
     private int StudyTime;
 
-    //Store textviews from calendar rows so that they persist and can be referenced
+    //Store textviews from calendar rows so that they persist (visuals of our reminders).
+    //We don't need to reference these except for when we put the content in.
     ArrayList<TextView> CalendarEvents;
 
     //Storing all dates paired with their events and study reminders encapsulated in SemesterDays
+    //Semester days allows us to transform the data such that the Dates themselves are the index
+    //by which we find information, rather than the courses.
     //We will use the data structured in this way to dictate the arrangement of the dynamic UI.
     private Map<Date,SemesterDays> CalendarIndex;
     private ArrayList<SemesterDays> CalendarInfo;
 
-    //Lookups
+    //Lookups for assigning Month Strings and Colors
     private final String[] MonthLookup = {"Jan","Feb","Mar","Apr","May","Jun","July","Aug","Sep","Oct","Nov","Dec"};
     private final int[] ColorLookup = {Color.RED,Color.BLUE,Color.YELLOW,Color.GREEN,Color.MAGENTA,Color.CYAN,Color.BLACK,Color.GRAY};
 
@@ -69,6 +71,7 @@ public class YourCalendarActivity extends AppCompatActivity {
         Month = findViewById(R.id.date_display_date);
         PreviousMonthButton = findViewById(R.id.calendar_prev_button);
         NextMonthButton = findViewById(R.id.calendar_next_button);
+        ImportGoogleCalendarBtn = findViewById(R.id.import_to_google_calendar_button);
         CalendarCanvas = findViewById(R.id.calendar_canvas);
 
         //Initialize all dates in the Map, attached to SemesterDays that are blank but with day of week index
@@ -147,6 +150,8 @@ public class YourCalendarActivity extends AppCompatActivity {
 
         //Set the button functionality to toggle months and to add events to Google Calendar!
         SetPrevMonthButtonClick();
+        PreviousMonthButton.setVisibility(View.INVISIBLE);
+        PreviousMonthButton.setOnClickListener(null);  //because we are at the first month
         SetNextMonthButtonClick();
         SetImportGoogleCalendarButtonClick();
     }
@@ -154,6 +159,9 @@ public class YourCalendarActivity extends AppCompatActivity {
     //Populate CalendarCanvas area with calendar_row inflated layouts with reminders
     //current_date should be beginning of month
     public void UpdateCalendarCanvas(Date current_date){
+
+        //Clear CalendarCanvas
+        CalendarCanvas.removeAllViews();
 
         //Inflate enough rows to populate the calendar area for the month the current date is in
         //Set text of headers
@@ -164,9 +172,6 @@ public class YourCalendarActivity extends AppCompatActivity {
         int current_month = calendar.get(Calendar.MONTH);
         //From this point onward, current_date is used to keep track of the first day of the week of interest as we build the GUI week by week using calendar_row layouts
         while(calendar.get(Calendar.MONTH)==current_month){
-
-            //Clear CalendarCanvas
-            CalendarCanvas.removeAllViews();
 
             LayoutInflater vi = (LayoutInflater) getApplicationContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             View current_row = vi.inflate(R.layout.calendar_row,null);
@@ -179,7 +184,7 @@ public class YourCalendarActivity extends AppCompatActivity {
             TextView Thursday = current_row.findViewById(R.id.thursday_number);
             TextView Friday = current_row.findViewById(R.id.friday_number);
             TextView Saturday = current_row.findViewById(R.id.saturday_number);
-            RelativeLayout Events = current_row.findViewById(R.id.events);
+            LinearLayout Events = current_row.findViewById(R.id.events);
 
             //If first day is not a Sunday, move to the previous Sunday
             if(CalendarIndex.get(calendar.getTime()).getDay_of_week()!=1){
@@ -239,7 +244,8 @@ public class YourCalendarActivity extends AppCompatActivity {
                         //make textbox occupy width of the current day in current_row, set text and color
                         temp.setText(CalendarIndex.get(calendar.getTime()).getExamEvents().get(j));
                         temp.setWidth(DayWidth);
-                        temp.setHighlightColor(2);
+                        temp.setHighlightColor(ColorLookup[CalendarIndex.get(calendar.getTime()).getExamCourseID().get(j)]);
+                        temp.setTextColor(Color.WHITE);
                         //Add textbox to list for reference and to the view
                         CalendarEvents.add(temp);
                         RowRef.put(CalendarIndex.get(calendar.getTime()).getExamEvents().get(j),temp);
@@ -261,7 +267,8 @@ public class YourCalendarActivity extends AppCompatActivity {
                             //make textbox occupy width of the current day in current_row, set text and color
                             temp.setText(CalendarIndex.get(calendar.getTime()).getStudyReminders().get(j));
                             temp.setWidth(DayWidth);
-                            temp.setHighlightColor(2);
+                            temp.setHighlightColor(ColorLookup[CalendarIndex.get(calendar.getTime()).getStudyCourseID().get(j)]);
+                            temp.setTextColor(Color.WHITE);
                             //Add textbox to list for reference and to the view
                             CalendarEvents.add(temp);
                             RowRef.put(CalendarIndex.get(calendar.getTime()).getStudyReminders().get(j),temp);
@@ -296,11 +303,27 @@ public class YourCalendarActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
+                //Update the calendar area to show the next month
+                //Note: UpdateCalendarCanvas clears the plot area and updates the headers
                 int month = Integer.parseInt(Month.getText().toString());
                 Calendar calendar = Calendar.getInstance();
                 calendar.set(Calendar.MONTH, month);
                 calendar.add(Calendar.MONTH,-1);
                 UpdateCalendarCanvas(calendar.getTime());
+
+                //If we were on the last month before, make the next month button visible
+                if (NextMonthButton.getVisibility() == View.INVISIBLE){
+                    NextMonthButton.setVisibility(View.VISIBLE);
+                    SetNextMonthButtonClick();
+                }
+
+                //If we are now at the first month, make the previous month button invisible and unclickable
+                Calendar startmonth = Calendar.getInstance();
+                startmonth.setTime(Courses.get(0).getStartDate());
+                if (calendar.get(Calendar.MONTH) == startmonth.get(Calendar.MONTH)){
+                    PreviousMonthButton.setVisibility(View.INVISIBLE);
+                    PreviousMonthButton.setOnClickListener(null);
+                }
 
                 Log.d("YourCalendarActivity","LastMonth method successfully run");
             }
@@ -319,6 +342,18 @@ public class YourCalendarActivity extends AppCompatActivity {
                 calendar.set(Calendar.MONTH, month);
                 calendar.add(Calendar.MONTH,1);
                 UpdateCalendarCanvas(calendar.getTime());
+
+                if (PreviousMonthButton.getVisibility() == View.INVISIBLE){
+                    PreviousMonthButton.setVisibility(View.VISIBLE);
+                    SetPrevMonthButtonClick();
+                }
+
+                Calendar lastmonth = Calendar.getInstance();
+                lastmonth.setTime(Courses.get(0).getStartDate());
+                if (calendar.get(Calendar.MONTH) == lastmonth.get(Calendar.MONTH)){
+                    NextMonthButton.setVisibility(View.INVISIBLE);
+                    NextMonthButton.setOnClickListener(null);
+                }
 
                 Log.d("YourCalendarActivity","NextMonth method successfully run");
             }
