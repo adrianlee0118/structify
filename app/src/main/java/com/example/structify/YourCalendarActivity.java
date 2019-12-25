@@ -1,6 +1,7 @@
 package com.example.structify;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
@@ -13,9 +14,18 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.api.client.extensions.android.http.AndroidHttp;
+import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential;
+import com.google.api.client.http.HttpTransport;
+import com.google.api.client.json.JsonFactory;
+import com.google.api.client.json.gson.GsonFactory;
+import com.google.api.client.util.ExponentialBackOff;
+import com.google.api.services.calendar.CalendarScopes;
+
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -246,6 +256,7 @@ public class YourCalendarActivity extends AppCompatActivity {
                         temp.setWidth(DayWidth);
                         temp.setHighlightColor(ColorLookup[CalendarIndex.get(calendar.getTime()).getExamCourseID().get(j)]);
                         temp.setTextColor(Color.WHITE);
+                        temp.setHeight(10);
                         //Add textbox to list for reference and to the view
                         CalendarEvents.add(temp);
                         RowRef.put(CalendarIndex.get(calendar.getTime()).getExamEvents().get(j),temp);
@@ -269,6 +280,7 @@ public class YourCalendarActivity extends AppCompatActivity {
                             temp.setWidth(DayWidth);
                             temp.setHighlightColor(ColorLookup[CalendarIndex.get(calendar.getTime()).getStudyCourseID().get(j)]);
                             temp.setTextColor(Color.WHITE);
+                            temp.setHeight(10);
                             //Add textbox to list for reference and to the view
                             CalendarEvents.add(temp);
                             RowRef.put(CalendarIndex.get(calendar.getTime()).getStudyReminders().get(j),temp);
@@ -368,9 +380,30 @@ public class YourCalendarActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                //Do Stuff
+                final HttpTransport transport = AndroidHttp.newCompatibleTransport();
+                final JsonFactory jsonFactory = GsonFactory.getDefaultInstance();
+                final String PREF_ACCOUNT_NAME = "accountName";
+                final String[] SCOPES = {CalendarScopes.CALENDAR_READONLY, CalendarScopes.CALENDAR};
+
+                // Initialize credentials and service object.
+                SharedPreferences settings = getPreferences(Context.MODE_PRIVATE);
+                GoogleAccountCredential credential = GoogleAccountCredential.usingOAuth2(
+                        getApplicationContext(), Arrays.asList(SCOPES))
+                        .setBackOff(new ExponentialBackOff())
+                        .setSelectedAccountName(settings.getString(PREF_ACCOUNT_NAME, null));
+
+                com.google.api.services.calendar.Calendar mService = new com.google.api.services.calendar.Calendar.Builder(
+                        transport, jsonFactory, credential)
+                        .setApplicationName("Google Calendar API Android Quickstart")
+                        .build();
+
+
+                //Get login information (call exceptions if needed), create events
+
             }
 
         });
     }
+
+
 }
