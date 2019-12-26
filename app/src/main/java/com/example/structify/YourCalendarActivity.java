@@ -1,9 +1,11 @@
 package com.example.structify;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,18 +16,9 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.google.api.client.extensions.android.http.AndroidHttp;
-import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential;
-import com.google.api.client.http.HttpTransport;
-import com.google.api.client.json.JsonFactory;
-import com.google.api.client.json.gson.GsonFactory;
-import com.google.api.client.util.ExponentialBackOff;
-import com.google.api.services.calendar.CalendarScopes;
-
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -380,30 +373,18 @@ public class YourCalendarActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                final HttpTransport transport = AndroidHttp.newCompatibleTransport();
-                final JsonFactory jsonFactory = GsonFactory.getDefaultInstance();
-                final String PREF_ACCOUNT_NAME = "accountName";
-                final String[] SCOPES = {CalendarScopes.CALENDAR_READONLY, CalendarScopes.CALENDAR};
-
-                // Initialize credentials and service object.
-                SharedPreferences settings = getPreferences(Context.MODE_PRIVATE);
-                GoogleAccountCredential credential = GoogleAccountCredential.usingOAuth2(
-                        getApplicationContext(), Arrays.asList(SCOPES))
-                        .setBackOff(new ExponentialBackOff())
-                        .setSelectedAccountName(settings.getString(PREF_ACCOUNT_NAME, null));
-
-                com.google.api.services.calendar.Calendar mService = new com.google.api.services.calendar.Calendar.Builder(
-                        transport, jsonFactory, credential)
-                        .setApplicationName("Google Calendar API Android Quickstart")
-                        .build();
-
-
-                //Get login information (call exceptions if needed), create events
-
+                Intent intent = new Intent(YourCalendarActivity.this, ImportGoogleCalendarActivity.class);
+                intent.putExtra("NumCourses",NumCourses);
+                for (int i = 1; i <= NumCourses; i++){
+                    intent.putExtra("Course "+i,(Parcelable)Courses.get(i-1));
+                }
+                intent.putExtra("StudyTime",StudyTime);
+                startActivity(intent);
             }
 
         });
     }
 
+    
 
 }
