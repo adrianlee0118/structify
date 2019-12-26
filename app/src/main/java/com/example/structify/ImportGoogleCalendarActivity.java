@@ -106,16 +106,17 @@ public class ImportGoogleCalendarActivity extends Activity {
         // Initialize credentials and service object.
         SharedPreferences settings = getPreferences(Context.MODE_PRIVATE);
         credential = GoogleAccountCredential.usingOAuth2(
-                getApplicationContext(), Arrays.asList(SCOPES))
+                this, Arrays.asList(SCOPES))
                 .setBackOff(new ExponentialBackOff())
                 .setSelectedAccountName(settings.getString(PREF_ACCOUNT_NAME, null));
 
         mService = new com.google.api.services.calendar.Calendar.Builder(
                 transport, jsonFactory, credential)
-                .setApplicationName("Google Calendar API Android Quickstart")
+                .setApplicationName("Structify Google Calendar API")
                 .build();
 
-        //NOTE: Import functionality occurs in background AsyncTask via refreshresults() below.
+        //NOTE: Import functionality occurs in background AsyncTask via refreshResults() below, which itself
+        // is called OnResume().
 
         //For exiting the application and opening Google Calendar
         SetFinishButtonClick();
@@ -171,7 +172,7 @@ public class ImportGoogleCalendarActivity extends Activity {
     }
 
     /**
-     * Attempt to get a set of data from the Google Calendar API to display. If the
+     * Attempt to import all calendar events from UniversityCourse objects to Google Calendar. If the
      * email address isn't known yet, then call chooseAccount() method so the
      * user can pick an account.
      */
@@ -181,7 +182,7 @@ public class ImportGoogleCalendarActivity extends Activity {
         } else {
             if (isDeviceOnline()) {
                 mProgress.show();
-                new ImportGoogleCalendarTask(this, Courses, StudyTime).execute();
+                new ImportGoogleCalendarTask(this, Courses, StudyTime, mService).execute();
             } else {
                 mStatusText.setText("No network connection available.");
             }
@@ -291,8 +292,7 @@ public class ImportGoogleCalendarActivity extends Activity {
 
             @Override
             public void onClick(View v) {
-
-                //DoStuff
+                //Exit the application and perhaps open Google Calendar at the starting month
             }
 
         });

@@ -47,6 +47,14 @@
                 android:value=".ThirdSummaryActivity" />
         </activity>
 
+        <activity
+            android:name=".ImportGoogleCalendarActivity"
+            android:parentActivityName=".YourCalendarActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".YourCalendarActivity" />
+        </activity>
+
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
