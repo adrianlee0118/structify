@@ -7,11 +7,8 @@ import com.google.api.client.util.DateTime;
 import com.google.api.services.calendar.Calendar;
 import com.google.api.services.calendar.model.Event;
 import com.google.api.services.calendar.model.EventDateTime;
-import com.google.api.services.calendar.model.EventReminder;
-
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -76,6 +73,7 @@ public class ImportGoogleCalendarTask extends AsyncTask <Void,Void,Void> {
             Date fd = Courses.get(i).getFinalDate();
             ArrayList<Date> md = Courses.get(i).getMidtermDates();
             ArrayList<Date> ad = Courses.get(i).getAssignmentAndQuizDates();
+            DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
             //Create and insert final events
             if (Index.get(fd) != null){
@@ -87,13 +85,33 @@ public class ImportGoogleCalendarTask extends AsyncTask <Void,Void,Void> {
                         break;
                     }
                 }
-                String desc = temp.substring(0,insert_pos)+ Courses.get(i).getCourseName()+" Final Exam"+"\n"+"\n"
+                String desc = temp.substring(0,insert_pos)+ name +" Final Exam"+"\n"+"\n"
                         +temp.substring(insert_pos+1,temp.length()-1);
                 Index.get(fd).setDescription(desc);
             } else {
                 Event event = new Event();
-                event.setDescription("----Exams and Assignments----"+"\n"+"\n"+Courses.get(i).getCourseName()+" Final Exam"
+                event.setDescription("----Exams and Assignments----"+"\n"+"\n"+ name +" Final Exam"
                         +"\n"+"\n"+"----Studying----"+"\n"+"\n");
+
+                //Create the all day event date bounds
+                //Use dates only, no times, to set the all-day event.
+                Date startDate = fd;
+                Date endDate = new Date(startDate.getTime() + 86400000);  //added milliseconds in a day
+
+                String startDateStr = dateFormat.format(startDate);
+                String endDateStr = dateFormat.format(endDate);
+
+                DateTime startDateTime = new DateTime(startDateStr);
+                DateTime endDateTime = new DateTime(endDateStr);
+
+                EventDateTime startEventDateTime = new EventDateTime().setDate(startDateTime);
+                EventDateTime endEventDateTime = new EventDateTime().setDate(endDateTime);
+                startEventDateTime.setTimeZone("America/Vancouver");
+                endEventDateTime.setTimeZone("America/Vancouver");
+
+                event.setStart(startEventDateTime);
+                event.setEnd(endEventDateTime);
+
                 AllEvents.add(event);
                 Index.put(fd,event);
             }
@@ -104,23 +122,44 @@ public class ImportGoogleCalendarTask extends AsyncTask <Void,Void,Void> {
             for (int j = 0; j < 14; j++){
                 if (Index.get(date) != null){
                     String desc = Index.get(date).getDescription();
-                    String add = "Study "+Math.round((fa/13)*10)/10.0+"hours for "+Courses.get(i).getCourseName()+"'s Final Exam"+"\n"+"\n";
-                    Index.get(fd).setDescription(desc+add);
+                    String add = "Study "+Math.round((fa/13)*10)/10.0+"hours for "+ name +"'s Final Exam"+"\n"+"\n";
+                    Index.get(date).setDescription(desc+add);
                 } else {
                     Event event = new Event();
                     event.setDescription("----Exams and Assignments----"+"\n"+"\n"+"----Studying----"+"\n"+"\n"+"Study "+Math.round((fa/13)*10)/10.0+"hours for "
-                            +Courses.get(i).getCourseName()+"'s Final Exam"+"\n"+"\n");
+                            + name +"'s Final Exam"+"\n"+"\n");
+
+                    //Create the all day event date bounds
+                    //Use dates only, no times, to set the all-day event.
+                    Date startDate = date;
+                    Date endDate = new Date(startDate.getTime() + 86400000);  //added milliseconds in a day
+
+                    String startDateStr = dateFormat.format(startDate);
+                    String endDateStr = dateFormat.format(endDate);
+
+                    DateTime startDateTime = new DateTime(startDateStr);
+                    DateTime endDateTime = new DateTime(endDateStr);
+
+                    EventDateTime startEventDateTime = new EventDateTime().setDate(startDateTime);
+                    EventDateTime endEventDateTime = new EventDateTime().setDate(endDateTime);
+                    startEventDateTime.setTimeZone("America/Vancouver");
+                    endEventDateTime.setTimeZone("America/Vancouver");
+
+                    event.setStart(startEventDateTime);
+                    event.setEnd(endEventDateTime);
+
                     AllEvents.add(event);
                     Index.put(fd,event);
                 }
                 date.setTime(date.getTime()-86400000);
             }
 
-
+            //For all midterms in the course....
             for (int k = 0; k < md.size(); k++){
 
             }
 
+            //For all assignments in the course...
             for (int k = 0; k < ad.size(); k++){
 
             }
@@ -128,52 +167,4 @@ public class ImportGoogleCalendarTask extends AsyncTask <Void,Void,Void> {
 
     }
 
-    public Event MakeEvent(Date date, String coursename, String workdescription){
-
-
-        //Create the basic information depending on the type of work it is
-        Event event = new Event();
-        if (workdescription == "Final Exam"){
-            event.setSummary(coursename+" "+workdescription);
-            event.setDescription("Take the "+coursename+" "+workdescription);
-        } else if (workdescription.substring(0,6) == "Midterm"){
-            event.setSummary(coursename+" "+workdescription);
-            event.setDescription("Take the "+coursename+" "+workdescription);
-        } else {
-            event.setSummary(coursename+" "+workdescription);
-            event.setDescription(coursename+" "+workdescription+" due");
-        }
-
-        //Create the all day event date bounds
-        //Use dates only, no times, to set the all-day event.
-        Date startDate = date;
-        Date endDate = new Date(startDate.getTime() + 86400000);  //added milliseconds in a day
-
-        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        String startDateStr = dateFormat.format(startDate);
-        String endDateStr = dateFormat.format(endDate);
-
-        DateTime startDateTime = new DateTime(startDateStr);
-        DateTime endDateTime = new DateTime(endDateStr);
-
-        EventDateTime startEventDateTime = new EventDateTime().setDate(startDateTime);
-        EventDateTime endEventDateTime = new EventDateTime().setDate(endDateTime);
-        startEventDateTime.setTimeZone("America/Vancouver");
-        endEventDateTime.setTimeZone("America/Vancouver");
-
-        event.setStart(startEventDateTime);
-        event.setEnd(endEventDateTime);
-
-        //set the reminders
-        EventReminder[] reminderOverrides = new EventReminder[]{
-                new EventReminder().setMethod("email").setMinutes(24 * 60),
-                new EventReminder().setMethod("popup").setMinutes(10),
-        };
-        Event.Reminders reminders = new Event.Reminders()
-                .setUseDefault(false)
-                .setOverrides(Arrays.asList(reminderOverrides));
-        event.setReminders(reminders);
-
-        return event;
-    }
 }
