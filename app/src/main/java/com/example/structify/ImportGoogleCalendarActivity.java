@@ -12,6 +12,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.text.method.ScrollingMovementMethod;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -93,6 +94,7 @@ public class ImportGoogleCalendarActivity extends Activity {
         activityLayout.addView(FinishBtn);
 
         setContentView(activityLayout);
+        Log.d("ImportGoogleCalendarActivity","GUI generated");
 
         Bundle extras = getIntent().getExtras();
         NumCourses = extras.getInt("NumCourses");
@@ -120,6 +122,8 @@ public class ImportGoogleCalendarActivity extends Activity {
 
         //For exiting the application and opening Google Calendar
         SetFinishButtonClick();
+
+        Log.d("ImportGoogleCalendarActivity","Credentials established and button created");
     }
 
     @Override
@@ -293,6 +297,8 @@ public class ImportGoogleCalendarActivity extends Activity {
             @Override
             public void onClick(View v) {
                 //Exit the application and perhaps open Google Calendar at the starting month
+                finish();
+                System.exit(0);
             }
 
         });
