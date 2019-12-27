@@ -297,6 +297,7 @@ public class ImportGoogleCalendarActivity extends Activity {
             @Override
             public void onClick(View v) {
                 //Exit the application and perhaps open Google Calendar at the starting month
+                Log.d("ImportGoogleCalendarActivity","Finish Called");
                 finish();
                 System.exit(0);
             }
