@@ -111,7 +111,13 @@ public class YourCalendarActivity extends AppCompatActivity {
             calendar.setTime(fd);
             //As per rules, studying for final exams spans two weeks and so reminders on all those days must be added
             for (int k = 1; k <=13; k++){
-                calendar.set(Calendar.DAY_OF_MONTH,-1);
+                if (calendar.get(Calendar.DAY_OF_MONTH) == 1){
+                    calendar.add(Calendar.MONTH,-1);
+                    int last_day = calendar.getActualMaximum(calendar.get(Calendar.MONTH));
+                    calendar.set(Calendar.DAY_OF_MONTH,last_day);
+                } else {
+                    calendar.set(Calendar.DAY_OF_MONTH,-1);
+                }
                 Date sd = calendar.getTime();
                 CalendarIndex.get(sd).addStudyReminder("Study "+Math.round((fa/13)*10)/10.0+" hours per day for "
                         +name+"'s Final Exam");
@@ -124,7 +130,13 @@ public class YourCalendarActivity extends AppCompatActivity {
                 calendar.setTime(md.get(j));
                 //As per rules, studying for midterm exams spans 1 week and so reminders on those days must be added
                 for (int k = 1; k <=6; k++){
-                    calendar.set(Calendar.DAY_OF_MONTH,-1);
+                    if (calendar.get(Calendar.DAY_OF_MONTH) == 1){
+                        calendar.add(Calendar.MONTH,-1);
+                        int last_day = calendar.getActualMaximum(calendar.get(Calendar.MONTH));
+                        calendar.set(Calendar.DAY_OF_MONTH,last_day);
+                    } else {
+                        calendar.set(Calendar.DAY_OF_MONTH,-1);
+                    }
                     Date sd = calendar.getTime();
                     CalendarIndex.get(sd).addStudyReminder("Study "+Math.round((ma/6)*10)/10.0+" hours "
                             +"per day for " +name+"'s Midterm Exam "+Integer.toString(j+1));
@@ -138,7 +150,13 @@ public class YourCalendarActivity extends AppCompatActivity {
                 calendar.setTime(ad.get(j));
                 //As per rules, studying and working on assignments and quiz level tests spans 3 days and reminders must be added
                 for (int k = 1; k <=3; k++){
-                    calendar.set(Calendar.DAY_OF_MONTH,-1);
+                    if (calendar.get(Calendar.DAY_OF_MONTH) == 1){
+                        calendar.add(Calendar.MONTH,-1);
+                        int last_day = calendar.getActualMaximum(calendar.get(Calendar.MONTH));
+                        calendar.set(Calendar.DAY_OF_MONTH,last_day);
+                    } else {
+                        calendar.set(Calendar.DAY_OF_MONTH,-1);
+                    }
                     Date sd = calendar.getTime();
                     CalendarIndex.get(sd).addStudyReminder("Spend "+Math.round((aa/3)*10)/10.0+" hours "
                             +"per day on " +name+"'s Assignment "+Integer.toString(j+1));

@@ -3,13 +3,8 @@ package com.example.structify;
 import android.icu.text.DateFormat;
 import android.icu.text.SimpleDateFormat;
 import android.os.AsyncTask;
-
-import com.google.api.client.extensions.android.http.AndroidHttp;
-import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential;
-import com.google.api.client.json.gson.GsonFactory;
 import com.google.api.client.util.DateTime;
 import com.google.api.services.calendar.Calendar;
-import com.google.api.services.calendar.CalendarScopes;
 import com.google.api.services.calendar.model.Event;
 import com.google.api.services.calendar.model.EventDateTime;
 import com.google.api.services.calendar.model.EventReminder;
@@ -17,8 +12,9 @@ import com.google.api.services.calendar.model.EventReminder;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 public class ImportGoogleCalendarTask extends AsyncTask <Void,Void,Void> {
 
@@ -63,24 +59,77 @@ public class ImportGoogleCalendarTask extends AsyncTask <Void,Void,Void> {
 
         //Add the new calendar
 
+        //Map the events to dates, so that only one event is made for each day that describes all of the
+        //study obligations and test events.
+        ArrayList<Event> AllEvents = new ArrayList<Event>();
+        Map<Date,Event> Index = new HashMap<Date,Event>();
 
-        //Insert a new calendar and add calendarevents
+        //For all courses...
         for (int i = 0; i < Courses.size(); i++){
 
+            //For ease of reading, pull out all the information first
+            double course_time = Courses.get(i).getCourseWt()*StudyTime;
+            double fa = Courses.get(i).FinalAllocation(course_time);
+            double ma = Courses.get(i).MidtermAllocation(course_time)/(Courses.get(i).getMidtermDates().size());
+            double aa = Courses.get(i).AssignmentAllocation(course_time)/(Courses.get(i).getAssignmentAndQuizDates().size());
+            String name = Courses.get(i).getCourseName();
+            Date fd = Courses.get(i).getFinalDate();
+            ArrayList<Date> md = Courses.get(i).getMidtermDates();
+            ArrayList<Date> ad = Courses.get(i).getAssignmentAndQuizDates();
+
+            //Create and insert final events
+            if (Index.get(fd) != null){
+                String temp = Index.get(fd).getDescription();
+                int insert_pos = 0;
+                for (int j = 0; j < temp.length();j++){
+                    if (temp.substring(j,j+4) == "----S"){
+                        insert_pos = j-1;
+                        break;
+                    }
+                }
+                String desc = temp.substring(0,insert_pos)+ Courses.get(i).getCourseName()+" Final Exam"+"\n"+"\n"
+                        +temp.substring(insert_pos+1,temp.length()-1);
+                Index.get(fd).setDescription(desc);
+            } else {
+                Event event = new Event();
+                event.setDescription("----Exams and Assignments----"+"\n"+"\n"+Courses.get(i).getCourseName()+" Final Exam"
+                        +"\n"+"\n"+"----Studying----"+"\n"+"\n");
+                AllEvents.add(event);
+                Index.put(fd,event);
+            }
+
+            //Add final exam study reminders
+            Date date = new Date();
+            date.setTime(fd.getTime()-86400000);
+            for (int j = 0; j < 14; j++){
+                if (Index.get(date) != null){
+                    String desc = Index.get(date).getDescription();
+                    String add = "Study "+Math.round((fa/13)*10)/10.0+"hours for "+Courses.get(i).getCourseName()+"'s Final Exam"+"\n"+"\n";
+                    Index.get(fd).setDescription(desc+add);
+                } else {
+                    Event event = new Event();
+                    event.setDescription("----Exams and Assignments----"+"\n"+"\n"+"----Studying----"+"\n"+"\n"+"Study "+Math.round((fa/13)*10)/10.0+"hours for "
+                            +Courses.get(i).getCourseName()+"'s Final Exam"+"\n"+"\n");
+                    AllEvents.add(event);
+                    Index.put(fd,event);
+                }
+                date.setTime(date.getTime()-86400000);
+            }
 
 
-            for (int j = 0; j < Courses.get(i).getMidtermDates().size(); j++){
+            for (int k = 0; k < md.size(); k++){
 
             }
 
-            for (int j = 0; j < Courses.get(i).getAssignmentAndQuizDates().size(); j++){
+            for (int k = 0; k < ad.size(); k++){
 
             }
         }
 
     }
 
-    public void MakeEvent(Date date, String coursename, String workdescription){
+    public Event MakeEvent(Date date, String coursename, String workdescription){
+
 
         //Create the basic information depending on the type of work it is
         Event event = new Event();
@@ -96,8 +145,9 @@ public class ImportGoogleCalendarTask extends AsyncTask <Void,Void,Void> {
         }
 
         //Create the all day event date bounds
+        //Use dates only, no times, to set the all-day event.
         Date startDate = date;
-        Date endDate = new Date(startDate.getTime() + 86400000);
+        Date endDate = new Date(startDate.getTime() + 86400000);  //added milliseconds in a day
 
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         String startDateStr = dateFormat.format(startDate);
@@ -124,11 +174,6 @@ public class ImportGoogleCalendarTask extends AsyncTask <Void,Void,Void> {
                 .setOverrides(Arrays.asList(reminderOverrides));
         event.setReminders(reminders);
 
-        String calendarId = "primary";
-        try {
-            mService.events().insert(calendarId, event).execute();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        return event;
     }
 }
