@@ -64,7 +64,7 @@ public class ImportGoogleCalendarTask extends AsyncTask <Void,Void,Void> {
         //For all courses...
         for (int i = 0; i < Courses.size(); i++){
 
-            //For ease of reading, pull out all the information first
+            //Pull out all data from the course
             double course_time = Courses.get(i).getCourseWt()*StudyTime;
             double fa = Courses.get(i).FinalAllocation(course_time);
             double ma = Courses.get(i).MidtermAllocation(course_time)/(Courses.get(i).getMidtermDates().size());
@@ -77,6 +77,7 @@ public class ImportGoogleCalendarTask extends AsyncTask <Void,Void,Void> {
 
             //Create and insert final events
             if (Index.get(fd) != null){
+                //If a reminder for the day has already been entered....
                 String temp = Index.get(fd).getDescription();
                 int insert_pos = 0;
                 for (int j = 0; j < temp.length();j++){
@@ -89,6 +90,7 @@ public class ImportGoogleCalendarTask extends AsyncTask <Void,Void,Void> {
                         +temp.substring(insert_pos+1,temp.length()-1);
                 Index.get(fd).setDescription(desc);
             } else {
+                //If no reminder for that day exists yet....
                 Event event = new Event();
                 event.setDescription("----Exams and Assignments----"+"\n"+"\n"+ name +" Final Exam"
                         +"\n"+"\n"+"----Studying----"+"\n"+"\n");
@@ -118,13 +120,16 @@ public class ImportGoogleCalendarTask extends AsyncTask <Void,Void,Void> {
 
             //Add final exam study reminders
             Date date = new Date();
-            date.setTime(fd.getTime()-86400000);
+            date.setTime(fd.getTime()-86400000);     //go to the day before the final
+            //for the 13 days before the final....
             for (int j = 0; j < 14; j++){
                 if (Index.get(date) != null){
+                    //if a reminder for the day exists already....
                     String desc = Index.get(date).getDescription();
                     String add = "Study "+Math.round((fa/13)*10)/10.0+"hours for "+ name +"'s Final Exam"+"\n"+"\n";
                     Index.get(date).setDescription(desc+add);
                 } else {
+                    //If a reminder for the day does not exist yet...
                     Event event = new Event();
                     event.setDescription("----Exams and Assignments----"+"\n"+"\n"+"----Studying----"+"\n"+"\n"+"Study "+Math.round((fa/13)*10)/10.0+"hours for "
                             + name +"'s Final Exam"+"\n"+"\n");
@@ -151,12 +156,55 @@ public class ImportGoogleCalendarTask extends AsyncTask <Void,Void,Void> {
                     AllEvents.add(event);
                     Index.put(fd,event);
                 }
-                date.setTime(date.getTime()-86400000);
+                date.setTime(date.getTime()-86400000);   //go to the previous day
             }
 
             //For all midterms in the course....
             for (int k = 0; k < md.size(); k++){
+                //Create and insert midterm events
+                if (Index.get(md.get(k)) != null){
+                    //If a reminder for the day has already been entered....
+                    String temp = Index.get(md.get(k)).getDescription();
+                    int insert_pos = 0;
+                    for (int l = 0; l < temp.length();l++){
+                        if (temp.substring(l,l+4) == "----S"){
+                            insert_pos = l-1;
+                            break;
+                        }
+                    }
+                    String desc = temp.substring(0,insert_pos)+ name +" Midterm Exam "+(k+1)+"\n"+"\n"
+                            +temp.substring(insert_pos+1,temp.length()-1);
+                    Index.get(md.get(k)).setDescription(desc);
+                } else {
+                    //If no reminder for that day exists yet....
+                    Event event = new Event();
+                    event.setDescription("----Exams and Assignments----"+"\n"+"\n"+ name +" Midterm Exam "+(k+1)
+                            +"\n"+"\n"+"----Studying----"+"\n"+"\n");
 
+                    //Create the all day event date bounds
+                    //Use dates only, no times, to set the all-day event.
+                    Date startDate = md.get(k);
+                    Date endDate = new Date(startDate.getTime() + 86400000);  //added milliseconds in a day
+
+                    String startDateStr = dateFormat.format(startDate);
+                    String endDateStr = dateFormat.format(endDate);
+
+                    DateTime startDateTime = new DateTime(startDateStr);
+                    DateTime endDateTime = new DateTime(endDateStr);
+
+                    EventDateTime startEventDateTime = new EventDateTime().setDate(startDateTime);
+                    EventDateTime endEventDateTime = new EventDateTime().setDate(endDateTime);
+                    startEventDateTime.setTimeZone("America/Vancouver");
+                    endEventDateTime.setTimeZone("America/Vancouver");
+
+                    event.setStart(startEventDateTime);
+                    event.setEnd(endEventDateTime);
+
+                    AllEvents.add(event);
+                    Index.put(md.get(k),event);
+                }
+
+                
             }
 
             //For all assignments in the course...
