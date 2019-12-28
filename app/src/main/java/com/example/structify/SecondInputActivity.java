@@ -267,7 +267,11 @@ public class SecondInputActivity extends AppCompatActivity {
                         throw new RuntimeException();
                     } else if (TextUtils.isEmpty(InputFieldIDs.get("Course "+Integer.toString(i)+" Midterm Date 1").getText().toString().trim()) &&
                             TextUtils.isEmpty(InputFieldIDs.get("Course "+Integer.toString(i)+" Midterm Date 2").getText().toString().trim())) {
-                        temp.calcMTDate(Integer.parseInt(InputFieldIDs.get("Course "+Integer.toString(i)+" Number Midterms").getText().toString()));
+                        try {
+                            temp.calcMTDate(Integer.parseInt(InputFieldIDs.get("Course "+Integer.toString(i)+" Number Midterms").getText().toString()));
+                        } catch (ParseException e) {
+                            e.printStackTrace();
+                        }
                         Log.d("Second","Calculated Course "+Integer.toString(i)+" Midterm Dates");
                     } else {
                         ArrayList<Date> MTD = new ArrayList<Date>();

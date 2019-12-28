@@ -1,9 +1,11 @@
 package com.example.structify;
 
+import android.icu.text.SimpleDateFormat;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.util.Log;
 
+import java.text.ParseException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -148,23 +150,35 @@ public class UniversityCourse implements Parcelable {
         return Math.round(((CourseTime/100)*AssignmentsAndQuizzesWt)*10)/10.0;
     }
 
-    public void calcMTDate(int howmany){
+    public void calcMTDate(int howmany) throws ParseException {
         //Use startDate and endDate to create a Midterm date if not provided.
         ArrayList<Date> result = new ArrayList<Date>();
         long difference = Math.abs((startDate.getTime()-endDate.getTime()))/(howmany+1);
-        long curr = startDate.getTime()+difference;
-        Date temp = new Date();
-        temp.setTime(curr);
-        result.add(temp);
+        long curr = startDate.getTime();
         for (int i = 0; i < howmany; i++){
             curr+=difference;
             Date temp1 = new Date();
             temp1.setTime(curr);
             //Use LocalDateTime to truncate the time portion so that the date stored is a pure date and matches later indices
-            LocalDateTime currld = LocalDateTime.ofInstant(temp1.toInstant(), ZoneId.systemDefault());
-            currld.now().truncatedTo(ChronoUnit.DAYS);
+            LocalDateTime currld = LocalDateTime.ofInstant(temp1.toInstant(), ZoneId.systemDefault()).now();
+            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+            int M = currld.getMonthValue();
+            String MM = Integer.toString(M+1);
+            if (M+1<10){
+                MM = "0"+MM;
+            }
+            int D = currld.getDayOfMonth();
+            String DD = Integer.toString(D);
+            if(D < 10){
+                DD = "0"+DD;
+            }
+            int Y = currld.getYear();
             //Change back to a date
-            temp1 = Date.from(currld.atZone( ZoneId.systemDefault()).toInstant());
+            try {
+                temp1 = formatter.parse(Integer.toString(Y)+"-"+MM+"-"+DD);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
             result.add(temp1);
             Log.d("calcMidtermDates for "+CourseName,temp1.toString()+" has been calculated for MidtermDates");
         }
@@ -175,19 +189,31 @@ public class UniversityCourse implements Parcelable {
         //Use startDate and endDate to create quiz and assignment dates.
         ArrayList<Date> result = new ArrayList<Date>();
         long difference = Math.abs((startDate.getTime()-endDate.getTime()))/(howmany+1);
-        long curr = startDate.getTime()+difference;
-        Date temp = new Date();
-        temp.setTime(curr);
-        result.add(temp);
+        long curr = startDate.getTime();
         for (int i = 0; i < howmany; i++){
             curr+=difference;
             Date temp1 = new Date();
             temp1.setTime(curr);
             //Use LocalDateTime to truncate the time portion so that the date stored is a pure date and matches later indices
-            LocalDateTime currld = LocalDateTime.ofInstant(temp1.toInstant(), ZoneId.systemDefault());
-            currld.now().truncatedTo(ChronoUnit.DAYS);
+            LocalDateTime currld = LocalDateTime.ofInstant(temp1.toInstant(), ZoneId.systemDefault()).now();
+            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+            int M = currld.getMonthValue();
+            String MM = Integer.toString(M+1);
+            if (M+1<10){
+                MM = "0"+MM;
+            }
+            int D = currld.getDayOfMonth();
+            String DD = Integer.toString(D);
+            if(D < 10){
+                DD = "0"+DD;
+            }
+            int Y = currld.getYear();
             //Change back to a date
-            temp1 = Date.from(currld.atZone( ZoneId.systemDefault()).toInstant());
+            try {
+                temp1 = formatter.parse(Integer.toString(Y)+"-"+MM+"-"+DD);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
             result.add(temp1);
             Log.d("calcAssignmentDates for "+CourseName,temp1.toString()+" has been calculated for AssignmentDates");
         }
