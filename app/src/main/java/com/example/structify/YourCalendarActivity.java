@@ -90,6 +90,7 @@ public class YourCalendarActivity extends AppCompatActivity {
             temp.setDay_of_week(calendar.get(Calendar.DAY_OF_WEEK));
             CalendarInfo.add(temp);
             CalendarIndex.put(t,CalendarInfo.get(CalendarInfo.size()-1));
+            Log.d("YourCalendarActivity","Added SemesterDays object for date: "+ date.toString());
         }
         Log.d("YourCalendarActivity","Catalogue of empty SemesterDays created and attached to CalendarIndex");
 
@@ -150,6 +151,7 @@ public class YourCalendarActivity extends AppCompatActivity {
             }
 
             for (int j = 0; j < ad.size(); j++){
+                Log.d("YourCalendarActivity","Searching for date "+ad.get(j)+" in CalendarIndex");
                 CalendarIndex.get(ad.get(j)).addExamEvent(name+" Assignment "+Integer.toString(j+1)+" Due");
                 CalendarIndex.get(ad.get(j)).addExamCourse(i);
                 calendar.setTime(ad.get(j));
