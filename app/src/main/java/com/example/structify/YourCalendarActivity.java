@@ -118,7 +118,7 @@ public class YourCalendarActivity extends AppCompatActivity {
                     int last_day = calendar.getActualMaximum(calendar.get(Calendar.MONTH));
                     calendar.set(Calendar.DAY_OF_MONTH,last_day);
                 } else {
-                    calendar.set(Calendar.DAY_OF_MONTH,-1);
+                    calendar.add(Calendar.DAY_OF_MONTH,-1);
                 }
                 Date sd = calendar.getTime();
                 CalendarIndex.get(sd).addStudyReminder("Study "+Math.round((fa/13)*10)/10.0+" hours per day for "
@@ -139,7 +139,7 @@ public class YourCalendarActivity extends AppCompatActivity {
                         int last_day = calendar.getActualMaximum(calendar.get(Calendar.MONTH));
                         calendar.set(Calendar.DAY_OF_MONTH,last_day);
                     } else {
-                        calendar.set(Calendar.DAY_OF_MONTH,-1);
+                        calendar.add(Calendar.DAY_OF_MONTH,-1);
                     }
                     Date sd = calendar.getTime();
                     CalendarIndex.get(sd).addStudyReminder("Study "+Math.round((ma/6)*10)/10.0+" hours "
@@ -161,7 +161,7 @@ public class YourCalendarActivity extends AppCompatActivity {
                         int last_day = calendar.getActualMaximum(calendar.get(Calendar.MONTH));
                         calendar.set(Calendar.DAY_OF_MONTH,last_day);
                     } else {
-                        calendar.set(Calendar.DAY_OF_MONTH,-1);
+                        calendar.add(Calendar.DAY_OF_MONTH,-1);
                     }
                     Date sd = calendar.getTime();
                     CalendarIndex.get(sd).addStudyReminder("Spend "+Math.round((aa/3)*10)/10.0+" hours "
