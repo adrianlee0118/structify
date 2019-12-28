@@ -4,6 +4,8 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.util.Log;
 
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -156,6 +158,9 @@ public class UniversityCourse implements Parcelable {
             curr+=difference;
             Date temp1 = new Date();
             temp1.setTime(curr);
+            //Use LocalDate to ensure that temp1 is set to the start of the day
+            LocalDate currld = temp1.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+            temp1 = java.util.Date.from(currld.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant());
             result.add(temp1);
         }
         MidtermDates =  result;
@@ -173,6 +178,9 @@ public class UniversityCourse implements Parcelable {
             curr+=difference;
             Date temp1 = new Date();
             temp1.setTime(curr);
+            //Use LocalDate to ensure that temp1 is set to the start of the day
+            LocalDate currld = temp1.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+            temp1 = java.util.Date.from(currld.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant());
             result.add(temp1);
         }
         AssignmentAndQuizDates = result;
