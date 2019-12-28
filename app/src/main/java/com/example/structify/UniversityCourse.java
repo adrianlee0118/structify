@@ -5,7 +5,9 @@ import android.os.Parcelable;
 import android.util.Log;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -158,9 +160,11 @@ public class UniversityCourse implements Parcelable {
             curr+=difference;
             Date temp1 = new Date();
             temp1.setTime(curr);
-            //Use LocalDate to ensure that temp1 is set to the start of the day
-            LocalDate currld = temp1.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-            temp1 = java.util.Date.from(currld.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant());
+            //Use LocalDateTime to truncate the time portion so that the date stored is a pure date and matches later indices
+            LocalDateTime currld = LocalDateTime.ofInstant(temp1.toInstant(), ZoneId.systemDefault());
+            currld.now().truncatedTo(ChronoUnit.DAYS);
+            //Change back to a date
+            temp1 = Date.from(currld.atZone( ZoneId.systemDefault()).toInstant());
             result.add(temp1);
             Log.d("calcMidtermDates for "+CourseName,temp1.toString()+" has been calculated for MidtermDates");
         }
@@ -175,13 +179,15 @@ public class UniversityCourse implements Parcelable {
         Date temp = new Date();
         temp.setTime(curr);
         result.add(temp);
-        for (int i = 0; i < howmany-1; i++){
+        for (int i = 0; i < howmany; i++){
             curr+=difference;
             Date temp1 = new Date();
             temp1.setTime(curr);
-            //Use LocalDate to ensure that temp1 is set to the start of the day
-            LocalDate currld = temp1.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-            temp1 = java.util.Date.from(currld.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant());
+            //Use LocalDateTime to truncate the time portion so that the date stored is a pure date and matches later indices
+            LocalDateTime currld = LocalDateTime.ofInstant(temp1.toInstant(), ZoneId.systemDefault());
+            currld.now().truncatedTo(ChronoUnit.DAYS);
+            //Change back to a date
+            temp1 = Date.from(currld.atZone( ZoneId.systemDefault()).toInstant());
             result.add(temp1);
             Log.d("calcAssignmentDates for "+CourseName,temp1.toString()+" has been calculated for AssignmentDates");
         }

@@ -267,8 +267,8 @@ public class SecondInputActivity extends AppCompatActivity {
                         throw new RuntimeException();
                     } else if (TextUtils.isEmpty(InputFieldIDs.get("Course "+Integer.toString(i)+" Midterm Date 1").getText().toString().trim()) &&
                             TextUtils.isEmpty(InputFieldIDs.get("Course "+Integer.toString(i)+" Midterm Date 2").getText().toString().trim())) {
-                        Log.d("Second","Calculated Course "+Integer.toString(i)+" Midterm Dates");
                         temp.calcMTDate(Integer.parseInt(InputFieldIDs.get("Course "+Integer.toString(i)+" Number Midterms").getText().toString()));
+                        Log.d("Second","Calculated Course "+Integer.toString(i)+" Midterm Dates");
                     } else {
                         ArrayList<Date> MTD = new ArrayList<Date>();
 
@@ -318,8 +318,8 @@ public class SecondInputActivity extends AppCompatActivity {
                             && TextUtils.isEmpty(InputFieldIDs.get("Course "+Integer.toString(i)+" Assignment 4 Date").getText().toString().trim())
                             && TextUtils.isEmpty(InputFieldIDs.get("Course "+Integer.toString(i)+" Assignment 5 Date").getText().toString().trim())
                             && TextUtils.isEmpty(InputFieldIDs.get("Course "+Integer.toString(i)+" Assignment 6 Date").getText().toString().trim())) {
-                        Log.d("Second","Calculated Course "+Integer.toString(i)+" Assign Dates");
                         temp.calcAssignmentDates(Integer.parseInt(InputFieldIDs.get("Course "+Integer.toString(i)+" Number Assignments").getText().toString()));
+                        Log.d("Second","Calculated Course "+Integer.toString(i)+" Assign Dates");
                     } else {
                         ArrayList<Date> AD = new ArrayList<Date>();
 
