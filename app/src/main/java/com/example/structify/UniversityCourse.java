@@ -154,16 +154,16 @@ public class UniversityCourse implements Parcelable {
         //Use startDate and endDate to create a Midterm date if not provided.
         ArrayList<Date> result = new ArrayList<Date>();
         long difference = Math.abs((startDate.getTime()-endDate.getTime()))/(howmany+1);
-        long curr = startDate.getTime();
+        long curr = Math.abs(startDate.getTime());
         for (int i = 0; i < howmany; i++){
-            curr+=difference;
+            curr=difference+curr;
             Date temp1 = new Date();
             temp1.setTime(curr);
             //Use LocalDateTime to truncate the time portion so that the date stored is a pure date and matches later indices
-            LocalDateTime currld = LocalDateTime.ofInstant(temp1.toInstant(), ZoneId.systemDefault()).now();
+            LocalDate currld = temp1.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
             SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
             int M = currld.getMonthValue();
-            String MM = Integer.toString(M+1);
+            String MM = Integer.toString(M);
             if (M+1<10){
                 MM = "0"+MM;
             }
@@ -189,16 +189,22 @@ public class UniversityCourse implements Parcelable {
         //Use startDate and endDate to create quiz and assignment dates.
         ArrayList<Date> result = new ArrayList<Date>();
         long difference = Math.abs((startDate.getTime()-endDate.getTime()))/(howmany+1);
-        long curr = startDate.getTime();
+        Log.d("calcAssignDates","startDate.getTime = "+startDate.getTime());
+        Log.d("calcAssignDates","endDate.getTime = "+endDate.getTime());
+        Log.d("calcAssignDates","differences = "+difference);
+        long curr = Math.abs(startDate.getTime());
         for (int i = 0; i < howmany; i++){
-            curr+=difference;
+            curr = difference + curr;
+            Log.d("calcAssignDates","Calculating date from curr: "+ curr);
             Date temp1 = new Date();
             temp1.setTime(curr);
+            Log.d("calcAssignDates","The curr gives a date of "+temp1.toString());
             //Use LocalDateTime to truncate the time portion so that the date stored is a pure date and matches later indices
-            LocalDateTime currld = LocalDateTime.ofInstant(temp1.toInstant(), ZoneId.systemDefault()).now();
+            LocalDate currld = temp1.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
             SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
             int M = currld.getMonthValue();
-            String MM = Integer.toString(M+1);
+            Log.d("calcAssignDates","Month value is "+M);
+            String MM = Integer.toString(M);
             if (M+1<10){
                 MM = "0"+MM;
             }
@@ -208,6 +214,7 @@ public class UniversityCourse implements Parcelable {
                 DD = "0"+DD;
             }
             int Y = currld.getYear();
+            Log.d("calcAssignDates","The string for parsing is "+Integer.toString(Y)+"-"+MM+"-"+DD);
             //Change back to a date
             try {
                 temp1 = formatter.parse(Integer.toString(Y)+"-"+MM+"-"+DD);
