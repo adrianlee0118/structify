@@ -201,7 +201,7 @@ public class YourCalendarActivity extends AppCompatActivity {
         //Set text of headers
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(current_date);
-        Year.setText(calendar.get(Calendar.YEAR));
+        Year.setText(Integer.toString(calendar.get(Calendar.YEAR)));
         Month.setText(MonthLookup[calendar.get(Calendar.MONTH)]);
         Log.d("YourCalendarActivity-UpdateCalendarCanvas","Year and Month Headers Set");
         int current_month = calendar.get(Calendar.MONTH);
