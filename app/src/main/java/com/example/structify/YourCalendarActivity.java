@@ -116,7 +116,7 @@ public class YourCalendarActivity extends AppCompatActivity {
             for (int k = 1; k <=13; k++){
                 if (calendar.get(Calendar.DAY_OF_MONTH) == 1){
                     calendar.add(Calendar.MONTH,-1);
-                    int last_day = calendar.getActualMaximum(calendar.get(Calendar.MONTH));
+                    int last_day = calendar.getActualMaximum(Calendar.DAY_OF_MONTH);
                     calendar.set(Calendar.DAY_OF_MONTH,last_day);
                 } else {
                     calendar.add(Calendar.DAY_OF_MONTH,-1);
@@ -137,7 +137,7 @@ public class YourCalendarActivity extends AppCompatActivity {
                 for (int k = 1; k <=6; k++){
                     if (calendar.get(Calendar.DAY_OF_MONTH) == 1){
                         calendar.add(Calendar.MONTH,-1);
-                        int last_day = calendar.getActualMaximum(calendar.get(Calendar.MONTH));
+                        int last_day = calendar.getActualMaximum(Calendar.DAY_OF_MONTH);
                         calendar.set(Calendar.DAY_OF_MONTH,last_day);
                     } else {
                         calendar.add(Calendar.DAY_OF_MONTH,-1);
@@ -160,7 +160,7 @@ public class YourCalendarActivity extends AppCompatActivity {
                 for (int k = 1; k <=3; k++){
                     if (calendar.get(Calendar.DAY_OF_MONTH) == 1){
                         calendar.add(Calendar.MONTH,-1);
-                        int last_day = calendar.getActualMaximum(calendar.get(Calendar.MONTH));
+                        int last_day = calendar.getActualMaximum(Calendar.DAY_OF_MONTH);
                         calendar.set(Calendar.DAY_OF_MONTH,last_day);
                     } else {
                         calendar.add(Calendar.DAY_OF_MONTH,-1);
@@ -266,7 +266,7 @@ public class YourCalendarActivity extends AppCompatActivity {
 
                 Log.d("YourCalendarActivity-UpdateCalendarCanvas","Making textviews for Day "+i+" schedule in the row");
 
-                if (CalendarIndex.get(calendar.getTime())!= null){
+                if (CalendarIndex.get(calendar.getTime()).getExamEvents().size() != 0 || CalendarIndex.get(calendar.getTime()).getStudyReminders().size() != 0){
 
                     int DayWidth = 58;
                     int AddDepth = 10;
@@ -277,7 +277,7 @@ public class YourCalendarActivity extends AppCompatActivity {
                         //We don't have to check if a previous day has the same event--the way inputs are designed,
                         //events are unique and only last one day.
                         TextView temp = new TextView(this);
-                        LinearLayout.LayoutParams tparams = new LinearLayout.LayoutParams(this,null);
+                        LinearLayout.LayoutParams tparams = new LinearLayout.LayoutParams(DayWidth,10,1);
                         //set position at left of current day with current depth margin_top
                         tparams.setMargins((i-1)*DayWidth,margin_top,0,0);
                         margin_top+=AddDepth;
@@ -285,10 +285,8 @@ public class YourCalendarActivity extends AppCompatActivity {
                         //make textbox occupy width of the current day in current_row, set text and color
                         temp.setText(CalendarIndex.get(calendar.getTime()).getExamEvents().get(j));
                         temp.setTextSize(8);
-                        temp.setWidth(DayWidth);
                         temp.setHighlightColor(ColorLookup[CalendarIndex.get(calendar.getTime()).getExamCourseID().get(j)]);
                         temp.setTextColor(Color.WHITE);
-                        temp.setHeight(10);
                         //Add textbox to list for reference and to the view
                         CalendarEvents.add(temp);
                         RowRef.put(CalendarIndex.get(calendar.getTime()).getExamEvents().get(j),temp);
@@ -303,18 +301,16 @@ public class YourCalendarActivity extends AppCompatActivity {
                         //If the reminder does not exist in the row, make a new textbox
                         if (!RowRef.containsKey(CalendarIndex.get(calendar.getTime()).getStudyReminders().get(j))){
                             TextView temp = new TextView(this);
-                            LinearLayout.LayoutParams tparams = new LinearLayout.LayoutParams(this,null);
+                            LinearLayout.LayoutParams tparams = new LinearLayout.LayoutParams(DayWidth,10,1);
                             //set position at left of current day with current depth margin_top
                             tparams.setMargins((i-1)*DayWidth,margin_top,0,0);
                             margin_top+=AddDepth;
                             temp.setLayoutParams(tparams);
                             //make textbox occupy width of the current day in current_row, set text and color
                             temp.setText(CalendarIndex.get(calendar.getTime()).getStudyReminders().get(j));
-                            temp.setTextSize(8);
-                            temp.setWidth(DayWidth);
+                            temp.setTextSize(7);
                             temp.setHighlightColor(ColorLookup[CalendarIndex.get(calendar.getTime()).getStudyCourseID().get(j)]);
                             temp.setTextColor(Color.WHITE);
-                            temp.setHeight(10);
                             //Add textbox to list for reference and to the view
                             CalendarEvents.add(temp);
                             RowRef.put(CalendarIndex.get(calendar.getTime()).getStudyReminders().get(j),temp);

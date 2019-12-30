@@ -51,7 +51,7 @@
                 android:text="Dec"
                 android:textAppearance="@android:style/TextAppearance.Large"
                 android:textColor="#222222"
-                android:textSize="33sp"
+                android:textSize="24sp"
                 android:textStyle="bold" />
         </LinearLayout>
 
