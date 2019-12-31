@@ -98,11 +98,17 @@ public class YourCalendarActivity extends AppCompatActivity {
 
         //Store all events and reminders in the SemesterDays instances contained in the Hashmap
         for (int i = 0; i < NumCourses; i++){
+            Log.d("YourCalendarActivity", "Populating CalendarIndex with information for course "+Courses.get(i).getCourseName());
+
             //For ease of reading, pull out all the information first
             double course_time = Courses.get(i).getCourseWt()*StudyTime;
+            Log.d("YourCalendarActivity", "Course time is "+course_time);
             double fa = Courses.get(i).FinalAllocation(course_time);
+            Log.d("YourCalendarActivity", "Final allocation is "+fa);
             double ma = Courses.get(i).MidtermAllocation(course_time)/(Courses.get(i).getMidtermDates().size());
+            Log.d("YourCalendarActivity", "Midterm allocation per midterm is "+ma);
             double aa = Courses.get(i).AssignmentAllocation(course_time)/(Courses.get(i).getAssignmentAndQuizDates().size());
+            Log.d("YourCalendarActivity", "Assignment allocation per assignment is "+aa);
             String name = Courses.get(i).getCourseName();
             Date fd = Courses.get(i).getFinalDate();
             ArrayList<Date> md = Courses.get(i).getMidtermDates();
@@ -348,9 +354,11 @@ public class YourCalendarActivity extends AppCompatActivity {
                         TextView temp = new TextView(this);
                         LinearLayout.LayoutParams tparams = new LinearLayout.LayoutParams(DayWidth,10,1);
                         //set position at left of current day with current depth margin_top
-                        tparams.setMargins((i-1)*DayWidth,margin_top,0,0);
-                        margin_top+=AddDepth;
+                        //tparams.setMargins((i-1)*DayWidth,margin_top,0,0);
                         temp.setLayoutParams(tparams);
+                        temp.setLeft((i-1)*DayWidth);
+                        temp.setTop(margin_top);
+                        margin_top+=AddDepth;
                         //make textbox occupy width of the current day in current_row, set text and color
                         temp.setText(CalendarIndex.get(curr).getExamEvents().get(j));
                         temp.setTextSize(8);
@@ -373,9 +381,11 @@ public class YourCalendarActivity extends AppCompatActivity {
                             TextView temp = new TextView(this);
                             LinearLayout.LayoutParams tparams = new LinearLayout.LayoutParams(DayWidth,10,1);
                             //set position at left of current day with current depth margin_top
-                            tparams.setMargins((i-1)*DayWidth,margin_top,0,0);
-                            margin_top+=AddDepth;
+                            //tparams.setMargins((i-1)*DayWidth,margin_top,7*DayWidth-i*DayWidth,0,0);
                             temp.setLayoutParams(tparams);
+                            temp.setLeft((i-1)*DayWidth);
+                            temp.setTop(margin_top);
+                            margin_top+=AddDepth;
                             //make textbox occupy width of the current day in current_row, set text and color
                             temp.setText(CalendarIndex.get(curr).getStudyReminders().get(j));
                             temp.setTextSize(7);
