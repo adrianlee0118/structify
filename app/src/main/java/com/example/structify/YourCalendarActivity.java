@@ -3,6 +3,7 @@ package com.example.structify;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.icu.text.SimpleDateFormat;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.util.Log;
@@ -15,6 +16,7 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import java.text.ParseException;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.ArrayList;
@@ -201,12 +203,37 @@ public class YourCalendarActivity extends AppCompatActivity {
         //Set text of headers
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(current_date);
+        Date startmark = new Date();
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+        int M = calendar.get(Calendar.MONTH);
+        String MM = Integer.toString(M+1);
+        if (M+1<10){
+            MM = "0"+MM;
+        }
+        int D = calendar.get(Calendar.DAY_OF_MONTH);
+        String DD = Integer.toString(D);
+        if(D < 10){
+            DD = "0"+DD;
+        }
+        int Y = calendar.get(Calendar.YEAR);
+        Log.d("YourCalendarActivity-UpdateCalendarCanvas","Date to search in CalendarIndex is "+Y+"-"+MM+"-"+DD);
+        try {
+            startmark = formatter.parse(Integer.toString(Y)+"-"+MM+"-"+DD);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+
+        Log.d("YourCalendarActivity-UpdateCalendarCanvas","Date at start is "+startmark);
         Year.setText(Integer.toString(calendar.get(Calendar.YEAR)));
         Month.setText(MonthLookup[calendar.get(Calendar.MONTH)]);
         Log.d("YourCalendarActivity-UpdateCalendarCanvas","Year and Month Headers Set");
         int current_month = calendar.get(Calendar.MONTH);
+        Log.d("YourCalendarActivity-UpdateCalendarCanvas","Current month is "+calendar.get(Calendar.MONTH));
         //From this point onward, current_date is used to keep track of the first day of the week of interest as we build the GUI week by week using calendar_row layouts
         while(calendar.get(Calendar.MONTH)==current_month){
+
+            Log.d("YourCalendarActivity-UpdateCalendarCanvas","Start walking through all dates in the month");
 
             //Inflate the calendar_row view -- calendar GUI is built row by row using the calendar_row view template layout
             LayoutInflater vi = (LayoutInflater) getApplicationContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -222,10 +249,28 @@ public class YourCalendarActivity extends AppCompatActivity {
             TextView Saturday = current_row.findViewById(R.id.saturday_number);
             LinearLayout Events = current_row.findViewById(R.id.events);
 
+            M = calendar.get(Calendar.MONTH);
+            MM = Integer.toString(M+1);
+            if (M+1<10){
+                MM = "0"+MM;
+            }
+            D = calendar.get(Calendar.DAY_OF_MONTH);
+            DD = Integer.toString(D);
+            if(D < 10){
+                DD = "0"+DD;
+            }
+            Y = calendar.get(Calendar.YEAR);
+            Log.d("YourCalendarActivity-UpdateCalendarCanvas","Date to search in CalendarIndex is "+Y+"-"+MM+"-"+DD);
+            try {
+                startmark = formatter.parse(Integer.toString(Y)+"-"+MM+"-"+DD);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+
             //If first day is not a Sunday, move to the previous Sunday to fill the whole row with numbers
-            if(CalendarIndex.get(calendar.getTime()).getDay_of_week()!=1){
-                Log.d("YourCalendarActivity-UpdateCalendarCanvas","calendar_row day walked back to a Sunday");
-                calendar.add(Calendar.DAY_OF_MONTH,-(CalendarIndex.get(calendar.getTime()).getDay_of_week()-1));
+            if(CalendarIndex.get(startmark).getDay_of_week()!=1){
+                Log.d("YourCalendarActivity-UpdateCalendarCanvas","calendar_row day walked back to a Sunday, "+startmark);
+                calendar.add(Calendar.DAY_OF_MONTH,-(CalendarIndex.get(startmark).getDay_of_week()-1));
             }
 
             //Assign numbers to each of the days in the row - text size is taken care of in the calendar_row template
@@ -252,8 +297,9 @@ public class YourCalendarActivity extends AppCompatActivity {
             Log.d("YourCalendarActivity-UpdateCalendarCanvas","Numbers in calendar_row set");
 
             //Move the cursor back to the beginning of the week
-            calendar.setTime(current_date);
-            if(CalendarIndex.get(calendar.getTime()).getDay_of_week()!=1){
+            calendar.setTime(startmark);
+            if(CalendarIndex.get(startmark).getDay_of_week()!=1){
+                Log.d("YourCalendarActivity-UpdateCalendarCanvas","calendar_row day walked back to a Sunday, "+startmark);
                 calendar.add(Calendar.DAY_OF_MONTH,-(CalendarIndex.get(calendar.getTime()).getDay_of_week()-1));
             }
 
@@ -264,18 +310,41 @@ public class YourCalendarActivity extends AppCompatActivity {
             //Create textview reminders in the row view and set left, depth positions and width
             for (int i = 1; i <= 7; i++){
 
-                Log.d("YourCalendarActivity-UpdateCalendarCanvas","Making textviews for Day "+i+" schedule in the row");
+                //Create current date in same format as Date in CalendarIndex:
+                Date curr = new Date();
+                M = calendar.get(Calendar.MONTH);
+                MM = Integer.toString(M+1);
+                if (M+1<10){
+                    MM = "0"+MM;
+                }
+                D = calendar.get(Calendar.DAY_OF_MONTH);
+                DD = Integer.toString(D);
+                if(D < 10){
+                    DD = "0"+DD;
+                }
+                Y = calendar.get(Calendar.YEAR);
+                Log.d("YourCalendarActivity-UpdateCalendarCanvas","Date to search in CalendarIndex is "+Y+"-"+MM+"-"+DD);
+                try {
+                    curr = formatter.parse(Integer.toString(Y)+"-"+MM+"-"+DD);
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+                Log.d("YourCalendarActivity-UpdateCalendarCanvas","Making textviews for Day "+i+" schedule in the row, date: "+curr);
 
-                if (CalendarIndex.get(calendar.getTime()).getExamEvents().size() != 0 || CalendarIndex.get(calendar.getTime()).getStudyReminders().size() != 0){
 
+                //Find the date in CalendarIndex
+                if (CalendarIndex.get(curr) != null){
+
+                    Log.d("YourCalendarActivity-UpdateCalendarCanvas","Date found: "+Y+"-"+MM+"-"+DD);
                     int DayWidth = 58;
                     int AddDepth = 10;
                     int margin_top = 0; //tracking top margin for new textviews
 
                     //Create textviews for events, assign colors and add to CalendarEvents, mapped to RowRef
-                    for (int j = 0; j < CalendarIndex.get(calendar.getTime()).getExamEvents().size(); j++){
+                    for (int j = 0; j < CalendarIndex.get(curr).getExamEvents().size(); j++){
                         //We don't have to check if a previous day has the same event--the way inputs are designed,
                         //events are unique and only last one day.
+                        Log.d("YourCalendarActivity-UpdateCalendarCanvas","ExamEvents found for date "+Y+"-"+MM+"-"+DD);
                         TextView temp = new TextView(this);
                         LinearLayout.LayoutParams tparams = new LinearLayout.LayoutParams(DayWidth,10,1);
                         //set position at left of current day with current depth margin_top
@@ -283,23 +352,24 @@ public class YourCalendarActivity extends AppCompatActivity {
                         margin_top+=AddDepth;
                         temp.setLayoutParams(tparams);
                         //make textbox occupy width of the current day in current_row, set text and color
-                        temp.setText(CalendarIndex.get(calendar.getTime()).getExamEvents().get(j));
+                        temp.setText(CalendarIndex.get(curr).getExamEvents().get(j));
                         temp.setTextSize(8);
-                        temp.setHighlightColor(ColorLookup[CalendarIndex.get(calendar.getTime()).getExamCourseID().get(j)]);
+                        temp.setHighlightColor(ColorLookup[CalendarIndex.get(curr).getExamCourseID().get(j)]);
                         temp.setTextColor(Color.WHITE);
                         //Add textbox to list for reference and to the view
                         CalendarEvents.add(temp);
-                        RowRef.put(CalendarIndex.get(calendar.getTime()).getExamEvents().get(j),temp);
                         Events.addView(temp);
-                        Log.d("YourCalendarActivity-UpdateCalendarCanvas","Exam event added: "+CalendarIndex.get(calendar.getTime()).getExamEvents().get(j));
+                        RowRef.put(CalendarIndex.get(curr).getExamEvents().get(j),temp);
+                        Log.d("YourCalendarActivity-UpdateCalendarCanvas","Exam event added to Calendar Graphic: "+CalendarIndex.get(curr).getExamEvents().get(j));
                     }
 
                     //Create textviews for reminders, assign colors and add to CalendarEvents, mapped to RowRef
-                    for (int j = 0; j < CalendarIndex.get(calendar.getTime()).getStudyReminders().size(); j++){
+                    for (int j = 0; j < CalendarIndex.get(curr).getStudyReminders().size(); j++){
                         //We need to check if previous days in the row have the reminder in question because
                         //they last for periods longer than a day (they are stored by name in RowRef)
                         //If the reminder does not exist in the row, make a new textbox
-                        if (!RowRef.containsKey(CalendarIndex.get(calendar.getTime()).getStudyReminders().get(j))){
+                        Log.d("YourCalendarActivity-UpdateCalendarCanvas","StudyReminders found for date "+Y+"-"+MM+"-"+DD);
+                        if (!RowRef.containsKey(CalendarIndex.get(curr).getStudyReminders().get(j))){
                             TextView temp = new TextView(this);
                             LinearLayout.LayoutParams tparams = new LinearLayout.LayoutParams(DayWidth,10,1);
                             //set position at left of current day with current depth margin_top
@@ -307,22 +377,23 @@ public class YourCalendarActivity extends AppCompatActivity {
                             margin_top+=AddDepth;
                             temp.setLayoutParams(tparams);
                             //make textbox occupy width of the current day in current_row, set text and color
-                            temp.setText(CalendarIndex.get(calendar.getTime()).getStudyReminders().get(j));
+                            temp.setText(CalendarIndex.get(curr).getStudyReminders().get(j));
                             temp.setTextSize(7);
-                            temp.setHighlightColor(ColorLookup[CalendarIndex.get(calendar.getTime()).getStudyCourseID().get(j)]);
+                            temp.setHighlightColor(ColorLookup[CalendarIndex.get(curr).getStudyCourseID().get(j)]);
                             temp.setTextColor(Color.WHITE);
                             //Add textbox to list for reference and to the view
                             CalendarEvents.add(temp);
-                            RowRef.put(CalendarIndex.get(calendar.getTime()).getStudyReminders().get(j),temp);
                             Events.addView(temp);
+                            RowRef.put(CalendarIndex.get(curr).getStudyReminders().get(j),temp);
+                            Log.d("YourCalendarActivity-UpdateCalendarCanvas","Study reminder event added to calendar graphic: "+CalendarIndex.get(curr).getStudyReminders().get(j));
                         } else {
                             //If the reminder already exists in the row, extend the existing textbox
-                            int new_width = RowRef.get(CalendarIndex.get(calendar.getTime()).getStudyReminders().get(j)).getWidth()
+                            int new_width = RowRef.get(CalendarIndex.get(curr).getStudyReminders().get(j)).getWidth()
                                     +DayWidth;
-                            RowRef.get(CalendarIndex.get(calendar.getTime()).getStudyReminders().get(j)).setWidth(new_width);
+                            RowRef.get(CalendarIndex.get(curr).getStudyReminders().get(j)).setWidth(new_width);
+                            Log.d("YourCalendarActivity-UpdateCalendarCanvas","Existing study reminder event extended in calendar graphic: "+CalendarIndex.get(curr).getStudyReminders().get(j));
 
                         }
-                        Log.d("YourCalendarActivity-UpdateCalendarCanvas","Reminder event added: "+CalendarIndex.get(calendar.getTime()).getStudyReminders().get(j));
                     }
 
                 }
@@ -334,7 +405,7 @@ public class YourCalendarActivity extends AppCompatActivity {
             //Now that the whole week's GUI has been built, add it to CalendarCanvas and move to the next day, the first day of the next month.
             CalendarCanvas.addView(current_row);
             calendar.add(Calendar.DAY_OF_MONTH,1);
-            current_date = calendar.getTime();
+            startmark = calendar.getTime();
         }
 
         Log.d("YourCalendarActivity","End of UpdateCalendarCanvas reached");
@@ -348,7 +419,13 @@ public class YourCalendarActivity extends AppCompatActivity {
 
                 //Update the calendar area to show the next month
                 //Note: UpdateCalendarCanvas clears the plot area and updates the headers
-                int month = Integer.parseInt(Month.getText().toString());
+                String mo = Month.getText().toString();
+                int month = 0;
+                for (int i = 0; i < MonthLookup.length; i++){
+                    if (MonthLookup[i] == mo){
+                        month = i;
+                    }
+                }
                 Calendar calendar = Calendar.getInstance();
                 calendar.set(Calendar.MONTH, month);
                 calendar.add(Calendar.MONTH,-1);
@@ -382,7 +459,13 @@ public class YourCalendarActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                int month = Integer.parseInt(Month.getText().toString());
+                String mo = Month.getText().toString();
+                int month = 0;
+                for (int i = 0; i < MonthLookup.length; i++){
+                    if (MonthLookup[i] == mo){
+                        month = i;
+                    }
+                }
                 Calendar calendar = Calendar.getInstance();
                 calendar.set(Calendar.MONTH, month);
                 calendar.add(Calendar.MONTH,1);
