@@ -82,14 +82,13 @@
             android:textStyle="bold" />
     </LinearLayout>
 
-    <LinearLayout
+    <RelativeLayout
         android:id="@+id/events"
         android:layout_width="match_parent"
         android:layout_height="80dp"
         android:layout_marginStart="0dp"
         android:layout_marginTop="0dp"
         android:layout_marginEnd="0dp"
-        android:layout_weight="1"
-        android:orientation="vertical" />
+        android:layout_weight="1" />
 
 </LinearLayout>

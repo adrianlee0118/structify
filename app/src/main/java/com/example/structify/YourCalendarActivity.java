@@ -12,6 +12,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -253,7 +254,7 @@ public class YourCalendarActivity extends AppCompatActivity {
             TextView Thursday = current_row.findViewById(R.id.thursday_number);
             TextView Friday = current_row.findViewById(R.id.friday_number);
             TextView Saturday = current_row.findViewById(R.id.saturday_number);
-            LinearLayout Events = current_row.findViewById(R.id.events);
+            RelativeLayout Events = current_row.findViewById(R.id.events);
 
             M = calendar.get(Calendar.MONTH);
             MM = Integer.toString(M+1);
@@ -352,18 +353,19 @@ public class YourCalendarActivity extends AppCompatActivity {
                         //events are unique and only last one day.
                         Log.d("YourCalendarActivity-UpdateCalendarCanvas","ExamEvents found for date "+Y+"-"+MM+"-"+DD);
                         TextView temp = new TextView(this);
-                        LinearLayout.LayoutParams tparams = new LinearLayout.LayoutParams(DayWidth,10,1);
+                        //LinearLayout.LayoutParams tparams = new LinearLayout.LayoutParams(DayWidth,10,1);
                         //set position at left of current day with current depth margin_top
                         //tparams.setMargins((i-1)*DayWidth,margin_top,0,0);
-                        temp.setLayoutParams(tparams);
+                        //temp.setLayoutParams(tparams);
                         temp.setLeft((i-1)*DayWidth);
                         temp.setTop(margin_top);
+                        temp.setWidth(DayWidth);
                         margin_top+=AddDepth;
                         //make textbox occupy width of the current day in current_row, set text and color
                         temp.setText(CalendarIndex.get(curr).getExamEvents().get(j));
                         temp.setTextSize(8);
                         temp.setHighlightColor(ColorLookup[CalendarIndex.get(curr).getExamCourseID().get(j)]);
-                        temp.setTextColor(Color.WHITE);
+                        //temp.setTextColor(Color.WHITE);
                         //Add textbox to list for reference and to the view
                         CalendarEvents.add(temp);
                         Events.addView(temp);
@@ -379,18 +381,19 @@ public class YourCalendarActivity extends AppCompatActivity {
                         Log.d("YourCalendarActivity-UpdateCalendarCanvas","StudyReminders found for date "+Y+"-"+MM+"-"+DD);
                         if (!RowRef.containsKey(CalendarIndex.get(curr).getStudyReminders().get(j))){
                             TextView temp = new TextView(this);
-                            LinearLayout.LayoutParams tparams = new LinearLayout.LayoutParams(DayWidth,10,1);
+                            //LinearLayout.LayoutParams tparams = new LinearLayout.LayoutParams(DayWidth,10,1);
                             //set position at left of current day with current depth margin_top
                             //tparams.setMargins((i-1)*DayWidth,margin_top,7*DayWidth-i*DayWidth,0,0);
-                            temp.setLayoutParams(tparams);
+                            //temp.setLayoutParams(tparams);
                             temp.setLeft((i-1)*DayWidth);
                             temp.setTop(margin_top);
+                            temp.setWidth(DayWidth);
                             margin_top+=AddDepth;
                             //make textbox occupy width of the current day in current_row, set text and color
                             temp.setText(CalendarIndex.get(curr).getStudyReminders().get(j));
                             temp.setTextSize(7);
                             temp.setHighlightColor(ColorLookup[CalendarIndex.get(curr).getStudyCourseID().get(j)]);
-                            temp.setTextColor(Color.WHITE);
+                            //temp.setTextColor(Color.WHITE);
                             //Add textbox to list for reference and to the view
                             CalendarEvents.add(temp);
                             Events.addView(temp);
