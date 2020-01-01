@@ -102,7 +102,7 @@ public class YourCalendarActivity extends AppCompatActivity {
             Log.d("YourCalendarActivity", "Populating CalendarIndex with information for course "+Courses.get(i).getCourseName());
 
             //For ease of reading, pull out all the information first
-            double course_time = Courses.get(i).getCourseWt()*StudyTime;
+            double course_time = (Courses.get(i).getCourseWt()/100)*StudyTime;
             Log.d("YourCalendarActivity", "Course time is "+course_time);
             double fa = Courses.get(i).FinalAllocation(course_time);
             Log.d("YourCalendarActivity", "Final allocation is "+fa);
@@ -360,11 +360,12 @@ public class YourCalendarActivity extends AppCompatActivity {
                         temp.setLeft((i-1)*DayWidth);
                         temp.setTop(margin_top);
                         temp.setWidth(DayWidth);
+                        temp.setHeight(10);
                         margin_top+=AddDepth;
                         //make textbox occupy width of the current day in current_row, set text and color
                         temp.setText(CalendarIndex.get(curr).getExamEvents().get(j));
                         temp.setTextSize(8);
-                        temp.setHighlightColor(ColorLookup[CalendarIndex.get(curr).getExamCourseID().get(j)]);
+                        temp.setTextColor(ColorLookup[CalendarIndex.get(curr).getExamCourseID().get(j)]);
                         //temp.setTextColor(Color.WHITE);
                         //Add textbox to list for reference and to the view
                         CalendarEvents.add(temp);
@@ -388,6 +389,7 @@ public class YourCalendarActivity extends AppCompatActivity {
                             temp.setLeft((i-1)*DayWidth);
                             temp.setTop(margin_top);
                             temp.setWidth(DayWidth);
+                            temp.setHeight(10);
                             margin_top+=AddDepth;
                             //make textbox occupy width of the current day in current_row, set text and color
                             temp.setText(CalendarIndex.get(curr).getStudyReminders().get(j));
@@ -491,7 +493,7 @@ public class YourCalendarActivity extends AppCompatActivity {
                 }
 
                 Calendar lastmonth = Calendar.getInstance();
-                lastmonth.setTime(Courses.get(0).getStartDate());
+                lastmonth.setTime(Courses.get(0).getEndDate());
                 if (calendar.get(Calendar.MONTH) == lastmonth.get(Calendar.MONTH)){
                     NextMonthButton.setVisibility(View.INVISIBLE);
                     NextMonthButton.setOnClickListener(null);
