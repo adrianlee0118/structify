@@ -9,6 +9,7 @@ import android.os.Parcelable;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
@@ -365,7 +366,7 @@ public class YourCalendarActivity extends AppCompatActivity {
                         temp.setBackgroundColor(ColorLookup[CalendarIndex.get(curr).getExamCourseID().get(j)]);
                         //Add textbox to list for reference and to the view
                         CalendarEvents.add(temp);
-                        Events.addView(temp);
+                        Events.addView(temp,tparams);
                         RowRef.put(CalendarIndex.get(curr).getExamEvents().get(j),temp);
                         Log.d("YourCalendarActivity-UpdateCalendarCanvas","Exam event added to Calendar Graphic: "+CalendarIndex.get(curr).getExamEvents().get(j));
                     }
@@ -390,7 +391,7 @@ public class YourCalendarActivity extends AppCompatActivity {
                             temp.setBackgroundColor(ColorLookup[CalendarIndex.get(curr).getStudyCourseID().get(j)]);
                             //Add textbox to list for reference and to the view
                             CalendarEvents.add(temp);
-                            Events.addView(temp);
+                            Events.addView(temp,tparams);
                             RowRef.put(CalendarIndex.get(curr).getStudyReminders().get(j),temp);
                             Log.d("YourCalendarActivity-UpdateCalendarCanvas","Study reminder event added to calendar graphic: "+CalendarIndex.get(curr).getStudyReminders().get(j));
                         } else {
