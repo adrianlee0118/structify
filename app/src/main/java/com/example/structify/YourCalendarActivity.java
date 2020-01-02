@@ -353,19 +353,16 @@ public class YourCalendarActivity extends AppCompatActivity {
                         //events are unique and only last one day.
                         Log.d("YourCalendarActivity-UpdateCalendarCanvas","ExamEvents found for date "+Y+"-"+MM+"-"+DD);
                         TextView temp = new TextView(this);
-                        //LinearLayout.LayoutParams tparams = new LinearLayout.LayoutParams(DayWidth,10,1);
+                        RelativeLayout.LayoutParams tparams = new RelativeLayout.LayoutParams(DayWidth,10);
                         //set position at left of current day with current depth margin_top
-                        //tparams.setMargins((i-1)*DayWidth,margin_top,0,0);
-                        //temp.setLayoutParams(tparams);
-                        temp.setX((i-1)*DayWidth);
-                        temp.setTop(margin_top);
-                        temp.setWidth(DayWidth);
+                        tparams.setMargins((i-1)*DayWidth,margin_top,0,0);
+                        temp.setLayoutParams(tparams);
                         margin_top+=AddDepth;
                         //make textbox occupy width of the current day in current_row, set text and color
                         temp.setText(CalendarIndex.get(curr).getExamEvents().get(j));
-                        temp.setTextSize(8);
-                        temp.setTextColor(ColorLookup[CalendarIndex.get(curr).getExamCourseID().get(j)]);
-                        //temp.setTextColor(Color.WHITE);
+                        temp.setTextSize(5);
+                        temp.setTextColor(Color.WHITE);
+                        temp.setBackgroundColor(ColorLookup[CalendarIndex.get(curr).getExamCourseID().get(j)]);
                         //Add textbox to list for reference and to the view
                         CalendarEvents.add(temp);
                         Events.addView(temp);
@@ -381,19 +378,16 @@ public class YourCalendarActivity extends AppCompatActivity {
                         Log.d("YourCalendarActivity-UpdateCalendarCanvas","StudyReminders found for date "+Y+"-"+MM+"-"+DD);
                         if (!RowRef.containsKey(CalendarIndex.get(curr).getStudyReminders().get(j))){
                             TextView temp = new TextView(this);
-                            //LinearLayout.LayoutParams tparams = new LinearLayout.LayoutParams(DayWidth,10,1);
+                            RelativeLayout.LayoutParams tparams = new RelativeLayout.LayoutParams(DayWidth,10);
                             //set position at left of current day with current depth margin_top
-                            //tparams.setMargins((i-1)*DayWidth,margin_top,7*DayWidth-i*DayWidth,0,0);
-                            //temp.setLayoutParams(tparams);
-                            temp.setLeft((i-1)*DayWidth);
-                            temp.setTop(margin_top);
-                            temp.setWidth(DayWidth);
+                            tparams.setMargins((i-1)*DayWidth,margin_top,7*DayWidth-i*DayWidth,0);
+                            temp.setLayoutParams(tparams);
                             margin_top+=AddDepth;
                             //make textbox occupy width of the current day in current_row, set text and color
                             temp.setText(CalendarIndex.get(curr).getStudyReminders().get(j));
-                            temp.setTextSize(7);
-                            temp.setHighlightColor(ColorLookup[CalendarIndex.get(curr).getStudyCourseID().get(j)]);
-                            //temp.setTextColor(Color.WHITE);
+                            temp.setTextSize(5);
+                            temp.setTextColor(Color.WHITE);
+                            temp.setBackgroundColor(ColorLookup[CalendarIndex.get(curr).getStudyCourseID().get(j)]);
                             //Add textbox to list for reference and to the view
                             CalendarEvents.add(temp);
                             Events.addView(temp);
