@@ -357,10 +357,9 @@ public class YourCalendarActivity extends AppCompatActivity {
                         //set position at left of current day with current depth margin_top
                         //tparams.setMargins((i-1)*DayWidth,margin_top,0,0);
                         //temp.setLayoutParams(tparams);
-                        temp.setLeft((i-1)*DayWidth);
+                        temp.setX((i-1)*DayWidth);
                         temp.setTop(margin_top);
                         temp.setWidth(DayWidth);
-                        temp.setHeight(10);
                         margin_top+=AddDepth;
                         //make textbox occupy width of the current day in current_row, set text and color
                         temp.setText(CalendarIndex.get(curr).getExamEvents().get(j));
@@ -389,7 +388,6 @@ public class YourCalendarActivity extends AppCompatActivity {
                             temp.setLeft((i-1)*DayWidth);
                             temp.setTop(margin_top);
                             temp.setWidth(DayWidth);
-                            temp.setHeight(10);
                             margin_top+=AddDepth;
                             //make textbox occupy width of the current day in current_row, set text and color
                             temp.setText(CalendarIndex.get(curr).getStudyReminders().get(j));
