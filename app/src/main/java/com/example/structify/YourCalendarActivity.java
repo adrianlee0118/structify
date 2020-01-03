@@ -354,44 +354,88 @@ public class YourCalendarActivity extends AppCompatActivity {
                 Log.d("YourCalendarActivity-UpdateCalendarCanvas","Making textviews for " +
                         "Day "+i+" schedule in the row, date: "+curr);
 
+                //Find the date in CalendarIndex
+                if (CalendarIndex.get(curr) != null){
 
-                //Extend textviews for existing reminders
-                for (int j = 0; j < CalendarIndex.get(curr).getStudyReminders().size(); j++){
-                    //We need to check if previous days in the row have the reminder in question because
-                    //they last for periods longer than a day (they are stored by name in RowRef)
-                    Log.d("YourCalendarActivity-UpdateCalendarCanvas","StudyReminders " +
-                            "found for date "+Y+"-"+MM+"-"+DD);
-                    if (RowRef.containsKey(CalendarIndex.get(curr).getStudyReminders().get(j))) {
-                        //If the reminder already exists in the row, extend the existing textbox
-                        ConstraintLayout.LayoutParams tparams =
-                                (ConstraintLayout.LayoutParams) RowRef.get(CalendarIndex.get(curr)
-                                        .getStudyReminders().get(j)).getLayoutParams();
-                        tparams.rightToRight = xGridlines[i].getId();
-                        RowRef.get(CalendarIndex.get(curr).getStudyReminders().get(j))
-                                .setLayoutParams(tparams);
-                        //find the y position of the existing textview, to be combined with current
-                        //x position to mark in boolean matrix as occupied
-                        int topID = tparams.topToTop;
-                        int ypos;
-                        for (ypos = 0; ypos < yGridlines.length; ypos++){
-                            if (topID == yGridlines[ypos].getId()){
-                                break;
+                    Log.d("YourCalendarActivity-UpdateCalendarCanvas","Date found: "+Y+"-"+MM+"-"+DD);
+
+                    //Extend textviews for existing reminders
+                    for (int j = 0; j < CalendarIndex.get(curr).getStudyReminders().size(); j++){
+                        //We need to check if previous days in the row have the reminder in question because
+                        //they last for periods longer than a day (they are stored by name in RowRef)
+                        Log.d("YourCalendarActivity-UpdateCalendarCanvas","StudyReminders " +
+                                "found for date "+Y+"-"+MM+"-"+DD);
+                        if (RowRef.containsKey(CalendarIndex.get(curr).getStudyReminders().get(j))) {
+                            //If the reminder already exists in the row, extend the existing textbox
+                            ConstraintLayout.LayoutParams tparams =
+                                    (ConstraintLayout.LayoutParams) RowRef.get(CalendarIndex.get(curr)
+                                            .getStudyReminders().get(j)).getLayoutParams();
+                            tparams.rightToRight = xGridlines[i].getId();
+                            RowRef.get(CalendarIndex.get(curr).getStudyReminders().get(j))
+                                    .setLayoutParams(tparams);
+                            //find the y position of the existing textview, to be combined with current
+                            //x position to mark in boolean matrix as occupied
+                            int topID = tparams.topToTop;
+                            int ypos;
+                            for (ypos = 0; ypos < yGridlines.length; ypos++){
+                                if (topID == yGridlines[ypos].getId()){
+                                    break;
+                                }
                             }
+                            occupied[ypos][i-1] = true;
+                            Log.d("YourCalendarActivity-UpdateCalendarCanvas","Existing study " +
+                                    "reminder event extended in calendar graphic: "+
+                                    CalendarIndex.get(curr).getStudyReminders().get(j));
+
                         }
-                        occupied[ypos][i-1] = true;
-                        Log.d("YourCalendarActivity-UpdateCalendarCanvas","Existing study " +
-                                "reminder event extended in calendar graphic: "+
-                                CalendarIndex.get(curr).getStudyReminders().get(j));
-
                     }
-                }
 
-                //Create new textviews for new reminders that are not yet stored in RowRef
-                for (int j = 0; j < CalendarIndex.get(curr).getStudyReminders().size(); j++){
-                    if (!RowRef.containsKey(CalendarIndex.get(curr).getStudyReminders().get(j))){
+                    //Create new textviews for new reminders that are not yet stored in RowRef
+                    for (int j = 0; j < CalendarIndex.get(curr).getStudyReminders().size(); j++){
+                        if (!RowRef.containsKey(CalendarIndex.get(curr).getStudyReminders().get(j))){
+                            TextView temp = new TextView(this);
+                            temp.setId(View.generateViewId());
+                            ConstraintLayout.LayoutParams tparams = new ConstraintLayout.LayoutParams(0,0);
+                            //set position of view using guidelines
+                            int xpos = i;
+                            int ypos;
+                            for (ypos = 0; ypos < occupied.length; ypos++){
+                                if (occupied[ypos][i] == false){
+                                    break;
+                                }
+                            }
+                            tparams.leftToLeft = xGridlines[xpos-1].getId();
+                            tparams.rightToRight = xGridlines[xpos].getId();
+                            tparams.topToTop = yGridlines[ypos].getId();
+                            tparams.bottomToBottom = yGridlines[ypos+1].getId();
+                            tparams.validate();
+                            //Add content
+                            temp.setText(CalendarIndex.get(curr).getStudyReminders().get(j));
+                            temp.setTextSize(5);
+                            temp.setTextColor(Color.WHITE);
+                            temp.setBackgroundColor(ColorLookup[CalendarIndex.get(curr).getStudyCourseID().get(j)]);
+                            //Add textbox to list for reference and to the view
+                            CalendarEvents.add(temp);
+                            Events.addView(temp,tparams);
+                            RowRef.put(CalendarIndex.get(curr).getStudyReminders().get(j),temp);
+                            //Mark space as occupied in the boolean matrix
+                            occupied[ypos][xpos-1] = true;
+                            Log.d("YourCalendarActivity-UpdateCalendarCanvas","Study " +
+                                    "reminder event added to calendar graphic: "+CalendarIndex.get(curr)
+                                    .getStudyReminders().get(j));
+                        }
+                    }
+
+                    //Create textviews for events, all of which are new
+                    for (int j = 0; j < CalendarIndex.get(curr).getExamEvents().size(); j++){
+                        //We don't have to check if a previous day has the same event--the way
+                        //inputs are designed, events are unique and only last one day.
+                        Log.d("YourCalendarActivity-UpdateCalendarCanvas","ExamEvents " +
+                                "found for date "+Y+"-"+MM+"-"+DD);
                         TextView temp = new TextView(this);
                         temp.setId(View.generateViewId());
-                        ConstraintLayout.LayoutParams tparams = new ConstraintLayout.LayoutParams(0,0);
+                        ConstraintLayout.LayoutParams tparams =
+                                new ConstraintLayout.LayoutParams(0,0);
                         //set position of view using guidelines
                         int xpos = i;
                         int ypos;
@@ -406,56 +450,20 @@ public class YourCalendarActivity extends AppCompatActivity {
                         tparams.bottomToBottom = yGridlines[ypos+1].getId();
                         tparams.validate();
                         //Add content
-                        temp.setText(CalendarIndex.get(curr).getStudyReminders().get(j));
-                        temp.setTextSize(5);
-                        temp.setTextColor(Color.WHITE);
-                        temp.setBackgroundColor(ColorLookup[CalendarIndex.get(curr).getStudyCourseID().get(j)]);
-                        //Add textbox to list for reference and to the view
-                        CalendarEvents.add(temp);
-                        Events.addView(temp,tparams);
-                        RowRef.put(CalendarIndex.get(curr).getStudyReminders().get(j),temp);
-                        //Mark space as occupied in the boolean matrix
-                        occupied[ypos][xpos-1] = true;
-                        Log.d("YourCalendarActivity-UpdateCalendarCanvas","Study reminder event added to calendar graphic: "+CalendarIndex.get(curr).getStudyReminders().get(j));
-                    }
-                }
-
-                //Find the date in CalendarIndex
-                if (CalendarIndex.get(curr) != null){
-
-                    Log.d("YourCalendarActivity-UpdateCalendarCanvas","Date found: "+Y+"-"+MM+"-"+DD);
-                    int DayWidth = 58;
-                    int AddDepth = 10;
-                    int margin_top = 0; //tracking top margin for new textviews
-
-                    //Create textviews for events, assign colors and add to CalendarEvents, mapped to RowRef
-                    for (int j = 0; j < CalendarIndex.get(curr).getExamEvents().size(); j++){
-                        //We don't have to check if a previous day has the same event--the way inputs are designed,
-                        //events are unique and only last one day.
-                        Log.d("YourCalendarActivity-UpdateCalendarCanvas","ExamEvents found for date "+Y+"-"+MM+"-"+DD);
-                        TextView temp = new TextView(this);
-                        temp.setId(View.generateViewId());
-                        ConstraintLayout.LayoutParams tparams = new ConstraintLayout.LayoutParams(0,0);
-                        //set position at left of current day with current depth margin_top
-                        tparams.leftToLeft = R.id.x0;
-                        tparams.rightToRight = R.id.x1;
-                        tparams.topToTop = R.id.y0;
-                        tparams.bottomToBottom = R.id.y1;
-                        tparams.validate();
-                        //tparams.setMargins((i-1)*DayWidth,margin_top,0,0);
-                        temp.setLayoutParams(tparams);
-                        margin_top+=AddDepth;
-                        //make textbox occupy width of the current day in current_row, set text and color
                         temp.setText(CalendarIndex.get(curr).getExamEvents().get(j));
                         temp.setTextSize(5);
                         temp.setTextColor(Color.WHITE);
-                        temp.setBackgroundColor(ColorLookup[CalendarIndex.get(curr).getExamCourseID().get(j)]);
-
+                        temp.setBackgroundColor(ColorLookup[CalendarIndex.get(curr)
+                                .getExamCourseID().get(j)]);
                         //Add textbox to list for reference and to the view
                         CalendarEvents.add(temp);
                         Events.addView(temp,tparams);
                         RowRef.put(CalendarIndex.get(curr).getExamEvents().get(j),temp);
-                        Log.d("YourCalendarActivity-UpdateCalendarCanvas","Exam event added to Calendar Graphic: "+CalendarIndex.get(curr).getExamEvents().get(j));
+                        //Mark space as occupied in the boolean matrix
+                        occupied[ypos][xpos-1] = true;
+                        Log.d("YourCalendarActivity-UpdateCalendarCanvas","Exam event " +
+                                "added to Calendar Graphic: "+CalendarIndex.get(curr)
+                                .getExamEvents().get(j));
                     }
 
                 }
