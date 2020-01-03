@@ -18,6 +18,7 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.constraintlayout.widget.ConstraintSet;
 
 import java.text.ParseException;
 import java.time.LocalDate;
@@ -365,6 +366,8 @@ public class YourCalendarActivity extends AppCompatActivity {
                         temp.setTextSize(5);
                         temp.setTextColor(Color.WHITE);
                         temp.setBackgroundColor(ColorLookup[CalendarIndex.get(curr).getExamCourseID().get(j)]);
+                        ConstraintSet set = new ConstraintSet();
+                        set.connect(temp.getId(),ConstraintSet.LEFT,Events.getId(),ConstraintSet.RIGHT, 2);
                         //Add textbox to list for reference and to the view
                         CalendarEvents.add(temp);
                         Events.addView(temp,tparams);
