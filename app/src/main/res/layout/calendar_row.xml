@@ -97,56 +97,56 @@
             android:id="@+id/x0"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orienation="vertical"
+            android:orientation="vertical"
             app:layout_constraintGuide_percent="0"/>
 
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/x1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orienation="vertical"
+            android:orientation="vertical"
             app:layout_constraintGuide_percent="0.143"/>
 
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/x2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orienation="vertical"
+            android:orientation="vertical"
             app:layout_constraintGuide_percent="0.286"/>
 
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/x3"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orienation="vertical"
+            android:orientation="vertical"
             app:layout_constraintGuide_percent="0.429"/>
 
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/x4"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orienation="vertical"
+            android:orientation="vertical"
             app:layout_constraintGuide_percent="0.571"/>
 
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/x5"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orienation="vertical"
+            android:orientation="vertical"
             app:layout_constraintGuide_percent="0.714"/>
 
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/x6"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orienation="vertical"
+            android:orientation="vertical"
             app:layout_constraintGuide_percent="0.857"/>
 
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/x7"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orienation="vertical"
+            android:orientation="vertical"
             app:layout_constraintGuide_percent="1.00"/>
 
         //Horizontal GridLines for placing events/reminders on the same day
@@ -154,42 +154,42 @@
             android:id="@+id/y0"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orienation="horizontal"
+            android:orientation="horizontal"
             app:layout_constraintGuide_percent="0"/>
 
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/y1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orienation="horizontal"
+            android:orientation="horizontal"
             app:layout_constraintGuide_percent="0.2"/>
 
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/y2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orienation="horizontal"
+            android:orientation="horizontal"
             app:layout_constraintGuide_percent="0.4"/>
 
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/y3"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orienation="horizontal"
+            android:orientation="horizontal"
             app:layout_constraintGuide_percent="0.6"/>
 
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/y4"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orienation="horizontal"
+            android:orientation="horizontal"
             app:layout_constraintGuide_percent="0.8"/>
 
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/y5"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orienation="horizontal"
+            android:orientation="horizontal"
             app:layout_constraintGuide_percent="1.00"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
