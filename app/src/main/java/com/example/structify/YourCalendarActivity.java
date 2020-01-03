@@ -17,6 +17,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 
 import java.text.ParseException;
 import java.time.LocalDate;
@@ -255,7 +256,7 @@ public class YourCalendarActivity extends AppCompatActivity {
             TextView Thursday = current_row.findViewById(R.id.thursday_number);
             TextView Friday = current_row.findViewById(R.id.friday_number);
             TextView Saturday = current_row.findViewById(R.id.saturday_number);
-            RelativeLayout Events = current_row.findViewById(R.id.events);
+            ConstraintLayout Events = current_row.findViewById(R.id.events);
 
             M = calendar.get(Calendar.MONTH);
             MM = Integer.toString(M+1);
@@ -354,7 +355,7 @@ public class YourCalendarActivity extends AppCompatActivity {
                         //events are unique and only last one day.
                         Log.d("YourCalendarActivity-UpdateCalendarCanvas","ExamEvents found for date "+Y+"-"+MM+"-"+DD);
                         TextView temp = new TextView(this);
-                        RelativeLayout.LayoutParams tparams = new RelativeLayout.LayoutParams(DayWidth,10);
+                        ConstraintLayout.LayoutParams tparams = new ConstraintLayout.LayoutParams(0,0);
                         //set position at left of current day with current depth margin_top
                         tparams.setMargins((i-1)*DayWidth,margin_top,0,0);
                         temp.setLayoutParams(tparams);
@@ -379,7 +380,7 @@ public class YourCalendarActivity extends AppCompatActivity {
                         Log.d("YourCalendarActivity-UpdateCalendarCanvas","StudyReminders found for date "+Y+"-"+MM+"-"+DD);
                         if (!RowRef.containsKey(CalendarIndex.get(curr).getStudyReminders().get(j))){
                             TextView temp = new TextView(this);
-                            RelativeLayout.LayoutParams tparams = new RelativeLayout.LayoutParams(DayWidth,10);
+                            ConstraintLayout.LayoutParams tparams = new ConstraintLayout.LayoutParams(DayWidth,10);
                             //set position at left of current day with current depth margin_top
                             tparams.setMargins((i-1)*DayWidth,margin_top,7*DayWidth-i*DayWidth,0);
                             temp.setLayoutParams(tparams);

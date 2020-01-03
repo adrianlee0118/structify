@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical">
 
     <LinearLayout
@@ -82,13 +83,115 @@
             android:textStyle="bold" />
     </LinearLayout>
 
-    <RelativeLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/events"
         android:layout_width="match_parent"
         android:layout_height="80dp"
         android:layout_marginStart="0dp"
         android:layout_marginTop="0dp"
         android:layout_marginEnd="0dp"
-        android:layout_weight="1" />
+        android:layout_weight="1">
+
+        //Vertical Grid Lines for separating Days of week
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/x0"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orienation="vertical"
+            app:layout_constraintGuide_percent="0"/>
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/x1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orienation="vertical"
+            app:layout_constraintGuide_percent="0.143"/>
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/x2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orienation="vertical"
+            app:layout_constraintGuide_percent="0.286"/>
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/x3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orienation="vertical"
+            app:layout_constraintGuide_percent="0.429"/>
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/x4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orienation="vertical"
+            app:layout_constraintGuide_percent="0.571"/>
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/x5"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orienation="vertical"
+            app:layout_constraintGuide_percent="0.714"/>
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/x6"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orienation="vertical"
+            app:layout_constraintGuide_percent="0.857"/>
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/x7"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orienation="vertical"
+            app:layout_constraintGuide_percent="1.00"/>
+
+        //Horizontal GridLines for placing events/reminders on the same day
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/y0"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orienation="horizontal"
+            app:layout_constraintGuide_percent="0"/>
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/y1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orienation="horizontal"
+            app:layout_constraintGuide_percent="0.2"/>
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/y2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orienation="horizontal"
+            app:layout_constraintGuide_percent="0.4"/>
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/y3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orienation="horizontal"
+            app:layout_constraintGuide_percent="0.6"/>
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/y4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orienation="horizontal"
+            app:layout_constraintGuide_percent="0.8"/>
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/y5"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orienation="horizontal"
+            app:layout_constraintGuide_percent="1.00"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </LinearLayout>

@@ -132,12 +132,18 @@
             android:textColor="#222222" />
     </LinearLayout>
 
-    <LinearLayout
-        android:id="@+id/calendar_canvas"
+    <ScrollView
+        android:id="@+id/calendar_area"
         android:layout_width="match_parent"
         android:layout_height="529dp"
-        android:layout_weight="1"
-        android:orientation="vertical"></LinearLayout>
+        android:layout_weight="1">
+
+        <LinearLayout
+            android:id="@+id/calendar_canvas"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"></LinearLayout>
+    </ScrollView>
 
     <Button
         android:id="@+id/import_to_google_calendar_button"
