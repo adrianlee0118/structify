@@ -499,6 +499,7 @@ public class YourCalendarActivity extends AppCompatActivity {
                 Calendar calendar = Calendar.getInstance();
                 calendar.set(Calendar.MONTH, month);
                 calendar.add(Calendar.MONTH,-1);
+                calendar.set(Calendar.DAY_OF_MONTH,1);
                 UpdateCalendarCanvas(calendar.getTime());
 
                 //If we were on the last month before, make the next month button visible
@@ -539,6 +540,7 @@ public class YourCalendarActivity extends AppCompatActivity {
                 Calendar calendar = Calendar.getInstance();
                 calendar.set(Calendar.MONTH, month);
                 calendar.add(Calendar.MONTH,1);
+                calendar.set(Calendar.DAY_OF_MONTH,1);
                 UpdateCalendarCanvas(calendar.getTime());
 
                 if (PreviousMonthButton.getVisibility() == View.INVISIBLE){
