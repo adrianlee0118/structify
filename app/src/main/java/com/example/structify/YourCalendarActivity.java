@@ -395,15 +395,15 @@ public class YourCalendarActivity extends AppCompatActivity {
                             temp.setId(TextView.generateViewId());
                             ConstraintLayout.LayoutParams tparams = new ConstraintLayout.LayoutParams(0,0);
                             //set position of view using guidelines
-                            int xpos = i;
+                            int xpos = i-1;
                             int ypos;
                             for (ypos = 0; ypos < occupied.length; ypos++){
-                                if (occupied[ypos][i] == false){
+                                if (occupied[ypos][xpos] == false){
                                     break;
                                 }
                             }
-                            tparams.leftToLeft = xGridlines[xpos-1];
-                            tparams.rightToRight = xGridlines[xpos];
+                            tparams.leftToLeft = xGridlines[xpos];
+                            tparams.rightToRight = xGridlines[xpos+1];
                             tparams.topToTop = yGridlines[ypos];
                             tparams.bottomToBottom = yGridlines[ypos+1];
                             tparams.validate();
@@ -417,7 +417,7 @@ public class YourCalendarActivity extends AppCompatActivity {
                             Events.addView(temp,tparams);
                             RowRef.put(CalendarIndex.get(curr).getStudyReminders().get(j),temp);
                             //Mark space as occupied in the boolean matrix
-                            occupied[ypos][xpos-1] = true;
+                            occupied[ypos][xpos] = true;
                             Log.d("YourCalendarActivity-UpdateCalendarCanvas","Study " +
                                     "reminder event added to calendar graphic: "+CalendarIndex.get(curr)
                                     .getStudyReminders().get(j));
@@ -435,15 +435,15 @@ public class YourCalendarActivity extends AppCompatActivity {
                         ConstraintLayout.LayoutParams tparams =
                                 new ConstraintLayout.LayoutParams(0,0);
                         //set position of view using guidelines
-                        int xpos = i;
+                        int xpos = i-1;
                         int ypos;
                         for (ypos = 0; ypos < occupied.length; ypos++){
-                            if (occupied[ypos][i] == false){
+                            if (occupied[ypos][xpos] == false){
                                 break;
                             }
                         }
-                        tparams.leftToLeft = xGridlines[xpos-1];
-                        tparams.rightToRight = xGridlines[xpos];
+                        tparams.leftToLeft = xGridlines[xpos];
+                        tparams.rightToRight = xGridlines[xpos+1];
                         tparams.topToTop = yGridlines[ypos];
                         tparams.bottomToBottom = yGridlines[ypos+1];
                         tparams.validate();
@@ -458,7 +458,7 @@ public class YourCalendarActivity extends AppCompatActivity {
                         Events.addView(temp,tparams);
                         RowRef.put(CalendarIndex.get(curr).getExamEvents().get(j),temp);
                         //Mark space as occupied in the boolean matrix
-                        occupied[ypos][xpos-1] = true;
+                        occupied[ypos][xpos] = true;
                         Log.d("YourCalendarActivity-UpdateCalendarCanvas","Exam event " +
                                 "added to Calendar Graphic: "+CalendarIndex.get(curr)
                                 .getExamEvents().get(j));
