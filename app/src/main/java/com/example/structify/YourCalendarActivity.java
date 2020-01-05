@@ -321,10 +321,10 @@ public class YourCalendarActivity extends AppCompatActivity {
             //Create boolean matrix to track available spaces in the calendar_row grid to guide insertion of new events--values false by default
             boolean occupied[][] = new boolean[5][7];
             //Create lookup for gridlines
-            Guideline xGridlines[] = new Guideline[]{findViewById(R.id.x0),findViewById(R.id.x1),
-                    findViewById(R.id.x2),findViewById(R.id.x3),findViewById(R.id.x4),
-                    findViewById(R.id.x5),findViewById(R.id.x6),findViewById(R.id.x7)};
-            Guideline yGridlines[] = new Guideline[]{findViewById(R.id.y0),findViewById(R.id.y1),
+            Guideline[] xGridlines = new Guideline[]{findViewById(R.id.x0), findViewById(R.id.x1),
+                    findViewById(R.id.x2), findViewById(R.id.x3), findViewById(R.id.x4),
+                    findViewById(R.id.x5), findViewById(R.id.x6), findViewById(R.id.x7)};
+            Guideline[] yGridlines = new Guideline[]{findViewById(R.id.y0),findViewById(R.id.y1),
                     findViewById(R.id.y2),findViewById(R.id.y3),findViewById(R.id.y4),
                     findViewById(R.id.y5)};
 
@@ -363,9 +363,9 @@ public class YourCalendarActivity extends AppCompatActivity {
                     for (int j = 0; j < CalendarIndex.get(curr).getStudyReminders().size(); j++){
                         //We need to check if previous days in the row have the reminder in question because
                         //they last for periods longer than a day (they are stored by name in RowRef)
-                        Log.d("YourCalendarActivity-UpdateCalendarCanvas","StudyReminders " +
-                                "found for date "+Y+"-"+MM+"-"+DD);
                         if (RowRef.containsKey(CalendarIndex.get(curr).getStudyReminders().get(j))) {
+                            Log.d("YourCalendarActivity-UpdateCalendarCanvas","StudyReminders " +
+                                    "found for date "+Y+"-"+MM+"-"+DD);
                             //If the reminder already exists in the row, extend the existing textbox
                             ConstraintLayout.LayoutParams tparams =
                                     (ConstraintLayout.LayoutParams) RowRef.get(CalendarIndex.get(curr)
@@ -393,6 +393,8 @@ public class YourCalendarActivity extends AppCompatActivity {
                     //Create new textviews for new reminders that are not yet stored in RowRef
                     for (int j = 0; j < CalendarIndex.get(curr).getStudyReminders().size(); j++){
                         if (!RowRef.containsKey(CalendarIndex.get(curr).getStudyReminders().get(j))){
+                            Log.d("YourCalendarActivity-UpdateCalendarCanvas","StudyReminders " +
+                                    "found for date "+Y+"-"+MM+"-"+DD);
                             TextView temp = new TextView(this);
                             temp.setId(View.generateViewId());
                             ConstraintLayout.LayoutParams tparams = new ConstraintLayout.LayoutParams(0,0);
