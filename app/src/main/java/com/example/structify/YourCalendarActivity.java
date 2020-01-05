@@ -321,50 +321,8 @@ public class YourCalendarActivity extends AppCompatActivity {
             //Create boolean matrix to track available spaces in the calendar_row grid to guide insertion of new events--values false by default
             boolean occupied[][] = new boolean[5][7];
             //Create lookup for gridlines--so we can access them based on a number index
-            Guideline x0 = new Guideline(this);
-            x0 = findViewById(R.id.x0);
-            x0.setId(Guideline.generateViewId());
-            Guideline x1 = new Guideline(this);
-            x1 = findViewById(R.id.x1);
-            x1.setId(Guideline.generateViewId());
-            Guideline x2 = new Guideline(this);
-            x2 = findViewById(R.id.x2);
-            x2.setId(Guideline.generateViewId());
-            Guideline x3 = new Guideline(this);
-            x3 = findViewById(R.id.x3);
-            x3.setId(Guideline.generateViewId());
-            Guideline x4 = new Guideline(this);
-            x4 = findViewById(R.id.x4);
-            x4.setId(Guideline.generateViewId());
-            Guideline x5 = new Guideline(this);
-            x5 = findViewById(R.id.x5);
-            x5.setId(Guideline.generateViewId());
-            Guideline x6 = new Guideline(this);
-            x6 = findViewById(R.id.x6);
-            x6.setId(Guideline.generateViewId());
-            Guideline x7 = new Guideline(this);
-            x7 = findViewById(R.id.x7);
-            x7.setId(Guideline.generateViewId());
-            Guideline[] xGridlines = new Guideline[]{x0,x1,x2,x3,x4,x5,x6,x7};
-            Guideline y0 = new Guideline(this);
-            y0 = findViewById(R.id.y0);
-            y0.setId(Guideline.generateViewId());
-            Guideline y1 = new Guideline(this);
-            y1 = findViewById(R.id.y1);
-            y1.setId(Guideline.generateViewId());
-            Guideline y2 = new Guideline(this);
-            y2 = findViewById(R.id.y2);
-            y2.setId(Guideline.generateViewId());
-            Guideline y3 = new Guideline(this);
-            y3 = findViewById(R.id.y3);
-            y3.setId(Guideline.generateViewId());
-            Guideline y4 = new Guideline(this);
-            y4 = findViewById(R.id.y4);
-            y4.setId(Guideline.generateViewId());
-            Guideline y5 = new Guideline(this);
-            y5 = findViewById(R.id.y5);
-            y5.setId(Guideline.generateViewId());
-            Guideline[] yGridlines = new Guideline[]{y0,y1,y2,y3,y4,y5};
+            int[] xGridlines = new int[]{R.id.x0,R.id.x1,R.id.x2,R.id.x3,R.id.x4,R.id.x5,R.id.x6,R.id.x7};
+            int[] yGridlines = new int[]{R.id.y0,R.id.y1,R.id.y2,R.id.y3,R.id.y4,R.id.y5};
 
             //Create textview reminders in the row view and set left, depth positions and width
             for (int i = 1; i <= 7; i++){
@@ -408,7 +366,7 @@ public class YourCalendarActivity extends AppCompatActivity {
                             ConstraintLayout.LayoutParams tparams =
                                     (ConstraintLayout.LayoutParams) RowRef.get(CalendarIndex.get(curr)
                                             .getStudyReminders().get(j)).getLayoutParams();
-                            tparams.rightToRight = xGridlines[i].getId();
+                            tparams.rightToRight = xGridlines[i];
                             RowRef.get(CalendarIndex.get(curr).getStudyReminders().get(j))
                                     .setLayoutParams(tparams);
                             //find the y position of the existing textview, to be combined with current
@@ -416,7 +374,7 @@ public class YourCalendarActivity extends AppCompatActivity {
                             int topID = tparams.topToTop;
                             int ypos;
                             for (ypos = 0; ypos < yGridlines.length; ypos++){
-                                if (topID == yGridlines[ypos].getId()){
+                                if (topID == yGridlines[ypos]){
                                     break;
                                 }
                             }
@@ -434,7 +392,7 @@ public class YourCalendarActivity extends AppCompatActivity {
                             Log.d("YourCalendarActivity-UpdateCalendarCanvas","StudyReminders " +
                                     "found for date "+Y+"-"+MM+"-"+DD);
                             TextView temp = new TextView(this);
-                            temp.setId(View.generateViewId());
+                            temp.setId(TextView.generateViewId());
                             ConstraintLayout.LayoutParams tparams = new ConstraintLayout.LayoutParams(0,0);
                             //set position of view using guidelines
                             int xpos = i;
@@ -444,10 +402,10 @@ public class YourCalendarActivity extends AppCompatActivity {
                                     break;
                                 }
                             }
-                            tparams.leftToLeft = xGridlines[xpos-1].getId();
-                            tparams.rightToRight = xGridlines[xpos].getId();
-                            tparams.topToTop = yGridlines[ypos].getId();
-                            tparams.bottomToBottom = yGridlines[ypos+1].getId();
+                            tparams.leftToLeft = xGridlines[xpos-1];
+                            tparams.rightToRight = xGridlines[xpos];
+                            tparams.topToTop = yGridlines[ypos];
+                            tparams.bottomToBottom = yGridlines[ypos+1];
                             tparams.validate();
                             //Add content
                             temp.setText(CalendarIndex.get(curr).getStudyReminders().get(j));
@@ -473,7 +431,7 @@ public class YourCalendarActivity extends AppCompatActivity {
                         Log.d("YourCalendarActivity-UpdateCalendarCanvas","ExamEvents " +
                                 "found for date "+Y+"-"+MM+"-"+DD);
                         TextView temp = new TextView(this);
-                        temp.setId(View.generateViewId());
+                        temp.setId(TextView.generateViewId());
                         ConstraintLayout.LayoutParams tparams =
                                 new ConstraintLayout.LayoutParams(0,0);
                         //set position of view using guidelines
@@ -484,10 +442,10 @@ public class YourCalendarActivity extends AppCompatActivity {
                                 break;
                             }
                         }
-                        tparams.leftToLeft = xGridlines[xpos-1].getId();
-                        tparams.rightToRight = xGridlines[xpos].getId();
-                        tparams.topToTop = yGridlines[ypos].getId();
-                        tparams.bottomToBottom = yGridlines[ypos+1].getId();
+                        tparams.leftToLeft = xGridlines[xpos-1];
+                        tparams.rightToRight = xGridlines[xpos];
+                        tparams.topToTop = yGridlines[ypos];
+                        tparams.bottomToBottom = yGridlines[ypos+1];
                         tparams.validate();
                         //Add content
                         temp.setText(CalendarIndex.get(curr).getExamEvents().get(j));
