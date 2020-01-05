@@ -9,18 +9,13 @@ import android.os.Parcelable;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.constraintlayout.solver.widgets.WidgetContainer;
 import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.constraintlayout.widget.ConstraintSet;
-import androidx.constraintlayout.widget.Guideline;
 
 import java.text.ParseException;
 import java.time.LocalDate;
@@ -497,7 +492,12 @@ public class YourCalendarActivity extends AppCompatActivity {
                 Calendar calendar = Calendar.getInstance();
                 calendar.set(Calendar.MONTH, month);
                 calendar.add(Calendar.MONTH,-1);
-                calendar.set(Calendar.DAY_OF_MONTH,1);
+                //Check if the first day is before the first date in the semester
+                if (calendar.getTime().before(Courses.get(0).getStartDate())){
+                    calendar.setTime(Courses.get(0).getStartDate());
+                } else {
+                    calendar.set(Calendar.DAY_OF_MONTH,1);
+                }
                 UpdateCalendarCanvas(calendar.getTime());
 
                 //If we were on the last month before, make the next month button visible
