@@ -492,11 +492,10 @@ public class YourCalendarActivity extends AppCompatActivity {
                 Calendar calendar = Calendar.getInstance();
                 calendar.set(Calendar.MONTH, month);
                 calendar.add(Calendar.MONTH,-1);
+                calendar.set(Calendar.DAY_OF_MONTH,1);
                 //Check if the first day is before the first date in the semester
                 if (calendar.getTime().before(Courses.get(0).getStartDate())){
                     calendar.setTime(Courses.get(0).getStartDate());
-                } else {
-                    calendar.set(Calendar.DAY_OF_MONTH,1);
                 }
                 UpdateCalendarCanvas(calendar.getTime());
 
