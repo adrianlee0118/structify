@@ -240,7 +240,7 @@ public class ImportGoogleCalendarActivity extends Activity {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                mStatusText.setText(message);
+                Progress.setText(message);
             }
         });
     }

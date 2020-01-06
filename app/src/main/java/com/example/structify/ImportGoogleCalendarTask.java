@@ -107,7 +107,9 @@ public class ImportGoogleCalendarTask extends AsyncTask <Void,Void,Void> {
                 Date endDate = new Date(startDate.getTime() + 86400000);  //added milliseconds in a day
 
                 String startDateStr = dateFormat.format(startDate);
+                Log.d("ImportGoogleCalendarTask","final exam startdate is "+dateFormat.format(startDate));
                 String endDateStr = dateFormat.format(endDate);
+                Log.d("ImportGoogleCalendarTask","final exam enddate is "+dateFormat.format(endDate));
 
                 DateTime startDateTime = new DateTime(startDateStr);
                 DateTime endDateTime = new DateTime(endDateStr);
@@ -148,7 +150,9 @@ public class ImportGoogleCalendarTask extends AsyncTask <Void,Void,Void> {
                     Date endDate = new Date(startDate.getTime() + 86400000);  //added milliseconds in a day
 
                     String startDateStr = dateFormat.format(startDate);
+                    Log.d("ImportGoogleCalendarTask","final exam reminder startdate is "+dateFormat.format(startDate));
                     String endDateStr = dateFormat.format(endDate);
+                    Log.d("ImportGoogleCalendarTask","final exam reminder enddate is "+dateFormat.format(endDate));
 
                     DateTime startDateTime = new DateTime(startDateStr);
                     DateTime endDateTime = new DateTime(endDateStr);
@@ -163,9 +167,9 @@ public class ImportGoogleCalendarTask extends AsyncTask <Void,Void,Void> {
 
                     AllEvents.add(event);
                     Index.put(fd,event);
+                    Log.d("ImportGoogleCalendarTask","Final Exam Reminders for Course "+(i+1)+" Added to ArrayList, along with a new day");
                 }
                 date.setTime(date.getTime()-86400000);   //go to the previous day
-                Log.d("ImportGoogleCalendarTask","Final Exam Reminders for Course "+(i+1)+" Added to ArrayList, along with a new day");
             }
 
             //For all midterms in the course....
@@ -197,7 +201,9 @@ public class ImportGoogleCalendarTask extends AsyncTask <Void,Void,Void> {
                     Date endDate = new Date(startDate.getTime() + 86400000);  //added milliseconds in a day
 
                     String startDateStr = dateFormat.format(startDate);
+                    Log.d("ImportGoogleCalendarTask","midterm exam startdate is "+dateFormat.format(startDate));
                     String endDateStr = dateFormat.format(endDate);
+                    Log.d("ImportGoogleCalendarTask","midterm exam enddate is "+dateFormat.format(endDate));
 
                     DateTime startDateTime = new DateTime(startDateStr);
                     DateTime endDateTime = new DateTime(endDateStr);
@@ -237,7 +243,9 @@ public class ImportGoogleCalendarTask extends AsyncTask <Void,Void,Void> {
                         Date endDate = new Date(startDate.getTime() + 86400000);  //added milliseconds in a day
 
                         String startDateStr = dateFormat.format(startDate);
+                        Log.d("ImportGoogleCalendarTask","midterm reminder startdate is "+dateFormat.format(startDate));
                         String endDateStr = dateFormat.format(endDate);
+                        Log.d("ImportGoogleCalendarTask","midterm reminder enddate is "+dateFormat.format(endDate));
 
                         DateTime startDateTime = new DateTime(startDateStr);
                         DateTime endDateTime = new DateTime(endDateStr);
@@ -287,7 +295,9 @@ public class ImportGoogleCalendarTask extends AsyncTask <Void,Void,Void> {
                     Date endDate = new Date(startDate.getTime() + 86400000);  //added milliseconds in a day
 
                     String startDateStr = dateFormat.format(startDate);
+                    Log.d("ImportGoogleCalendarTask","assignment startdate is "+dateFormat.format(startDate));
                     String endDateStr = dateFormat.format(endDate);
+                    Log.d("ImportGoogleCalendarTask","assignment enddate is "+dateFormat.format(endDate));
 
                     DateTime startDateTime = new DateTime(startDateStr);
                     DateTime endDateTime = new DateTime(endDateStr);
@@ -327,7 +337,9 @@ public class ImportGoogleCalendarTask extends AsyncTask <Void,Void,Void> {
                         Date endDate = new Date(startDate.getTime() + 86400000);  //added milliseconds in a day
 
                         String startDateStr = dateFormat.format(startDate);
+                        Log.d("ImportGoogleCalendarTask","assignment reminder startdate is "+dateFormat.format(startDate));
                         String endDateStr = dateFormat.format(endDate);
+                        Log.d("ImportGoogleCalendarTask","assignment reminder enddate is "+dateFormat.format(endDate));
 
                         DateTime startDateTime = new DateTime(startDateStr);
                         DateTime endDateTime = new DateTime(endDateStr);
