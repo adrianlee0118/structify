@@ -314,6 +314,7 @@ public class ImportGoogleCalendarTask extends AsyncTask <Void,Void,Void> {
                         String desc = Index.get(date).getDescription();
                         String add = "Spend "+Math.round((aa/3)*10)/10.0+" hours on "+ name +"'s Assignment "+(k+1)+"\n"+"\n";
                         Index.get(date).setDescription(desc+add);
+                        Log.d("ImportGoogleCalendarTask","Assignment "+(k+1)+" Reminders for Course "+(i+1)+" Added to an existing day in ArrayList");
                     } else {
                         //If a reminder for the day does not exist yet...
                         Event event = new Event();
@@ -341,10 +342,10 @@ public class ImportGoogleCalendarTask extends AsyncTask <Void,Void,Void> {
 
                         AllEvents.add(event);
                         Index.put(ad.get(k),event);
+                        Log.d("ImportGoogleCalendarTask","Assignment "+(k+1)+" Reminders for Course "+(i+1)+" Added to ArrayList, along with a new day");
                     }
                     date.setTime(date.getTime()-86400000);   //go to the previous day
                 }
-                Log.d("ImportGoogleCalendarTask","Assignment "+(k+1)+" Reminders for Course "+(i+1)+" Added to GC");
             }
         }
 
