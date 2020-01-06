@@ -14,4 +14,6 @@
     <string name="course_by_course">Course-by-Course Breakdown</string>
     <string name="import_GC">Import to Google Calendar</string>
     <string name="do_not_import">Do not Import and Finish</string>
+    <string name="importing">Importing to Google Calendar:</string>
+    <string name="grand_finish">Exit App</string>
 </resources>

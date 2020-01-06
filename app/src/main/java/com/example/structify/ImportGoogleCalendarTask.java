@@ -94,6 +94,7 @@ public class ImportGoogleCalendarTask extends AsyncTask <Void,Void,Void> {
                 String desc = temp.substring(0,insert_pos)+ name +" Final Exam"+"\n"+"\n"
                         +temp.substring(insert_pos+1,temp.length()-1);
                 Index.get(fd).setDescription(desc);
+                Log.d("ImportGoogleCalendarTask","Final Exam Date for Course "+(i+1)+" Added to an existing day in the ArrayList");
             } else {
                 //If no reminder for that day exists yet....
                 Event event = new Event();
@@ -121,8 +122,8 @@ public class ImportGoogleCalendarTask extends AsyncTask <Void,Void,Void> {
 
                 AllEvents.add(event);
                 Index.put(fd,event);
+                Log.d("ImportGoogleCalendarTask","Final Exam Date for Course "+(i+1)+" Added to the ArrayList, along with a new Day of events");
             }
-            Log.d("ImportGoogleCalendarTask","Final Exam Date for Course "+(i+1)+" Added to GC");
 
             //Add final exam study reminders
             Date date = new Date();
@@ -134,6 +135,7 @@ public class ImportGoogleCalendarTask extends AsyncTask <Void,Void,Void> {
                     String desc = Index.get(date).getDescription();
                     String add = "Study "+Math.round((fa/13)*10)/10.0+" hours for "+ name +"'s Final Exam"+"\n"+"\n";
                     Index.get(date).setDescription(desc+add);
+                    Log.d("ImportGoogleCalendarTask","Final Exam Reminders for Course "+(i+1)+" Added to an existing day in the ArrayList");
                 } else {
                     //If a reminder for the day does not exist yet...
                     Event event = new Event();
@@ -163,8 +165,8 @@ public class ImportGoogleCalendarTask extends AsyncTask <Void,Void,Void> {
                     Index.put(fd,event);
                 }
                 date.setTime(date.getTime()-86400000);   //go to the previous day
+                Log.d("ImportGoogleCalendarTask","Final Exam Reminders for Course "+(i+1)+" Added to ArrayList, along with a new day");
             }
-            Log.d("ImportGoogleCalendarTask","Final Exam Reminders for Course "+(i+1)+" Added to GC");
 
             //For all midterms in the course....
             for (int k = 0; k < md.size(); k++){
@@ -182,6 +184,7 @@ public class ImportGoogleCalendarTask extends AsyncTask <Void,Void,Void> {
                     String desc = temp.substring(0,insert_pos)+ name +" Midterm Exam "+(k+1)+"\n"+"\n"
                             +temp.substring(insert_pos+1,temp.length()-1);
                     Index.get(md.get(k)).setDescription(desc);
+                    Log.d("ImportGoogleCalendarTask","Midterm Exam "+(k+1)+" Date for Course "+(i+1)+" Added to an existing day in the ArrayList");
                 } else {
                     //If no reminder for that day exists yet....
                     Event event = new Event();
@@ -209,8 +212,8 @@ public class ImportGoogleCalendarTask extends AsyncTask <Void,Void,Void> {
 
                     AllEvents.add(event);
                     Index.put(md.get(k),event);
+                    Log.d("ImportGoogleCalendarTask","Midterm Exam "+(k+1)+" Date for Course "+(i+1)+" Added to the ArrayList, along with a new day");
                 }
-                Log.d("ImportGoogleCalendarTask","Midterm Exam "+(k+1)+" Date for Course "+(i+1)+" Added to GC");
 
                 //Add midterm exam study reminders
                 date.setTime(md.get(k).getTime()-86400000);     //go to the day before the current midterm
@@ -221,6 +224,7 @@ public class ImportGoogleCalendarTask extends AsyncTask <Void,Void,Void> {
                         String desc = Index.get(date).getDescription();
                         String add = "Study "+Math.round((ma/6)*10)/10.0+" hours for "+ name +"'s Midterm Exam "+(k+1)+"\n"+"\n";
                         Index.get(date).setDescription(desc+add);
+                        Log.d("ImportGoogleCalendarTask","Midterm Exam "+(k+1)+" Reminders for Course "+(i+1)+" Added to an existing day in the ArrayList");
                     } else {
                         //If a reminder for the day does not exist yet...
                         Event event = new Event();
@@ -248,10 +252,10 @@ public class ImportGoogleCalendarTask extends AsyncTask <Void,Void,Void> {
 
                         AllEvents.add(event);
                         Index.put(md.get(k),event);
+                        Log.d("ImportGoogleCalendarTask","Midterm Exam "+(k+1)+" Reminders for Course "+(i+1)+" Added to ArrayList, along with a new date");
                     }
                     date.setTime(date.getTime()-86400000);   //go to the previous day
                 }
-                Log.d("ImportGoogleCalendarTask","Midterm Exam "+(k+1)+" Reminders for Course "+(i+1)+" Added to GC");
             }
 
             //For all assignments in the course...
@@ -270,6 +274,7 @@ public class ImportGoogleCalendarTask extends AsyncTask <Void,Void,Void> {
                     String desc = temp.substring(0,insert_pos)+ name +" Assignment "+(k+1) +" Due"+"\n"+"\n"
                             +temp.substring(insert_pos+1,temp.length()-1);
                     Index.get(md.get(k)).setDescription(desc);
+                    Log.d("ImportGoogleCalendarTask","Assignment "+(k+1)+" Date for Course "+(i+1)+" Added to an existing day in the ArrayList");
                 } else {
                     //If no reminder for that day exists yet....
                     Event event = new Event();
@@ -297,8 +302,8 @@ public class ImportGoogleCalendarTask extends AsyncTask <Void,Void,Void> {
 
                     AllEvents.add(event);
                     Index.put(ad.get(k),event);
+                    Log.d("ImportGoogleCalendarTask","Assignment "+(k+1)+" Date for Course "+(i+1)+" Added to the ArrayList along with a new day");
                 }
-                Log.d("ImportGoogleCalendarTask","Assignment "+(k+1)+" Date for Course "+(i+1)+" Added to GC");
 
                 //Add assignment study reminders
                 date.setTime(ad.get(k).getTime()-86400000);     //go to the day before the current midterm

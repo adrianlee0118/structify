@@ -7,16 +7,12 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Typeface;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
-import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -39,13 +35,14 @@ public class ImportGoogleCalendarActivity extends Activity {
     private ArrayList<UniversityCourse> Courses;
     private int StudyTime;
 
+    private TextView Progress;
     private Button FinishBtn;
+    private TextView mStatusText;
+    private TextView mResultsText;
 
     //Variables for using Google Calendar API
     com.google.api.services.calendar.Calendar mService;
     GoogleAccountCredential credential;
-    private TextView mStatusText;
-    private TextView mResultsText;
     ProgressDialog mProgress;
     final HttpTransport transport = AndroidHttp.newCompatibleTransport();
     final JsonFactory jsonFactory = GsonFactory.getDefaultInstance();
@@ -60,41 +57,16 @@ public class ImportGoogleCalendarActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_importgooglecalendar);
 
-        LinearLayout activityLayout = new LinearLayout(this);
-        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.MATCH_PARENT);
-        activityLayout.setLayoutParams(lp);
-        activityLayout.setOrientation(LinearLayout.VERTICAL);
-        activityLayout.setPadding(16, 16, 16, 16);
-
-        ViewGroup.LayoutParams tlp = new ViewGroup.LayoutParams(
-                ViewGroup.LayoutParams.WRAP_CONTENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT);
-
-        mStatusText = new TextView(this);
-        mStatusText.setLayoutParams(tlp);
-        mStatusText.setTypeface(null, Typeface.BOLD);
-        mStatusText.setText("Retrieving data...");
-        activityLayout.addView(mStatusText);
-
-        mResultsText = new TextView(this);
-        mResultsText.setLayoutParams(tlp);
-        mResultsText.setPadding(16, 16, 16, 16);
-        mResultsText.setVerticalScrollBarEnabled(true);
-        mResultsText.setMovementMethod(new ScrollingMovementMethod());
-        activityLayout.addView(mResultsText);
+        Progress = findViewById(R.id.progress_info);
+        Progress.setText("Retrieving data...");
 
         mProgress = new ProgressDialog(this);
         mProgress.setMessage("Calling Google Calendar API ...");
 
-        FinishBtn = new Button(this);
-        FinishBtn.setText("Finish");
-        activityLayout.addView(FinishBtn);
-
-        setContentView(activityLayout);
-        Log.d("ImportGoogleCalendarActivity","GUI generated");
+        FinishBtn = findViewById(R.id.grand_finish);
+        Log.d("ImportGoogleCalendarActivity","GUI linked");
 
         Bundle extras = getIntent().getExtras();
         NumCourses = extras.getInt("NumCourses");
