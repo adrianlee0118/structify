@@ -225,7 +225,7 @@ public class ImportGoogleCalendarActivity extends Activity {
         if (isGooglePlayServicesAvailable()) {
             refreshResults();
         } else {
-            mStatusText.setText("Google Play Services required: " +
+            Progress.setText("Google Play Services required: " +
                     "after installing, close and relaunch this app.");
         }
     }
