@@ -408,7 +408,7 @@ public class YourCalendarActivity extends AppCompatActivity {
                             tparams.validate();
                             //Add content
                             temp.setText(CalendarIndex.get(curr).getStudyReminders().get(j));
-                            temp.setTextSize(7);
+                            temp.setTextSize(6);
                             temp.setTextColor(Color.WHITE);
                             temp.setBackgroundColor(ColorLookup[CalendarIndex.get(curr).getStudyCourseID().get(j)]);
                             //Add textbox to list for reference and to the view
@@ -448,7 +448,7 @@ public class YourCalendarActivity extends AppCompatActivity {
                         tparams.validate();
                         //Add content
                         temp.setText(CalendarIndex.get(curr).getExamEvents().get(j));
-                        temp.setTextSize(7);
+                        temp.setTextSize(6);
                         temp.setTextColor(Color.WHITE);
                         temp.setBackgroundColor(ColorLookup[CalendarIndex.get(curr)
                                 .getExamCourseID().get(j)]);

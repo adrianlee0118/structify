@@ -3,7 +3,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:background="@drawable/back">
 
     <LinearLayout
         android:id="@+id/days_of_month"
@@ -14,80 +15,73 @@
 
         <TextView
             android:id="@+id/sunday_number"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
+            android:layout_weight="0.143"
             android:text="1"
             android:textAlignment="center"
             android:textSize="16sp"
-            android:textStyle="bold"
-            android:background="@drawable/back"/>
+            android:textStyle="bold" />
 
         <TextView
             android:id="@+id/monday_number"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
+            android:layout_weight="0.143"
             android:text="2"
             android:textAlignment="center"
             android:textSize="16sp"
-            android:textStyle="bold"
-            android:background="@drawable/back"/>
+            android:textStyle="bold" />
 
         <TextView
             android:id="@+id/tuesday_number"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
+            android:layout_weight="0.143"
             android:text="3"
             android:textAlignment="center"
             android:textSize="16sp"
-            android:textStyle="bold"
-            android:background="@drawable/back"/>
+            android:textStyle="bold" />
 
         <TextView
             android:id="@+id/wednesday_number"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
+            android:layout_weight="0.143"
             android:text="4"
             android:textAlignment="center"
             android:textSize="16sp"
-            android:textStyle="bold"
-            android:background="@drawable/back"/>
+            android:textStyle="bold" />
 
         <TextView
             android:id="@+id/thursday_number"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
+            android:layout_weight="0.143"
             android:text="5"
             android:textAlignment="center"
             android:textSize="16sp"
-            android:textStyle="bold"
-            android:background="@drawable/back"/>
+            android:textStyle="bold" />
 
         <TextView
             android:id="@+id/friday_number"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
+            android:layout_weight="0.143"
             android:text="6"
             android:textAlignment="center"
             android:textSize="16sp"
-            android:textStyle="bold"
-            android:background="@drawable/back"/>
+            android:textStyle="bold" />
 
         <TextView
             android:id="@+id/saturday_number"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
+            android:layout_weight="0.143"
             android:text="7"
             android:textAlignment="center"
             android:textSize="16sp"
-            android:textStyle="bold"
-            android:background="@drawable/back"/>
+            android:textStyle="bold" />
     </LinearLayout>
 
     <ScrollView
@@ -115,64 +109,56 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    app:layout_constraintGuide_percent="0"
-                    android:visibility="visible"/>
+                    app:layout_constraintGuide_percent="0" />
 
                 <androidx.constraintlayout.widget.Guideline
                     android:id="@+id/x1"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    app:layout_constraintGuide_percent="0.143"
-                    android:visibility="visible"/>
+                    app:layout_constraintGuide_percent="0.143" />
 
                 <androidx.constraintlayout.widget.Guideline
                     android:id="@+id/x2"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    app:layout_constraintGuide_percent="0.286"
-                    android:visibility="visible"/>
+                    app:layout_constraintGuide_percent="0.286" />
 
                 <androidx.constraintlayout.widget.Guideline
                     android:id="@+id/x3"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    app:layout_constraintGuide_percent="0.429"
-                    android:visibility="visible"/>
+                    app:layout_constraintGuide_percent="0.429" />
 
                 <androidx.constraintlayout.widget.Guideline
                     android:id="@+id/x4"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    app:layout_constraintGuide_percent="0.571"
-                    android:visibility="visible"/>
+                    app:layout_constraintGuide_percent="0.571" />
 
                 <androidx.constraintlayout.widget.Guideline
                     android:id="@+id/x5"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    app:layout_constraintGuide_percent="0.714"
-                    android:visibility="visible"/>
+                    app:layout_constraintGuide_percent="0.714" />
 
                 <androidx.constraintlayout.widget.Guideline
                     android:id="@+id/x6"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    app:layout_constraintGuide_percent="0.857"
-                    android:visibility="visible"/>
+                    app:layout_constraintGuide_percent="0.857" />
 
                 <androidx.constraintlayout.widget.Guideline
                     android:id="@+id/x7"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    app:layout_constraintGuide_percent="1.00"
-                    android:visibility="visible"/>
+                    app:layout_constraintGuide_percent="1.00" />
 
                 //Horizontal GridLines for placing events/reminders on the same day
 
