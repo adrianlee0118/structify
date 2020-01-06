@@ -70,7 +70,7 @@
     <LinearLayout
         android:id="@+id/headings"
         android:layout_width="match_parent"
-        android:layout_height="42dp"
+        android:layout_height="wrap_content"
         android:layout_weight="1"
         android:gravity="center_vertical"
         android:orientation="horizontal">
@@ -79,6 +79,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="0.143"
+            android:background="@drawable/back"
             android:gravity="center_horizontal"
             android:text="SUN"
             android:textColor="#222222" />
@@ -87,6 +88,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="0.143"
+            android:background="@drawable/back"
             android:gravity="center_horizontal"
             android:text="MON"
             android:textColor="#222222" />
@@ -95,6 +97,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="0.143"
+            android:background="@drawable/back"
             android:gravity="center_horizontal"
             android:text="TUES"
             android:textColor="#222222" />
@@ -103,6 +106,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="0.143"
+            android:background="@drawable/back"
             android:gravity="center_horizontal"
             android:text="WED"
             android:textColor="#222222" />
@@ -111,6 +115,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="0.143"
+            android:background="@drawable/back"
             android:gravity="center_horizontal"
             android:text="THURS"
             android:textColor="#222222" />
@@ -119,6 +124,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="0.143"
+            android:background="@drawable/back"
             android:gravity="center_horizontal"
             android:text="FRI"
             android:textColor="#222222" />
@@ -127,6 +133,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="0.143"
+            android:background="@drawable/back"
             android:gravity="center_horizontal"
             android:text="SAT"
             android:textColor="#222222" />
@@ -135,7 +142,7 @@
     <ScrollView
         android:id="@+id/calendar_area"
         android:layout_width="match_parent"
-        android:layout_height="529dp"
+        android:layout_height="534dp"
         android:layout_weight="1">
 
         <LinearLayout
@@ -145,11 +152,25 @@
             android:orientation="vertical"></LinearLayout>
     </ScrollView>
 
-    <Button
-        android:id="@+id/import_to_google_calendar_button"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="75dp"
+        android:layout_height="80dp"
         android:layout_weight="1"
-        android:text="@string/import_GC" />
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/import_to_google_calendar_button"
+            android:layout_width="0dp"
+            android:layout_height="75dp"
+            android:layout_weight="0.5"
+            android:text="@string/import_GC" />
+
+        <Button
+            android:id="@+id/do_not_import_button"
+            android:layout_width="0dp"
+            android:layout_height="75dp"
+            android:layout_weight="0.5"
+            android:text="@string/do_not_import" />
+    </LinearLayout>
 
 </LinearLayout>

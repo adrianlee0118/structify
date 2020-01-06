@@ -54,6 +54,7 @@ public class YourCalendarActivity extends AppCompatActivity {
     private ImageButton PreviousMonthButton;
     private ImageButton NextMonthButton;
     private Button ImportGoogleCalendarBtn;
+    private Button DoNotImportBtn;
     private LinearLayout CalendarCanvas;
 
     @Override
@@ -77,6 +78,7 @@ public class YourCalendarActivity extends AppCompatActivity {
         PreviousMonthButton = findViewById(R.id.calendar_prev_button);
         NextMonthButton = findViewById(R.id.calendar_next_button);
         ImportGoogleCalendarBtn = findViewById(R.id.import_to_google_calendar_button);
+        DoNotImportBtn = findViewById((R.id.do_not_import_button));
         CalendarCanvas = findViewById(R.id.calendar_canvas);
         Log.d("YourCalendarActivity","GUI generated");
 
@@ -314,10 +316,12 @@ public class YourCalendarActivity extends AppCompatActivity {
             //Note: The Textviews will be stored in CalendarEvents as well to ensure they persist.
             Map<String,TextView> RowRef = new HashMap<String,TextView>();
             //Create boolean matrix to track available spaces in the calendar_row grid to guide insertion of new events--values false by default
-            boolean occupied[][] = new boolean[5][7];
+            boolean occupied[][] = new boolean[10][7];
             //Create lookup for gridlines--so we can access them based on a number index
-            int[] xGridlines = new int[]{R.id.x0,R.id.x1,R.id.x2,R.id.x3,R.id.x4,R.id.x5,R.id.x6,R.id.x7};
-            int[] yGridlines = new int[]{R.id.y0,R.id.y1,R.id.y2,R.id.y3,R.id.y4,R.id.y5};
+            int[] xGridlines = new int[]{R.id.x0,R.id.x1,R.id.x2,R.id.x3,R.id.x4,R.id.x5,R.id.x6,
+                    R.id.x7};
+            int[] yGridlines = new int[]{R.id.y0,R.id.y1,R.id.y2,R.id.y3,R.id.y4,R.id.y5,R.id.y6,
+                    R.id.y7,R.id.y8,R.id.y9,R.id.y10};
 
             //Create textview reminders in the row view and set left, depth positions and width
             for (int i = 1; i <= 7; i++){
@@ -404,7 +408,7 @@ public class YourCalendarActivity extends AppCompatActivity {
                             tparams.validate();
                             //Add content
                             temp.setText(CalendarIndex.get(curr).getStudyReminders().get(j));
-                            temp.setTextSize(5);
+                            temp.setTextSize(7);
                             temp.setTextColor(Color.WHITE);
                             temp.setBackgroundColor(ColorLookup[CalendarIndex.get(curr).getStudyCourseID().get(j)]);
                             //Add textbox to list for reference and to the view
@@ -444,7 +448,7 @@ public class YourCalendarActivity extends AppCompatActivity {
                         tparams.validate();
                         //Add content
                         temp.setText(CalendarIndex.get(curr).getExamEvents().get(j));
-                        temp.setTextSize(5);
+                        temp.setTextSize(7);
                         temp.setTextColor(Color.WHITE);
                         temp.setBackgroundColor(ColorLookup[CalendarIndex.get(curr)
                                 .getExamCourseID().get(j)]);
@@ -579,6 +583,18 @@ public class YourCalendarActivity extends AppCompatActivity {
         });
     }
 
-    
 
+    //Button that exits the app without importing anything to google calendar
+    private void SetDoNotImportButtonClick() {
+        DoNotImportBtn.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+
+                finish();
+                System.exit(0);
+            }
+
+        });
+    }
 }
