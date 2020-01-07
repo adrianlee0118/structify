@@ -43,7 +43,6 @@ public class ImportGoogleCalendarActivity extends Activity {
     //Variables for using Google Calendar API
     com.google.api.services.calendar.Calendar mService;
     GoogleAccountCredential credential;
-    ProgressDialog mProgress;
     final HttpTransport transport = AndroidHttp.newCompatibleTransport();
     final JsonFactory jsonFactory = GsonFactory.getDefaultInstance();
 
@@ -61,9 +60,6 @@ public class ImportGoogleCalendarActivity extends Activity {
 
         Progress = findViewById(R.id.progress_info);
         Progress.setText("Retrieving data...");
-
-        mProgress = new ProgressDialog(this);
-        mProgress.setMessage("Calling Google Calendar API ...");
 
         FinishBtn = findViewById(R.id.grand_finish);
         Log.d("ImportGoogleCalendarActivity","GUI linked");
@@ -157,7 +153,6 @@ public class ImportGoogleCalendarActivity extends Activity {
             chooseAccount();
         } else {
             if (isDeviceOnline()) {
-                mProgress.show();
                 new ImportGoogleCalendarTask(this, Courses, StudyTime, mService).execute();
             } else {
                 mStatusText.setText("No network connection available.");
