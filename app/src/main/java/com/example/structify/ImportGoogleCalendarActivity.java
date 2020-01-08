@@ -61,7 +61,6 @@ public class ImportGoogleCalendarActivity extends Activity {
         Progress.setText("Retrieving data...");
 
         FinishBtn = findViewById(R.id.grand_finish);
-        Log.d("ImportGoogleCalendarActivity","GUI linked");
 
         Bundle extras = getIntent().getExtras();
         NumCourses = extras.getInt("NumCourses");
@@ -104,20 +103,18 @@ public class ImportGoogleCalendarActivity extends Activity {
                 }
                 break;
             case REQUEST_ACCOUNT_PICKER:
-                if (resultCode == RESULT_OK && data != null &&
-                        data.getExtras() != null) {
+                if (resultCode == RESULT_OK && data != null && data.getExtras() != null) {
                     String accountName =
                             data.getStringExtra(AccountManager.KEY_ACCOUNT_NAME);
                     if (accountName != null) {
                         credential.setSelectedAccountName(accountName);
-                        SharedPreferences settings =
-                                getPreferences(Context.MODE_PRIVATE);
+                        SharedPreferences settings = getPreferences(Context.MODE_PRIVATE);
                         SharedPreferences.Editor editor = settings.edit();
                         editor.putString(PREF_ACCOUNT_NAME, accountName);
                         editor.commit();
                     }
                 } else if (resultCode == RESULT_CANCELED) {
-                    mStatusText.setText("Account unspecified.");
+                    Progress.setText("Account unspecified.");
                 }
                 break;
             case REQUEST_AUTHORIZATION:
@@ -154,7 +151,7 @@ public class ImportGoogleCalendarActivity extends Activity {
             if (isDeviceOnline()) {
                 new ImportGoogleCalendarTask(this, Courses, StudyTime, mService).execute();
             } else {
-                mStatusText.setText("No network connection available.");
+                Progress.setText("No network connection available.");
             }
         }
     }
@@ -245,13 +242,13 @@ public class ImportGoogleCalendarActivity extends Activity {
             @Override
             public void run() {
                 if (message == null) {
-                    mStatusText.setText("Error retrieving message.");
+                    Progress.setText("Error retrieving message.");
                 } else if (message.length() == 0) {
-                    mStatusText.setText("No message found.");
+                    Progress.setText("No message found.");
                 } else {
-                    mStatusText.setText("Data imported using" +
+                    Progress.setText("Data imported using" +
                             " the Google Calendar API.");
-                    mResultsText.setText("\n\n"+message);
+                    Progress.setText("\n\n"+message);
                 }
             }
         });
@@ -269,5 +266,13 @@ public class ImportGoogleCalendarActivity extends Activity {
             }
 
         });
+    }
+
+    public void onBackPressed() {
+        Log.d("ImportGoogleCalendarActivity", "onBackPressed Called");
+        Intent setIntent = new Intent(Intent.ACTION_MAIN);
+        setIntent.addCategory(Intent.CATEGORY_HOME);
+        setIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(setIntent);
     }
 }
