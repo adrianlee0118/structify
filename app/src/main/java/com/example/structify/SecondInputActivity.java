@@ -69,10 +69,6 @@ public class SecondInputActivity extends AppCompatActivity {
         NumCourses = extras.getInt("NumCourses");
         StudyTime = extras.getInt("StudyTime");
 
-        Log.d("Second","StartDate after Main is "+StartDate.toString());
-        Log.d("Second","EndDate after Main is "+EndDate.toString());
-
-
         //Map for keeping track of dynamically generated edittexts and instantiate UniversityCourse storage
         InputFieldIDs = new HashMap<String,EditText>();
         InputFields = new ArrayList<EditText>();
@@ -272,7 +268,6 @@ public class SecondInputActivity extends AppCompatActivity {
                         } catch (ParseException e) {
                             e.printStackTrace();
                         }
-                        Log.d("Second","Calculated Course "+Integer.toString(i)+" Midterm Dates");
                     } else {
                         ArrayList<Date> MTD = new ArrayList<Date>();
 
@@ -300,7 +295,6 @@ public class SecondInputActivity extends AppCompatActivity {
                             }
                         }
 
-                        Log.d("Second","Got Course "+Integer.toString(i)+" Midterm Dates");
                         temp.setMidtermDates(MTD);
                     }
 
@@ -323,7 +317,6 @@ public class SecondInputActivity extends AppCompatActivity {
                             && TextUtils.isEmpty(InputFieldIDs.get("Course "+Integer.toString(i)+" Assignment 5 Date").getText().toString().trim())
                             && TextUtils.isEmpty(InputFieldIDs.get("Course "+Integer.toString(i)+" Assignment 6 Date").getText().toString().trim())) {
                         temp.calcAssignmentDates(Integer.parseInt(InputFieldIDs.get("Course "+Integer.toString(i)+" Number Assignments").getText().toString()));
-                        Log.d("Second","Calculated Course "+Integer.toString(i)+" Assign Dates");
                     } else {
                         ArrayList<Date> AD = new ArrayList<Date>();
 
@@ -351,12 +344,10 @@ public class SecondInputActivity extends AppCompatActivity {
                             }
                         }
 
-                        Log.d("Second","Got Course "+Integer.toString(i)+"Assign Dates");
                         temp.setAssignmentAndQuizDates(AD);
                     }
 
                     Courses.add(temp);
-                    Log.d("SecondInputActivity","Added "+temp.getCourseName()+" to UniversityCourses");
                 }
 
                 //Pass the UniversityCourse objects to the next activity.
@@ -370,6 +361,15 @@ public class SecondInputActivity extends AppCompatActivity {
 
             }
         });
+    }
+
+    @Override
+    public void onBackPressed() {
+        Log.d("SecondInputActivity", "onBackPressed Called");
+        Intent setIntent = new Intent(Intent.ACTION_MAIN);
+        setIntent.addCategory(Intent.CATEGORY_HOME);
+        setIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(setIntent);
     }
 
 }

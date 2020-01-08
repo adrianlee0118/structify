@@ -81,7 +81,6 @@ public class YourCalendarActivity extends AppCompatActivity {
         ImportGoogleCalendarBtn = findViewById(R.id.import_to_google_calendar_button);
         DoNotImportBtn = findViewById((R.id.do_not_import_button));
         CalendarCanvas = findViewById(R.id.calendar_canvas);
-        Log.d("YourCalendarActivity","GUI generated");
 
         //Initialize all dates in the Map, attached to SemesterDays that are blank but with day of week index
         LocalDate start = Courses.get(0).getStartDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
@@ -96,23 +95,16 @@ public class YourCalendarActivity extends AppCompatActivity {
             temp.setDay_of_week(calendar.get(Calendar.DAY_OF_WEEK));
             CalendarInfo.add(temp);
             CalendarIndex.put(t,CalendarInfo.get(CalendarInfo.size()-1));
-            Log.d("YourCalendarActivity","Added SemesterDays object for date: "+ date.toString());
         }
-        Log.d("YourCalendarActivity","Catalogue of empty SemesterDays created and attached to CalendarIndex");
 
         //Store all events and reminders in the SemesterDays instances contained in the Hashmap
         for (int i = 0; i < NumCourses; i++){
-            Log.d("YourCalendarActivity", "Populating CalendarIndex with information for course "+Courses.get(i).getCourseName());
 
             //For ease of reading, pull out all the information first
             double course_time = (Courses.get(i).getCourseWt()/100)*StudyTime;
-            Log.d("YourCalendarActivity", "Course time is "+course_time);
             double fa = Courses.get(i).FinalAllocation(course_time);
-            Log.d("YourCalendarActivity", "Final allocation is "+fa);
             double ma = Courses.get(i).MidtermAllocation(course_time)/(Courses.get(i).getMidtermDates().size());
-            Log.d("YourCalendarActivity", "Midterm allocation per midterm is "+ma);
             double aa = Courses.get(i).AssignmentAllocation(course_time)/(Courses.get(i).getAssignmentAndQuizDates().size());
-            Log.d("YourCalendarActivity", "Assignment allocation per assignment is "+aa);
             String name = Courses.get(i).getCourseName();
             Date fd = Courses.get(i).getFinalDate();
             ArrayList<Date> md = Courses.get(i).getMidtermDates();
@@ -123,7 +115,6 @@ public class YourCalendarActivity extends AppCompatActivity {
             CalendarIndex.get(fd).addExamCourse(i);
             Calendar calendar = Calendar.getInstance();
             calendar.setTime(fd);
-            Log.d("YourCalendarActivity","Final Date for Course "+(i+1)+" Added to CalendarIndex");
             //As per rules, studying for final exams spans two weeks and so reminders on all those days must be added
             for (int k = 1; k <=13; k++){
                 if (calendar.get(Calendar.DAY_OF_MONTH) == 1){
@@ -138,13 +129,11 @@ public class YourCalendarActivity extends AppCompatActivity {
                         +name+"'s Final Exam");
                 CalendarIndex.get(sd).addStudyCourse(i);
             }
-            Log.d("YourCalendarActivity","Final Reminders for Course "+(i+1)+" Added to CalendarIndex");
 
             for (int j = 0; j < md.size(); j++){
                 CalendarIndex.get(md.get(j)).addExamEvent(name+" Midterm Exam "+Integer.toString(j+1));
                 CalendarIndex.get(md.get(j)).addExamCourse(i);
                 calendar.setTime(md.get(j));
-                Log.d("YourCalendarActivity","Course "+(i+1)+" Midterm "+(j+1)+" Date Added to CalendarIndex");
                 //As per rules, studying for midterm exams spans 1 week and so reminders on those days must be added
                 for (int k = 1; k <=6; k++){
                     if (calendar.get(Calendar.DAY_OF_MONTH) == 1){
@@ -159,15 +148,12 @@ public class YourCalendarActivity extends AppCompatActivity {
                             +"per day for " +name+"'s Midterm Exam "+Integer.toString(j+1));
                     CalendarIndex.get(sd).addStudyCourse(i);
                 }
-                Log.d("YourCalendarActivity","Course "+(i+1)+" Midterm "+(j+1)+" Reminders Added to CalendarIndex");
             }
 
             for (int j = 0; j < ad.size(); j++){
-                Log.d("YourCalendarActivity","Searching for date "+ad.get(j)+" in CalendarIndex");
                 CalendarIndex.get(ad.get(j)).addExamEvent(name+" Assignment "+Integer.toString(j+1)+" Due");
                 CalendarIndex.get(ad.get(j)).addExamCourse(i);
                 calendar.setTime(ad.get(j));
-                Log.d("YourCalendarActivity","Course "+(i+1)+" Assignment "+(j+1)+" Date Added to CalendarIndex");
                 //As per rules, studying and working on assignments and quiz level tests spans 3 days and reminders must be added
                 for (int k = 1; k <=3; k++){
                     if (calendar.get(Calendar.DAY_OF_MONTH) == 1){
@@ -182,13 +168,11 @@ public class YourCalendarActivity extends AppCompatActivity {
                             +"per day on " +name+"'s Assignment "+Integer.toString(j+1));
                     CalendarIndex.get(sd).addStudyCourse(i);
                 }
-                Log.d("YourCalendarActivity","Course "+(i+1)+" Assignment "+(j+1)+" Reminders Added to CalendarIndex");
             }
         }
 
         //Inflate the weekviews in the calendars with all reminders and events as per the information in the Map
         CalendarEvents = new ArrayList<TextView>();
-        Log.d("YourCalendarActivity","Data in CalendarIndex Completed. TextView index CalendarEvents created.");
         UpdateCalendarCanvas(Courses.get(0).getStartDate());
 
         //Set the button functionality to toggle months and to add events to Google Calendar!
@@ -197,14 +181,11 @@ public class YourCalendarActivity extends AppCompatActivity {
         PreviousMonthButton.setOnClickListener(null);  //because we are at the first month
         SetNextMonthButtonClick();
         SetImportGoogleCalendarButtonClick();
-        Log.d("YourCalendarActivity","All button functionality set.");
     }
 
     //Populate CalendarCanvas area with calendar_row inflated layouts with reminders
     //current_date should be beginning of month
     public void UpdateCalendarCanvas(Date current_date){
-
-        Log.d("YourCalendarActivity","UpdateCalendarCanvas() started.");
 
         //Clear CalendarCanvas
         CalendarCanvas.removeAllViews();
@@ -226,7 +207,6 @@ public class YourCalendarActivity extends AppCompatActivity {
             DD = "0"+DD;
         }
         int Y = calendar.get(Calendar.YEAR);
-        Log.d("YourCalendarActivity-UpdateCalendarCanvas","Date to search in CalendarIndex is "+Y+"-"+MM+"-"+DD);
         try {
             startmark = formatter.parse(Integer.toString(Y)+"-"+MM+"-"+DD);
         } catch (ParseException e) {
@@ -234,16 +214,11 @@ public class YourCalendarActivity extends AppCompatActivity {
         }
 
 
-        Log.d("YourCalendarActivity-UpdateCalendarCanvas","Date at start is "+startmark);
         Year.setText(Integer.toString(calendar.get(Calendar.YEAR)));
         Month.setText(MonthLookup[calendar.get(Calendar.MONTH)]);
-        Log.d("YourCalendarActivity-UpdateCalendarCanvas","Year and Month Headers Set");
         int current_month = calendar.get(Calendar.MONTH);
-        Log.d("YourCalendarActivity-UpdateCalendarCanvas","Current month is "+calendar.get(Calendar.MONTH));
         //From this point onward, current_date is used to keep track of the first day of the week of interest as we build the GUI week by week using calendar_row layouts
         while(calendar.get(Calendar.MONTH)==current_month){
-
-            Log.d("YourCalendarActivity-UpdateCalendarCanvas","Start walking through all dates in the month");
 
             //Inflate the calendar_row view -- calendar GUI is built row by row using the calendar_row view template layout
             LayoutInflater vi = (LayoutInflater) getApplicationContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -270,7 +245,6 @@ public class YourCalendarActivity extends AppCompatActivity {
                 DD = "0"+DD;
             }
             Y = calendar.get(Calendar.YEAR);
-            Log.d("YourCalendarActivity-UpdateCalendarCanvas","Date to search in CalendarIndex is "+Y+"-"+MM+"-"+DD);
             try {
                 startmark = formatter.parse(Integer.toString(Y)+"-"+MM+"-"+DD);
             } catch (ParseException e) {
@@ -279,7 +253,6 @@ public class YourCalendarActivity extends AppCompatActivity {
 
             //If first day is not a Sunday, move to the previous Sunday to fill the whole row with numbers
             if(CalendarIndex.get(startmark).getDay_of_week()!=1){
-                Log.d("YourCalendarActivity-UpdateCalendarCanvas","calendar_row day walked left_border_only to a Sunday, "+startmark);
                 calendar.add(Calendar.DAY_OF_MONTH,-(CalendarIndex.get(startmark).getDay_of_week()-1));
             }
 
@@ -304,12 +277,10 @@ public class YourCalendarActivity extends AppCompatActivity {
             calendar.add(Calendar.DAY_OF_MONTH,1);
             DayOfMonth = calendar.get(Calendar.DAY_OF_MONTH);
             Saturday.setText(Integer.toString(DayOfMonth));
-            Log.d("YourCalendarActivity-UpdateCalendarCanvas","Numbers in calendar_row set");
 
             //Move the cursor left_border_only to the beginning of the week
             calendar.setTime(startmark);
             if(CalendarIndex.get(startmark).getDay_of_week()!=1){
-                Log.d("YourCalendarActivity-UpdateCalendarCanvas","calendar_row day walked left_border_only to a Sunday, "+startmark);
                 calendar.add(Calendar.DAY_OF_MONTH,-(CalendarIndex.get(calendar.getTime()).getDay_of_week()-1));
             }
 
@@ -340,28 +311,20 @@ public class YourCalendarActivity extends AppCompatActivity {
                     DD = "0"+DD;
                 }
                 Y = calendar.get(Calendar.YEAR);
-                Log.d("YourCalendarActivity-UpdateCalendarCanvas","Date to search in " +
-                        "CalendarIndex is "+Y+"-"+MM+"-"+DD);
                 try {
                     curr = formatter.parse(Integer.toString(Y)+"-"+MM+"-"+DD);
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }
-                Log.d("YourCalendarActivity-UpdateCalendarCanvas","Making textviews for " +
-                        "Day "+i+" schedule in the row, date: "+curr);
 
                 //Find the date in CalendarIndex
                 if (CalendarIndex.get(curr) != null){
-
-                    Log.d("YourCalendarActivity-UpdateCalendarCanvas","Date found: "+Y+"-"+MM+"-"+DD);
 
                     //Extend textviews for existing reminders
                     for (int j = 0; j < CalendarIndex.get(curr).getStudyReminders().size(); j++){
                         //We need to check if previous days in the row have the reminder in question because
                         //they last for periods longer than a day (they are stored by name in RowRef)
                         if (RowRef.containsKey(CalendarIndex.get(curr).getStudyReminders().get(j))) {
-                            Log.d("YourCalendarActivity-UpdateCalendarCanvas","StudyReminders " +
-                                    "found for date "+Y+"-"+MM+"-"+DD);
                             //If the reminder already exists in the row, extend the existing textbox
                             ConstraintLayout.LayoutParams tparams =
                                     (ConstraintLayout.LayoutParams) RowRef.get(CalendarIndex.get(curr)
@@ -379,18 +342,12 @@ public class YourCalendarActivity extends AppCompatActivity {
                                 }
                             }
                             occupied[ypos][i-1] = true;
-                            Log.d("YourCalendarActivity-UpdateCalendarCanvas","Existing study " +
-                                    "reminder event extended in calendar graphic: "+
-                                    CalendarIndex.get(curr).getStudyReminders().get(j));
-
                         }
                     }
 
                     //Create new textviews for new reminders that are not yet stored in RowRef
                     for (int j = 0; j < CalendarIndex.get(curr).getStudyReminders().size(); j++){
                         if (!RowRef.containsKey(CalendarIndex.get(curr).getStudyReminders().get(j))){
-                            Log.d("YourCalendarActivity-UpdateCalendarCanvas","StudyReminders " +
-                                    "found for date "+Y+"-"+MM+"-"+DD);
                             TextView temp = new TextView(this);
                             temp.setId(TextView.generateViewId());
                             ConstraintLayout.LayoutParams tparams = new ConstraintLayout.LayoutParams(0,0);
@@ -418,9 +375,6 @@ public class YourCalendarActivity extends AppCompatActivity {
                             RowRef.put(CalendarIndex.get(curr).getStudyReminders().get(j),temp);
                             //Mark space as occupied in the boolean matrix
                             occupied[ypos][xpos] = true;
-                            Log.d("YourCalendarActivity-UpdateCalendarCanvas","Study " +
-                                    "reminder event added to calendar graphic: "+CalendarIndex.get(curr)
-                                    .getStudyReminders().get(j));
                         }
                     }
 
@@ -428,8 +382,6 @@ public class YourCalendarActivity extends AppCompatActivity {
                     for (int j = 0; j < CalendarIndex.get(curr).getExamEvents().size(); j++){
                         //We don't have to check if a previous day has the same event--the way
                         //inputs are designed, events are unique and only last one day.
-                        Log.d("YourCalendarActivity-UpdateCalendarCanvas","ExamEvents " +
-                                "found for date "+Y+"-"+MM+"-"+DD);
                         TextView temp = new TextView(this);
                         temp.setId(TextView.generateViewId());
                         ConstraintLayout.LayoutParams tparams =
@@ -459,9 +411,6 @@ public class YourCalendarActivity extends AppCompatActivity {
                         RowRef.put(CalendarIndex.get(curr).getExamEvents().get(j),temp);
                         //Mark space as occupied in the boolean matrix
                         occupied[ypos][xpos] = true;
-                        Log.d("YourCalendarActivity-UpdateCalendarCanvas","Exam event " +
-                                "added to Calendar Graphic: "+CalendarIndex.get(curr)
-                                .getExamEvents().get(j));
                     }
 
                 }
@@ -478,11 +427,11 @@ public class YourCalendarActivity extends AppCompatActivity {
                 ConstraintLayout.LayoutParams tparams = new ConstraintLayout.LayoutParams(0,
                         ViewGroup.LayoutParams.MATCH_PARENT);
                 tparams.leftToLeft = xGridlines[k];
-                tparams.rightToRight = xGridlines[k];
+                tparams.rightToRight = xGridlines[k+1];
                 tparams.validate();
-                temp.setLayoutParams(tparams);
+                Events.addView(temp,tparams);
                 temp.setElevation(2);
-                Events.addView(temp);
+                temp.setBackgroundResource(R.drawable.left_border_only);
             }
 
             //Now that the whole week's GUI has been built, add it to CalendarCanvas and move to the next day, the first day of the next month.
@@ -491,7 +440,6 @@ public class YourCalendarActivity extends AppCompatActivity {
             startmark = calendar.getTime();
         }
 
-        Log.d("YourCalendarActivity","End of UpdateCalendarCanvas reached");
     }
 
     private void SetPrevMonthButtonClick() {
@@ -523,7 +471,6 @@ public class YourCalendarActivity extends AppCompatActivity {
                 if (NextMonthButton.getVisibility() == View.INVISIBLE){
                     NextMonthButton.setVisibility(View.VISIBLE);
                     SetNextMonthButtonClick();
-                    Log.d("YourCalendarActivity","NextMonthButton made Visible");
                 }
 
                 //If we are now at the first month, make the previous month button invisible and unclickable
@@ -532,10 +479,8 @@ public class YourCalendarActivity extends AppCompatActivity {
                 if (calendar.get(Calendar.MONTH) == startmonth.get(Calendar.MONTH)){
                     PreviousMonthButton.setVisibility(View.INVISIBLE);
                     PreviousMonthButton.setOnClickListener(null);
-                    Log.d("YourCalendarActivity","NextMonthButton made Invisible");
                 }
 
-                Log.d("YourCalendarActivity","LastMonth method successfully run");
             }
 
         });
@@ -563,7 +508,6 @@ public class YourCalendarActivity extends AppCompatActivity {
                 if (PreviousMonthButton.getVisibility() == View.INVISIBLE){
                     PreviousMonthButton.setVisibility(View.VISIBLE);
                     SetPrevMonthButtonClick();
-                    Log.d("YourCalendarActivity","PrevMonthButton made Visible");
                 }
 
                 Calendar lastmonth = Calendar.getInstance();
@@ -571,10 +515,8 @@ public class YourCalendarActivity extends AppCompatActivity {
                 if (calendar.get(Calendar.MONTH) == lastmonth.get(Calendar.MONTH)){
                     NextMonthButton.setVisibility(View.INVISIBLE);
                     NextMonthButton.setOnClickListener(null);
-                    Log.d("YourCalendarActivity","PrevMonthButton made Invisible");
                 }
 
-                Log.d("YourCalendarActivity","NextMonth method successfully run");
             }
 
         });
@@ -612,5 +554,14 @@ public class YourCalendarActivity extends AppCompatActivity {
             }
 
         });
+    }
+
+    @Override
+    public void onBackPressed() {
+        Log.d("YourCalendarActivity", "onBackPressed Called");
+        Intent setIntent = new Intent(Intent.ACTION_MAIN);
+        setIntent.addCategory(Intent.CATEGORY_HOME);
+        setIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(setIntent);
     }
 }
