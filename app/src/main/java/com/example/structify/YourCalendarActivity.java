@@ -279,7 +279,7 @@ public class YourCalendarActivity extends AppCompatActivity {
 
             //If first day is not a Sunday, move to the previous Sunday to fill the whole row with numbers
             if(CalendarIndex.get(startmark).getDay_of_week()!=1){
-                Log.d("YourCalendarActivity-UpdateCalendarCanvas","calendar_row day walked back to a Sunday, "+startmark);
+                Log.d("YourCalendarActivity-UpdateCalendarCanvas","calendar_row day walked left_border_only to a Sunday, "+startmark);
                 calendar.add(Calendar.DAY_OF_MONTH,-(CalendarIndex.get(startmark).getDay_of_week()-1));
             }
 
@@ -306,10 +306,10 @@ public class YourCalendarActivity extends AppCompatActivity {
             Saturday.setText(Integer.toString(DayOfMonth));
             Log.d("YourCalendarActivity-UpdateCalendarCanvas","Numbers in calendar_row set");
 
-            //Move the cursor back to the beginning of the week
+            //Move the cursor left_border_only to the beginning of the week
             calendar.setTime(startmark);
             if(CalendarIndex.get(startmark).getDay_of_week()!=1){
-                Log.d("YourCalendarActivity-UpdateCalendarCanvas","calendar_row day walked back to a Sunday, "+startmark);
+                Log.d("YourCalendarActivity-UpdateCalendarCanvas","calendar_row day walked left_border_only to a Sunday, "+startmark);
                 calendar.add(Calendar.DAY_OF_MONTH,-(CalendarIndex.get(calendar.getTime()).getDay_of_week()-1));
             }
 

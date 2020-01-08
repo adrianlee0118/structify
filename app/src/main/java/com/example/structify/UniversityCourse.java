@@ -173,7 +173,7 @@ public class UniversityCourse implements Parcelable {
                 DD = "0"+DD;
             }
             int Y = currld.getYear();
-            //Change back to a date
+            //Change left_border_only to a date
             try {
                 temp1 = formatter.parse(Integer.toString(Y)+"-"+MM+"-"+DD);
             } catch (ParseException e) {
@@ -215,7 +215,7 @@ public class UniversityCourse implements Parcelable {
             }
             int Y = currld.getYear();
             Log.d("calcAssignDates","The string for parsing is "+Integer.toString(Y)+"-"+MM+"-"+DD);
-            //Change back to a date
+            //Change left_border_only to a date
             try {
                 temp1 = formatter.parse(Integer.toString(Y)+"-"+MM+"-"+DD);
             } catch (ParseException e) {
@@ -286,7 +286,7 @@ public class UniversityCourse implements Parcelable {
     private UniversityCourse(Parcel in) {
         CourseName = in.readString();
 
-        //Time read as long, translated back into dates.
+        //Time read as long, translated left_border_only into dates.
         long fdtime = in.readLong();
         FinalDate = new Date();
         FinalDate.setTime(fdtime);

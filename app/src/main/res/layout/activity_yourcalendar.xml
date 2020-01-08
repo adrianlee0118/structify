@@ -72,6 +72,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="1"
+        android:background="@drawable/top_border_only"
         android:gravity="center_vertical"
         android:orientation="horizontal">
 
@@ -79,7 +80,6 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="0.143"
-            android:background="@drawable/back"
             android:gravity="center_horizontal"
             android:text="SUN"
             android:textColor="#222222" />
@@ -88,7 +88,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="0.143"
-            android:background="@drawable/back"
+            android:background="@drawable/left_border_only"
             android:gravity="center_horizontal"
             android:text="MON"
             android:textColor="#222222" />
@@ -97,7 +97,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="0.143"
-            android:background="@drawable/back"
+            android:background="@drawable/left_border_only"
             android:gravity="center_horizontal"
             android:text="TUES"
             android:textColor="#222222" />
@@ -106,7 +106,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="0.143"
-            android:background="@drawable/back"
+            android:background="@drawable/left_border_only"
             android:gravity="center_horizontal"
             android:text="WED"
             android:textColor="#222222" />
@@ -115,7 +115,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="0.143"
-            android:background="@drawable/back"
+            android:background="@drawable/left_border_only"
             android:gravity="center_horizontal"
             android:text="THURS"
             android:textColor="#222222" />
@@ -124,7 +124,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="0.143"
-            android:background="@drawable/back"
+            android:background="@drawable/left_border_only"
             android:gravity="center_horizontal"
             android:text="FRI"
             android:textColor="#222222" />
@@ -133,7 +133,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="0.143"
-            android:background="@drawable/back"
+            android:background="@drawable/left_border_only"
             android:gravity="center_horizontal"
             android:text="SAT"
             android:textColor="#222222" />
