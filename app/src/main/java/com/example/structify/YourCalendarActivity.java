@@ -9,6 +9,7 @@ import android.os.Parcelable;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
@@ -467,6 +468,21 @@ public class YourCalendarActivity extends AppCompatActivity {
 
                 //Go to next day now that events and reminders for the current day have been added
                 calendar.add(Calendar.DAY_OF_MONTH,1);
+            }
+
+            //Draw 6 vertical lines on top of everything to clearly delineate the days of the week
+            for (int k = 1; k <= 6; k++){
+                //For the Events ConstraintLayout Area...
+                TextView temp = new TextView(this);
+                temp.setId(TextView.generateViewId());
+                ConstraintLayout.LayoutParams tparams = new ConstraintLayout.LayoutParams(0,
+                        ViewGroup.LayoutParams.MATCH_PARENT);
+                tparams.leftToLeft = xGridlines[k];
+                tparams.rightToRight = xGridlines[k];
+                tparams.validate();
+                temp.setLayoutParams(tparams);
+                temp.setElevation(2);
+                Events.addView(temp);
             }
 
             //Now that the whole week's GUI has been built, add it to CalendarCanvas and move to the next day, the first day of the next month.
