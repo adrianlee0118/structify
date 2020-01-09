@@ -9,8 +9,11 @@ import com.google.api.client.util.DateTime;
 import com.google.api.services.calendar.Calendar;
 import com.google.api.services.calendar.model.Event;
 import com.google.api.services.calendar.model.EventDateTime;
+import com.google.api.services.calendar.model.EventReminder;
+
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -56,7 +59,15 @@ public class ImportGoogleCalendarTask extends AsyncTask <Void,Void,Void> {
 
     public void addCalendarEvents() throws IOException {
 
-        //Add the new calendar if possible
+        // Create a new calendar
+        com.google.api.services.calendar.model.Calendar calendar = new com.google.api.services
+                .calendar.model.Calendar();
+        calendar.setSummary("Structify Study Program");
+        calendar.setTimeZone("America/Vancouver");
+        calendar.setId("Structify");
+
+        // Insert the new calendar
+        com.google.api.services.calendar.model.Calendar createdCalendar = mService.calendars().insert(calendar).execute();
 
         //Map the events to dates, so that only one event is made for each day that describes all of the
         //study obligations and test events.
@@ -362,7 +373,6 @@ public class ImportGoogleCalendarTask extends AsyncTask <Void,Void,Void> {
 
 
         //Add all the events to the calendar!
-        String calendarId = "primary";
         for (int i = 0; i < AllEvents.size(); i++){
             try {
                 mService.events().insert(calendarId, AllEvents.get(i)).execute();
@@ -374,4 +384,46 @@ public class ImportGoogleCalendarTask extends AsyncTask <Void,Void,Void> {
         }
     }
 
+    public void addCalendarEvent(Date date, String eventdesc){
+
+        Event event = new Event()
+                .setSummary("Structify Exam Events and Study Reminders")
+                .setLocation("Vancouver, BC, Canada")
+                .setDescription(eventdesc);
+
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+
+        String DateStr = dateFormat.format(date);
+        Log.d("ImportGoogleCalendarTask","assignment reminder startdate is "+dateFormat.format(date));
+
+        //Set event to occupy 9AM to 11AM on the day
+        DateTime startDateTime = new DateTime(DateStr+"T09:00:00-08:00");
+        EventDateTime start = new EventDateTime()
+                .setDateTime(startDateTime)
+                .setTimeZone("America/Vancouver");
+        event.setStart(start);
+
+        DateTime endDateTime = new DateTime(DateStr+"T11:00:00-08:00");
+        EventDateTime end = new EventDateTime()
+                .setDateTime(endDateTime)
+                .setTimeZone("America/Vancouver");
+        event.setEnd(end);
+
+        EventReminder[] reminderOverrides = new EventReminder[]{
+                new EventReminder().setMethod("email").setMinutes(24 * 60),
+                new EventReminder().setMethod("popup").setMinutes(10),
+        };
+        Event.Reminders reminders = new Event.Reminders()
+                .setUseDefault(false)
+                .setOverrides(Arrays.asList(reminderOverrides));
+        event.setReminders(reminders);
+
+        //Add the event to the new calendar (ID: "Structify") created in the parent method
+        String calendarId = "Structify";
+        try {
+            mService.events().insert(calendarId, event).execute();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 }

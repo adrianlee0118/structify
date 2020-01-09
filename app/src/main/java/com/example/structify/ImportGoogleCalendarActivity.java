@@ -36,8 +36,6 @@ public class ImportGoogleCalendarActivity extends Activity {
 
     private TextView Progress;
     private Button FinishBtn;
-    private TextView mStatusText;
-    private TextView mResultsText;
 
     //Variables for using Google Calendar API
     com.google.api.services.calendar.Calendar mService;
