@@ -60,6 +60,7 @@ public class ImportGoogleCalendarTask extends AsyncTask <Void,Void,Void> {
 
         //Map the events to dates, so that only one event is made for each day that describes all of the
         //study obligations and test events.
+        //CHANGE THE EVENTS INTO STRINGS!
         ArrayList<Event> AllEvents = new ArrayList<Event>();
         Map<Date,Event> Index = new HashMap<Date,Event>();
 

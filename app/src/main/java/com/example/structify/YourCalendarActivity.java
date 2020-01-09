@@ -47,7 +47,7 @@ public class YourCalendarActivity extends AppCompatActivity {
 
     //Lookups for assigning Month Strings and Colors
     private final String[] MonthLookup = {"Jan","Feb","Mar","Apr","May","Jun","July","Aug","Sep","Oct","Nov","Dec"};
-    private final int[] ColorLookup = {Color.RED,Color.BLUE,Color.YELLOW,Color.GREEN,Color.MAGENTA,Color.CYAN,Color.BLACK,Color.GRAY};
+    private final int[] ColorLookup = {Color.RED,Color.BLUE,Color.GREEN,Color.MAGENTA,Color.CYAN,Color.YELLOW,Color.BLACK,Color.GRAY};
 
     //UI components to be manipulated
     private TextView Year;
