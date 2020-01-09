@@ -32,7 +32,7 @@ public class ImportGoogleCalendarTask extends AsyncTask <Void,Void,Void> {
         this.Courses = courses;
         this.StudyTime = studytime;
         this.mService = mservice;
-        Log.d("ImportGoogleCalendarTask","Task Started");
+        Log.d("ImportGoogleCalendarTask","Data added");
     }
 
     /**
@@ -42,6 +42,7 @@ public class ImportGoogleCalendarTask extends AsyncTask <Void,Void,Void> {
     @Override
     protected Void doInBackground(Void... params) {
         try {
+            Log.d("ImportGoogleCalendarTask","Starting background activities");
             addCalendarEvents();
             mActivity.updateResultsText("Data successfully imported to Google Calendar!");
             Log.d("ImportGoogleCalendarTask","Data successfully imported to Google Calendar!");
@@ -360,8 +361,8 @@ public class ImportGoogleCalendarTask extends AsyncTask <Void,Void,Void> {
 
 
         //Add all the events to the calendar!
+        String calendarId = "primary";
         for (int i = 0; i < AllEvents.size(); i++){
-            String calendarId = "primary";
             try {
                 mService.events().insert(calendarId, AllEvents.get(i)).execute();
                 Log.d("ImportGoogleCalendarTask","Event on "+AllEvents.get(i).getStart().toString()+" added");
