@@ -92,7 +92,7 @@ public class ImportGoogleCalendarTask extends AsyncTask <Void,Void,Void> {
         for (int i = 0; i < Courses.size(); i++){
 
             //Pull out all data from the course
-            double course_time = Courses.get(i).getCourseWt()*StudyTime;
+            double course_time = Courses.get(i).getCourseWt()*StudyTime/100;
             double fa = Courses.get(i).FinalAllocation(course_time);
             double ma = Courses.get(i).MidtermAllocation(course_time)/(Courses.get(i)
                     .getMidtermDates().size());
