@@ -19,6 +19,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+
 public class ImportGoogleCalendarTask extends AsyncTask <Void,Void,Void> {
 
     private ImportGoogleCalendarActivity mActivity;
@@ -54,12 +55,14 @@ public class ImportGoogleCalendarTask extends AsyncTask <Void,Void,Void> {
         } catch (Exception e) {
             mActivity.updateStatus("The following error occurred:\n" +
                     e.getMessage());
+            e.printStackTrace();
         }
         return null;
     }
 
     public void addCalendarEvents() {
 
+        /*
         // Create a new calendar
         com.google.api.services.calendar.model.Calendar calendar = new com.google.api.services
                 .calendar.model.Calendar();
@@ -72,14 +75,17 @@ public class ImportGoogleCalendarTask extends AsyncTask <Void,Void,Void> {
         try {
             mService.calendars().insert(calendar).execute();
             Log.d("ImportGoogleCalendarTask","New calendar Structify inserted");
+        } catch (UserRecoverableAuthIOException e){
+            mActivity.startActivityForResult(e.getIntent(), REQUEST_AUTHORIZATION);
+            Log.d("ImportGoogleCalendarTask","User Authorization error inserting new calendar");
         } catch (IOException e) {
             e.printStackTrace();
             Log.d("ImportGoogleCalendarTask","Error inserting new calendar");
-        }
+        }*/
 
         //Map the event descriptions to dates, so that only one event is made for each day
         //that describes all of the study obligations and test events.
-        ArrayList<String> AllEvents = new ArrayList<String>();
+        //ArrayList<String> AllEvents = new ArrayList<String>();
         Map<Date,String> Index = new HashMap<Date,String>();
 
         //For all courses...
@@ -103,8 +109,9 @@ public class ImportGoogleCalendarTask extends AsyncTask <Void,Void,Void> {
             if (Index.containsKey(fd)){
                 //If a reminder for the day has already been entered....
                 String temp = Index.get(fd);
+                Log.d("ImportGoogleCalendarTask", "Finding break in existing string: "+temp);
                 int insert_pos = 0;
-                for (int j = 0; j < temp.length();j++){
+                for (int j = 0; j <= temp.length()-5;j++){
                     if (temp.substring(j,j+4) == "----S"){
                         insert_pos = j-1;
                         break;
@@ -113,16 +120,17 @@ public class ImportGoogleCalendarTask extends AsyncTask <Void,Void,Void> {
                 String desc = temp.substring(0,insert_pos)+ name +" Final Exam"+"\n"+"\n"
                         +temp.substring(insert_pos+1,temp.length()-1);
                 Index.replace(fd, desc);
-                Log.d("ImportGoogleCalendarTask","Final Exam Date for Course "+(i+1)+
-                        " Added to an existing day in the ArrayList");
+                Log.d("ImportGoogleCalendarTask","Final Exam Date "+fd+" for Course "+(i+1)+
+                        " Added to existing day in Index");
             } else {
                 //If no reminder for that day exists yet....
                 String desc = "----Exams and Assignments----"+"\n"+"\n"+ name +" Final Exam"
                         +"\n"+"\n"+"----Studying----"+"\n"+"\n";
-                AllEvents.add(desc);
+                Log.d("ImportGoogleCalendarTask", "Made a new string: "+desc);
+                //AllEvents.add(desc);
                 Index.put(fd,desc);
-                Log.d("ImportGoogleCalendarTask","Final Exam Date for Course "+(i+1)+
-                        " Added to the ArrayList, along with a new Day of events");
+                Log.d("ImportGoogleCalendarTask","Final Exam Date "+fd+" for Course "+(i+1)+
+                        " Added to Index with new day");
             }
 
             //Add final exam study reminders
@@ -136,17 +144,17 @@ public class ImportGoogleCalendarTask extends AsyncTask <Void,Void,Void> {
                     String add = "Study "+Math.round((fa/13)*10)/10.0+" hours for "+ name +
                             "'s Final Exam"+"\n"+"\n";
                     Index.replace(date,desc+add);
-                    Log.d("ImportGoogleCalendarTask","Final Exam Reminders for Course "+
-                            (i+1)+" Added to an existing day in the ArrayList");
+                    Log.d("ImportGoogleCalendarTask","Final Exam Reminder on "+date+" for Course "+
+                            (i+1)+" Added to existing day in Index");
                 } else {
                     //If a reminder for the day does not exist yet...
                     String desc = "----Exams and Assignments----"+"\n"+"\n"+"----Studying----"+"\n"
                             +"\n"+"Study "+Math.round((fa/13)*10)/10.0+"hours for "+name+
                             "'s Final Exam"+"\n"+"\n";
-                    AllEvents.add(desc);
+                    //AllEvents.add(desc);
                     Index.put(date,desc);
-                    Log.d("ImportGoogleCalendarTask","Final Exam Reminders for Course "+
-                            (i+1)+" Added to ArrayList, along with a new day");
+                    Log.d("ImportGoogleCalendarTask","Final Exam Reminder on "+date+" for Course "+
+                            (i+1)+" Added to Index with new day");
                 }
                 date.setTime(date.getTime()-86400000);   //go to the previous day
             }
@@ -157,8 +165,9 @@ public class ImportGoogleCalendarTask extends AsyncTask <Void,Void,Void> {
                 if (Index.containsKey(md.get(k))){
                     //If a reminder for the day has already been entered....
                     String temp = Index.get(md.get(k));
+                    Log.d("ImportGoogleCalendarTask", "Finding break in existing string: "+temp);
                     int insert_pos = 0;
-                    for (int l = 0; l < temp.length();l++){
+                    for (int l = 0; l <= temp.length()-5;l++){
                         if (temp.substring(l,l+4) == "----S"){
                             insert_pos = l-1;
                             break;
@@ -168,16 +177,15 @@ public class ImportGoogleCalendarTask extends AsyncTask <Void,Void,Void> {
                             "\n"+temp.substring(insert_pos+1,temp.length()-1);
                     Index.replace(md.get(k),desc);
                     Log.d("ImportGoogleCalendarTask","Midterm Exam "+(k+1)+
-                            " Date for Course "+(i+1)+" Added to an existing day in the ArrayList");
+                            " Date "+md.get(k)+" for Course "+(i+1)+" Added to existing day in Index");
                 } else {
                     //If no reminder for that day exists yet....
                     String desc = "----Exams and Assignments----"+"\n"+"\n"+ name +" Midterm Exam "
                             +(k+1)+"\n"+"\n"+"----Studying----"+"\n"+"\n";
-                    AllEvents.add(desc);
+                    //AllEvents.add(desc);
                     Index.put(md.get(k),desc);
                     Log.d("ImportGoogleCalendarTask","Midterm Exam "+(k+1)+
-                            " Date for Course "+(i+1)+
-                            " Added to the ArrayList, along with a new day");
+                            " Date "+md.get(k)+" for Course "+(i+1)+" Added to Index with new day");
                 }
 
                 //Add midterm exam study reminders
@@ -192,17 +200,17 @@ public class ImportGoogleCalendarTask extends AsyncTask <Void,Void,Void> {
                         Index.replace(date,desc+add);
                         Log.d("ImportGoogleCalendarTask","Midterm Exam "+(k+1)+
                                 " Reminders for Course "+(i+1)+
-                                " Added to an existing day in the ArrayList");
+                                " on "+date+" Added to existing day in Index");
                     } else {
                         //If a reminder for the day does not exist yet...
                         String desc = "----Exams and Assignments----"+"\n"+"\n"+"----Studying----"+
                                 "\n"+"\n"+"Study "+Math.round((ma/6)*10)/10.0+" hours for "+name+
                                 "'s Midterm Exam "+(k+1)+"\n"+"\n";
-                        AllEvents.add(desc);
+                        //AllEvents.add(desc);
                         Index.put(date,desc);
                         Log.d("ImportGoogleCalendarTask","Midterm Exam "+(k+1)+
-                                " Reminders for Course "+(i+1)+
-                                " Added to ArrayList, along with a new date");
+                                " Reminder on"+date+" for Course "+(i+1)+
+                                " Added to Index with new day");
                     }
                     date.setTime(date.getTime()-86400000);   //go to the previous day
                 }
@@ -214,8 +222,9 @@ public class ImportGoogleCalendarTask extends AsyncTask <Void,Void,Void> {
                 if (Index.containsKey(ad.get(k))){
                     //If a reminder for the day has already been entered....
                     String temp = Index.get(ad.get(k));
+                    Log.d("ImportGoogleCalendarTask", "Finding break in existing string: "+temp);
                     int insert_pos = 0;
-                    for (int l = 0; l < temp.length();l++){
+                    for (int l = 0; l <= temp.length()-5;l++){
                         if (temp.substring(l,l+4) == "----S"){
                             insert_pos = l-1;
                             break;
@@ -226,16 +235,17 @@ public class ImportGoogleCalendarTask extends AsyncTask <Void,Void,Void> {
                             +temp.substring(insert_pos+1,temp.length()-1);
                     Index.replace(ad.get(k),desc);
                     Log.d("ImportGoogleCalendarTask","Assignment "+(k+1)+
-                            " Date for Course "+(i+1)+" Added to an existing day in the ArrayList");
+                            " Date "+ad.get(k)+" for Course "+(i+1)+
+                            " Added to existing day in Index");
                 } else {
                     //If no reminder for that day exists yet....
                     String desc = "----Exams and Assignments----"+"\n"+"\n"+ name +" Assignment "+
                             (k+1)+" Due"+"\n"+"\n"+"----Studying----"+"\n"+"\n";
-                    AllEvents.add(desc);
+                    //AllEvents.add(desc);
                     Index.put(ad.get(k),desc);
                     Log.d("ImportGoogleCalendarTask","Assignment "+(k+1)+
-                            " Date for Course "+(i+1)+
-                            " Added to the ArrayList along with a new day");
+                            " Date "+ad.get(k)+" for Course "+(i+1)+
+                            " Added to Index with new day");
                 }
 
                 //Add assignment study reminders
@@ -249,18 +259,18 @@ public class ImportGoogleCalendarTask extends AsyncTask <Void,Void,Void> {
                                 "'s Assignment "+(k+1)+"\n"+"\n";
                         Index.replace(date,desc+add);
                         Log.d("ImportGoogleCalendarTask","Assignment "+(k+1)+
-                                " Reminders for Course "+(i+1)+
-                                " Added to an existing day in ArrayList");
+                                " Reminder on "+date+" for Course "+(i+1)+
+                                " Added to existing day in Index");
                     } else {
                         //If a reminder for the day does not exist yet...
                         String desc = "----Exams and Assignments----"+"\n"+"\n"+"----Studying----"
                                 +"\n"+"\n"+"Spend "+Math.round((aa/3)*10)/10.0+" hours on "
                                 + name +"'s Assignment "+(k+1)+"\n"+"\n";
-                        AllEvents.add(desc);
+                        //AllEvents.add(desc);
                         Index.put(date,desc);
                         Log.d("ImportGoogleCalendarTask","Assignment "+(k+1)+
-                                " Reminders for Course "+(i+1)+
-                                " Added to ArrayList, along with a new day");
+                                " Reminder on "+date+" for Course "+(i+1)+
+                                " Added to Index with new day");
                     }
                     date.setTime(date.getTime()-86400000);   //go to the previous day
                 }
@@ -311,7 +321,7 @@ public class ImportGoogleCalendarTask extends AsyncTask <Void,Void,Void> {
         event.setReminders(reminders);
 
         //Add the event to the new calendar (ID: "Structify") created in the parent method
-        String calendarId = "Structify";
+        String calendarId = "primary";
         try {
             mService.events().insert(calendarId, event).execute();
             Log.d("ImportGoogleCalendarTask","New event inserted on date "+DateStr);
