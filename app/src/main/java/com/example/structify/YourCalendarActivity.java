@@ -43,7 +43,6 @@ public class YourCalendarActivity extends AppCompatActivity {
     //by which we find information, rather than the courses.
     //We will use the data structured in this way to dictate the arrangement of the dynamic UI.
     private Map<Date,SemesterDays> CalendarIndex;
-    private ArrayList<SemesterDays> CalendarInfo;
 
     //Lookups for assigning Month Strings and Colors
     private final String[] MonthLookup = {"Jan","Feb","Mar","Apr","May","Jun","July","Aug","Sep","Oct","Nov","Dec"};
@@ -85,7 +84,6 @@ public class YourCalendarActivity extends AppCompatActivity {
         //Initialize all dates in the Map, attached to SemesterDays that are blank but with day of week index
         LocalDate start = Courses.get(0).getStartDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
         LocalDate end = Courses.get(0).getEndDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-        CalendarInfo = new ArrayList<SemesterDays>();
         CalendarIndex = new HashMap<Date, SemesterDays>();
         for (LocalDate date = start; !date.isAfter(end); date = date.plusDays(1)) {
             SemesterDays temp = new SemesterDays();
@@ -93,8 +91,7 @@ public class YourCalendarActivity extends AppCompatActivity {
             Calendar calendar = Calendar.getInstance();
             calendar.setTime(t);
             temp.setDay_of_week(calendar.get(Calendar.DAY_OF_WEEK));
-            CalendarInfo.add(temp);
-            CalendarIndex.put(t,CalendarInfo.get(CalendarInfo.size()-1));
+            CalendarIndex.put(t,temp);
         }
 
         //Store all events and reminders in the SemesterDays instances contained in the Hashmap

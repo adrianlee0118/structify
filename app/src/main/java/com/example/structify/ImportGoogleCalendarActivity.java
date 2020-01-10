@@ -56,7 +56,7 @@ public class ImportGoogleCalendarActivity extends Activity {
         setContentView(R.layout.activity_importgooglecalendar);
 
         Progress = findViewById(R.id.progress_info);
-        Progress.setText("Retrieving data...");
+        Progress.setText("Adding data to Google Calendar...");
 
         FinishBtn = findViewById(R.id.grand_finish);
 

@@ -12,6 +12,7 @@ import com.google.api.services.calendar.model.EventDateTime;
 import com.google.api.services.calendar.model.EventReminder;
 
 import java.io.IOException;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -133,15 +134,36 @@ public class ImportGoogleCalendarTask extends AsyncTask <Void,Void,Void> {
                         " Added to Index with new day");
             }
 
-            //Add final exam study reminders
+            //Go to the day before the final...
             Date date = new Date();
-            date.setTime(fd.getTime()-86400000);     //go to the day before the final
+            java.util.Calendar calendar = java.util.Calendar.getInstance();
+            calendar.setTime(fd);
+            calendar.add(java.util.Calendar.DAY_OF_MONTH,-1);
+            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+            int M = calendar.get(java.util.Calendar.MONTH);
+            String MM = Integer.toString(M+1);
+            if (M+1<10){
+                MM = "0"+MM;
+            }
+            int D = calendar.get(java.util.Calendar.DAY_OF_MONTH);
+            String DD = Integer.toString(D);
+            if(D < 10){
+                DD = "0"+DD;
+            }
+            int Y = calendar.get(java.util.Calendar.YEAR);
+            try {
+                 date = formatter.parse(Integer.toString(Y)+"-"+MM+"-"+DD);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+
+            //Add final exam study reminders
             //for the 13 days before the final....
             for (int j = 0; j < 14; j++){
                 if (Index.containsKey(date)){
                     //if a reminder for the day exists already....
                     String desc = Index.get(date);
-                    String add = "Study "+Math.round((fa/13)*10)/10.0+" hours for "+ name +
+                    String add = "Study "+Math.round((fa/13)*10)/10.0+"  hours for "+ name +
                             "'s Final Exam"+"\n"+"\n";
                     Index.replace(date,desc+add);
                     Log.d("ImportGoogleCalendarTask","Final Exam Reminder on "+date+" for Course "+
@@ -156,7 +178,25 @@ public class ImportGoogleCalendarTask extends AsyncTask <Void,Void,Void> {
                     Log.d("ImportGoogleCalendarTask","Final Exam Reminder on "+date+" for Course "+
                             (i+1)+" Added to Index with new day");
                 }
-                date.setTime(date.getTime()-86400000);   //go to the previous day
+
+                //go to the previous day
+                calendar.add(java.util.Calendar.DAY_OF_MONTH,-1);
+                M = calendar.get(java.util.Calendar.MONTH);
+                MM = Integer.toString(M+1);
+                if (M+1<10){
+                    MM = "0"+MM;
+                }
+                D = calendar.get(java.util.Calendar.DAY_OF_MONTH);
+                DD = Integer.toString(D);
+                if(D < 10){
+                    DD = "0"+DD;
+                }
+                Y = calendar.get(java.util.Calendar.YEAR);
+                try {
+                    date = formatter.parse(Integer.toString(Y)+"-"+MM+"-"+DD);
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
             }
 
             //For all midterms in the course....
@@ -188,8 +228,27 @@ public class ImportGoogleCalendarTask extends AsyncTask <Void,Void,Void> {
                             " Date "+md.get(k)+" for Course "+(i+1)+" Added to Index with new day");
                 }
 
+                //Go to the day before the current midterm
+                calendar.setTime(md.get(k));
+                calendar.add(java.util.Calendar.DAY_OF_MONTH,-1);
+                M = calendar.get(java.util.Calendar.MONTH);
+                MM = Integer.toString(M+1);
+                if (M+1<10){
+                    MM = "0"+MM;
+                }
+                D = calendar.get(java.util.Calendar.DAY_OF_MONTH);
+                DD = Integer.toString(D);
+                if(D < 10){
+                    DD = "0"+DD;
+                }
+                Y = calendar.get(java.util.Calendar.YEAR);
+                try {
+                    date = formatter.parse(Integer.toString(Y)+"-"+MM+"-"+DD);
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+
                 //Add midterm exam study reminders
-                date.setTime(md.get(k).getTime()-86400000);  //go to the day before the current midterm
                 //for the 6 days before the midterm....
                 for (int l = 0; l < 6; l++){
                     if (Index.containsKey(date)){
@@ -212,7 +271,25 @@ public class ImportGoogleCalendarTask extends AsyncTask <Void,Void,Void> {
                                 " Reminder on"+date+" for Course "+(i+1)+
                                 " Added to Index with new day");
                     }
-                    date.setTime(date.getTime()-86400000);   //go to the previous day
+
+                    //go to the previous day
+                    calendar.add(java.util.Calendar.DAY_OF_MONTH,-1);
+                    M = calendar.get(java.util.Calendar.MONTH);
+                    MM = Integer.toString(M+1);
+                    if (M+1<10){
+                        MM = "0"+MM;
+                    }
+                    D = calendar.get(java.util.Calendar.DAY_OF_MONTH);
+                    DD = Integer.toString(D);
+                    if(D < 10){
+                        DD = "0"+DD;
+                    }
+                    Y = calendar.get(java.util.Calendar.YEAR);
+                    try {
+                        date = formatter.parse(Integer.toString(Y)+"-"+MM+"-"+DD);
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
 
@@ -248,8 +325,27 @@ public class ImportGoogleCalendarTask extends AsyncTask <Void,Void,Void> {
                             " Added to Index with new day");
                 }
 
+                //Go to the day before the current assignment
+                calendar.setTime(ad.get(k));
+                calendar.add(java.util.Calendar.DAY_OF_MONTH,-1);
+                M = calendar.get(java.util.Calendar.MONTH);
+                MM = Integer.toString(M+1);
+                if (M+1<10){
+                    MM = "0"+MM;
+                }
+                D = calendar.get(java.util.Calendar.DAY_OF_MONTH);
+                DD = Integer.toString(D);
+                if(D < 10){
+                    DD = "0"+DD;
+                }
+                Y = calendar.get(java.util.Calendar.YEAR);
+                try {
+                    date = formatter.parse(Integer.toString(Y)+"-"+MM+"-"+DD);
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+
                 //Add assignment study reminders
-                date.setTime(ad.get(k).getTime()-86400000);//go to the day before the current assignment
                 //for the 3 days before the assignment....
                 for (int l = 0; l < 3; l++){
                     if (Index.containsKey(date)){
@@ -272,7 +368,25 @@ public class ImportGoogleCalendarTask extends AsyncTask <Void,Void,Void> {
                                 " Reminder on "+date+" for Course "+(i+1)+
                                 " Added to Index with new day");
                     }
-                    date.setTime(date.getTime()-86400000);   //go to the previous day
+
+                    //go to the previous day
+                    calendar.add(java.util.Calendar.DAY_OF_MONTH,-1);
+                    M = calendar.get(java.util.Calendar.MONTH);
+                    MM = Integer.toString(M+1);
+                    if (M+1<10){
+                        MM = "0"+MM;
+                    }
+                    D = calendar.get(java.util.Calendar.DAY_OF_MONTH);
+                    DD = Integer.toString(D);
+                    if(D < 10){
+                        DD = "0"+DD;
+                    }
+                    Y = calendar.get(java.util.Calendar.YEAR);
+                    try {
+                        date = formatter.parse(Integer.toString(Y)+"-"+MM+"-"+DD);
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
         }
@@ -288,9 +402,9 @@ public class ImportGoogleCalendarTask extends AsyncTask <Void,Void,Void> {
     public void addCalendarEvent(Date date, String eventdesc){
 
         Event event = new Event()
-                .setSummary("Structify Exam Events and Study Reminders")
+                .setSummary(eventdesc)
                 .setLocation("Vancouver, BC, Canada")
-                .setDescription(eventdesc);
+                .setDescription("Structify Exam Events and Study Reminders");
 
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 

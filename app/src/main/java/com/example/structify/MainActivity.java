@@ -144,7 +144,7 @@ public class MainActivity extends AppCompatActivity {
                     intent.putExtra("NumCourses",NumCourses);
                     intent.putExtra("StudyTime",StudyTime);
                     startActivity(intent);
-                    mProgress.cancel();
+                    mProgress.dismiss();
                 }
             }
         });

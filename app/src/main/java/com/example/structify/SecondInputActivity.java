@@ -44,7 +44,6 @@ public class SecondInputActivity extends AppCompatActivity {
 
     //Making dynamically created EditText fields readable.
     private Map<String,EditText> InputFieldIDs;
-    private ArrayList<EditText> InputFields;
 
     //Where we will store input data
     private ArrayList<UniversityCourse> Courses;
@@ -71,7 +70,6 @@ public class SecondInputActivity extends AppCompatActivity {
 
         //Map for keeping track of dynamically generated edittexts and instantiate UniversityCourse storage
         InputFieldIDs = new HashMap<String,EditText>();
-        InputFields = new ArrayList<EditText>();
         Courses = new ArrayList<UniversityCourse>();
 
         //Setting our base and creating inflater for inflating course_form template layout views
@@ -83,8 +81,7 @@ public class SecondInputActivity extends AppCompatActivity {
             //Inflate an instance of course form template layout for every course
             View current = vi.inflate(R.layout.course_form,null);
 
-            //Map field IDs for later access, store editTexts in an ArrayList so that references persist outside
-            //of the for loop
+            //Map field IDs for later access
             TextView course = current.findViewById(R.id.textView1);
             course.setText("Course "+Integer.toString(i)+" Name");
             EditText course_name = current.findViewById(R.id.course_name);
@@ -104,38 +101,22 @@ public class SecondInputActivity extends AppCompatActivity {
             EditText assignment6 = current.findViewById(R.id.assignment6);
             EditText number_assignments = current.findViewById(R.id.number_assignments);
 
-            InputFields.add(course_name);
-            InputFieldIDs.put("Course "+Integer.toString(i)+" Name",InputFields.get(InputFields.size()-1));
-            InputFields.add(course_weight);
-            InputFieldIDs.put("Course "+Integer.toString(i)+" Weight",InputFields.get(InputFields.size()-1));
-            InputFields.add(final_weight);
-            InputFieldIDs.put("Course "+Integer.toString(i)+" Final Weight",InputFields.get(InputFields.size()-1));
-            InputFields.add(midterm_weight);
-            InputFieldIDs.put("Course "+Integer.toString(i)+" Midterm Weight",InputFields.get(InputFields.size()-1));
-            InputFields.add(assignment_weight);
-            InputFieldIDs.put("Course "+Integer.toString(i)+" Assignment Weight",InputFields.get(InputFields.size()-1));
-            InputFields.add(final_date);
-            InputFieldIDs.put("Course "+Integer.toString(i)+" Final Date",InputFields.get(InputFields.size()-1));
-            InputFields.add(midterm_date1);
-            InputFieldIDs.put("Course "+Integer.toString(i)+" Midterm Date 1",InputFields.get(InputFields.size()-1));
-            InputFields.add(midterm_date2);
-            InputFieldIDs.put("Course "+Integer.toString(i)+" Midterm Date 2",InputFields.get(InputFields.size()-1));
-            InputFields.add(number_midterms);
-            InputFieldIDs.put("Course "+Integer.toString(i)+" Number Midterms",InputFields.get(InputFields.size()-1));
-            InputFields.add(assignment1);
-            InputFieldIDs.put("Course "+Integer.toString(i)+" Assignment 1 Date",InputFields.get(InputFields.size()-1));
-            InputFields.add(assignment2);
-            InputFieldIDs.put("Course "+Integer.toString(i)+" Assignment 2 Date",InputFields.get(InputFields.size()-1));
-            InputFields.add(assignment3);
-            InputFieldIDs.put("Course "+Integer.toString(i)+" Assignment 3 Date",InputFields.get(InputFields.size()-1));
-            InputFields.add(assignment4);
-            InputFieldIDs.put("Course "+Integer.toString(i)+" Assignment 4 Date",InputFields.get(InputFields.size()-1));
-            InputFields.add(assignment5);
-            InputFieldIDs.put("Course "+Integer.toString(i)+" Assignment 5 Date",InputFields.get(InputFields.size()-1));
-            InputFields.add(assignment6);
-            InputFieldIDs.put("Course "+Integer.toString(i)+" Assignment 6 Date",InputFields.get(InputFields.size()-1));
-            InputFields.add(number_assignments);
-            InputFieldIDs.put("Course "+Integer.toString(i)+" Number Assignments",InputFields.get(InputFields.size()-1));
+            InputFieldIDs.put("Course "+Integer.toString(i)+" Name",course_name);
+            InputFieldIDs.put("Course "+Integer.toString(i)+" Weight",course_weight);
+            InputFieldIDs.put("Course "+Integer.toString(i)+" Final Weight",final_weight);
+            InputFieldIDs.put("Course "+Integer.toString(i)+" Midterm Weight",midterm_weight);
+            InputFieldIDs.put("Course "+Integer.toString(i)+" Assignment Weight",assignment_weight);
+            InputFieldIDs.put("Course "+Integer.toString(i)+" Final Date",final_date);
+            InputFieldIDs.put("Course "+Integer.toString(i)+" Midterm Date 1",midterm_date1);
+            InputFieldIDs.put("Course "+Integer.toString(i)+" Midterm Date 2",midterm_date2);
+            InputFieldIDs.put("Course "+Integer.toString(i)+" Number Midterms",number_midterms);
+            InputFieldIDs.put("Course "+Integer.toString(i)+" Assignment 1 Date",assignment1);
+            InputFieldIDs.put("Course "+Integer.toString(i)+" Assignment 2 Date",assignment2);
+            InputFieldIDs.put("Course "+Integer.toString(i)+" Assignment 3 Date",assignment3);
+            InputFieldIDs.put("Course "+Integer.toString(i)+" Assignment 4 Date",assignment4);
+            InputFieldIDs.put("Course "+Integer.toString(i)+" Assignment 5 Date",assignment5);
+            InputFieldIDs.put("Course "+Integer.toString(i)+" Assignment 6 Date",assignment6);
+            InputFieldIDs.put("Course "+Integer.toString(i)+" Number Assignments",number_assignments);
 
             current.setPadding(0,0,0,100);
 
@@ -167,7 +148,8 @@ public class SecondInputActivity extends AppCompatActivity {
                     temp.setEndDate(EndDate);
 
                     //Add course name
-                    if (TextUtils.isEmpty(InputFieldIDs.get("Course "+Integer.toString(i)+" Name").getText().toString().trim())){
+                    if (TextUtils.isEmpty(InputFieldIDs.get("Course "+Integer.toString(i)+" Name")
+                            .getText().toString().trim())){
                         Toast.makeText(SecondInputActivity.this,"You forgot to enter Course "
                                 +Integer.toString(i)+" Name", Toast.LENGTH_SHORT).show();
                         throw new RuntimeException();
