@@ -46,7 +46,11 @@ public class YourCalendarActivity extends AppCompatActivity {
 
     //Lookups for assigning Month Strings and Colors
     private final String[] MonthLookup = {"Jan","Feb","Mar","Apr","May","Jun","July","Aug","Sep","Oct","Nov","Dec"};
-    private final int[] ColorLookup = {Color.RED,Color.BLUE,Color.GREEN,Color.MAGENTA,Color.CYAN,Color.YELLOW,Color.BLACK,Color.GRAY};
+    private final int[] ColorLookup = {Color.parseColor("#CC0000"),
+            Color.parseColor("#000099"),Color.parseColor("#009900"),
+            Color.parseColor("#CCCC00"),Color.parseColor("#CC0066"),
+            Color.parseColor("#00CCCC"),Color.parseColor("#CC6600"),
+            Color.parseColor("#202020")};
 
     //UI components to be manipulated
     private TextView Year;
@@ -545,9 +549,11 @@ public class YourCalendarActivity extends AppCompatActivity {
 
             @Override
             public void onClick(View v) {
-
-                finish();
-                System.exit(0);
+                Log.d("YourCalendarActivity","Finish Called");
+                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                intent.putExtra("EXIT", true);
+                startActivity(intent);
             }
 
         });
@@ -556,9 +562,6 @@ public class YourCalendarActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         Log.d("YourCalendarActivity", "onBackPressed Called");
-        Intent setIntent = new Intent(Intent.ACTION_MAIN);
-        setIntent.addCategory(Intent.CATEGORY_HOME);
-        setIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        startActivity(setIntent);
+        finish();
     }
 }

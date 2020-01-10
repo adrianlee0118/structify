@@ -136,6 +136,12 @@ public class SecondInputActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
+                //Flag for whether to proceed to next activity --instead of throwing exceptions and killing app.
+                boolean proceedFlag = true;
+
+                //In case this is not the first time the onClick was called
+                Courses.clear();
+
                 //Read all data into UniversityCourse objects to be passed to the next activity, one object
                 //for each course inputted.
                 for (int i = 1; i <= NumCourses; i++){
@@ -152,7 +158,7 @@ public class SecondInputActivity extends AppCompatActivity {
                             .getText().toString().trim())){
                         Toast.makeText(SecondInputActivity.this,"You forgot to enter Course "
                                 +Integer.toString(i)+" Name", Toast.LENGTH_SHORT).show();
-                        throw new RuntimeException();
+                        proceedFlag = false;
                     } else {
                         temp.setCourseName(InputFieldIDs.get("Course "+Integer.toString(i)+" Name").getText().toString());
                         Log.d("Second","Got Course "+Integer.toString(i)+" Name");
@@ -165,14 +171,14 @@ public class SecondInputActivity extends AppCompatActivity {
                             if (TextUtils.isEmpty(InputFieldIDs.get("Course "+Integer.toString(j)+" Weight").getText().toString().trim())){
                                 Toast.makeText(SecondInputActivity.this,"You forgot to enter Course "
                                         +Integer.toString(j)+" Weight",Toast.LENGTH_SHORT).show();
-                                throw new RuntimeException();
+                                proceedFlag = false;
                             }
                             sum+=Integer.parseInt(InputFieldIDs.get("Course "+Integer.toString(j)+" Weight").getText().toString());
                         }
                         if (sum != 100){
                             Toast.makeText(SecondInputActivity.this,"Your course weights don't sum " +
                                     "to 100!",Toast.LENGTH_SHORT).show();
-                            throw new RuntimeException();
+                            proceedFlag = false;
                         } else {
                             if (Integer.parseInt(InputFieldIDs.get("Course "+Integer.toString(i)+" Weight").getText().toString())
                             !=0){
@@ -181,7 +187,7 @@ public class SecondInputActivity extends AppCompatActivity {
                             } else {
                                 Toast.makeText(SecondInputActivity.this,"Course " + Integer.toString(i)
                                         + " Final Weight cannot equal zero",Toast.LENGTH_SHORT).show();
-                                throw new RuntimeException();
+                                proceedFlag = false;
                             }
                         }
                     } else {
@@ -192,7 +198,7 @@ public class SecondInputActivity extends AppCompatActivity {
                         } else {
                             Toast.makeText(SecondInputActivity.this,"Course " + Integer.toString(i)
                                     + " Final Weight cannot equal zero",Toast.LENGTH_SHORT).show();
-                            throw new RuntimeException();
+                            proceedFlag = false;
                         }
                     }
 
@@ -204,7 +210,7 @@ public class SecondInputActivity extends AppCompatActivity {
                         Toast.makeText(SecondInputActivity.this,"Your Final, Midterm and Assignment " +
                                 "Weights for Course "+Integer.toString(i)+" don't add up to 100.",
                                 Toast.LENGTH_SHORT).show();
-                        throw new RuntimeException();
+                        proceedFlag = false;
                     } else {
                         Log.d("Second","Got Course "+Integer.toString(i)+" exam and assign weights");
                         temp.setFinalWt(Integer.parseInt(InputFieldIDs.get("Course "+Integer.toString(i)+" Final Weight").getText().toString()));
@@ -216,7 +222,7 @@ public class SecondInputActivity extends AppCompatActivity {
                     SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
                     if (TextUtils.isEmpty(InputFieldIDs.get("Course "+Integer.toString(i)+" Final Date").getText().toString().trim())){
                         Toast.makeText(SecondInputActivity.this,"You forgot to enter Course "+Integer.toString(i)+" Final Date",Toast.LENGTH_SHORT).show();
-                        throw new RuntimeException();
+                        proceedFlag = false;
                     } else {
                         try {
                             Date fd = formatter.parse(InputFieldIDs.get("Course "+Integer.toString(i)+" Final Date").getText().toString());
@@ -242,7 +248,7 @@ public class SecondInputActivity extends AppCompatActivity {
                             TextUtils.isEmpty(InputFieldIDs.get("Course "+Integer.toString(i)+" Number Midterms").getText().toString().trim())){
                         Toast.makeText(SecondInputActivity.this,"Please enter some information about"+
                                 " Course "+Integer.toString(i)+" Midterm Exam(s)",Toast.LENGTH_SHORT).show();
-                        throw new RuntimeException();
+                        proceedFlag = false;
                     } else if (TextUtils.isEmpty(InputFieldIDs.get("Course "+Integer.toString(i)+" Midterm Date 1").getText().toString().trim()) &&
                             TextUtils.isEmpty(InputFieldIDs.get("Course "+Integer.toString(i)+" Midterm Date 2").getText().toString().trim())) {
                         try {
@@ -266,7 +272,7 @@ public class SecondInputActivity extends AppCompatActivity {
                                         Toast.makeText(SecondInputActivity.this,"Make sure Course "
                                                         +Integer.toString(i)+" Midterm Dates are in range",
                                                 Toast.LENGTH_SHORT).show();
-                                        throw new RuntimeException();
+                                        proceedFlag = false;
                                     }
                                 } catch (ParseException e) {
                                     Toast.makeText(SecondInputActivity.this,"Please enter valid " +
@@ -291,7 +297,7 @@ public class SecondInputActivity extends AppCompatActivity {
                             && TextUtils.isEmpty(InputFieldIDs.get("Course "+Integer.toString(i)+" Number Assignments").getText().toString().trim())){
                         Toast.makeText(SecondInputActivity.this,"Please enter some information about"+
                                 " Course "+Integer.toString(i)+" Assignment(s)",Toast.LENGTH_SHORT).show();
-                        throw new RuntimeException();
+                        proceedFlag = false;
                     } else if (TextUtils.isEmpty(InputFieldIDs.get("Course "+Integer.toString(i)+" Assignment 1 Date").getText().toString().trim())
                             && TextUtils.isEmpty(InputFieldIDs.get("Course "+Integer.toString(i)+" Assignment 2 Date").getText().toString().trim())
                             && TextUtils.isEmpty(InputFieldIDs.get("Course "+Integer.toString(i)+" Assignment 3 Date").getText().toString().trim())
@@ -315,7 +321,7 @@ public class SecondInputActivity extends AppCompatActivity {
                                         Toast.makeText(SecondInputActivity.this,"Make sure Course "
                                                         +Integer.toString(i)+" Assignment Dates are in range",
                                                 Toast.LENGTH_SHORT).show();
-                                        throw new RuntimeException();
+                                        proceedFlag = false;
                                     }
                                 } catch (ParseException e) {
                                     Toast.makeText(SecondInputActivity.this,"Please enter valid " +
@@ -332,15 +338,19 @@ public class SecondInputActivity extends AppCompatActivity {
                     Courses.add(temp);
                 }
 
-                //Pass the UniversityCourse objects to the next activity.
-                Intent intent = new Intent(SecondInputActivity.this, ThirdSummaryActivity.class);
-                intent.putExtra("StudyTime",StudyTime);
-                intent.putExtra("NumCourses",NumCourses);
-                for (int i = 1; i <= NumCourses; i++){
-                    intent.putExtra("Course "+i,(Parcelable)Courses.get(i-1));
+                if (proceedFlag){
+                    //Pass the UniversityCourse objects to the next activity.
+                    Intent intent = new Intent(SecondInputActivity.this, ThirdSummaryActivity.class);
+                    intent.putExtra("StudyTime",StudyTime);
+                    intent.putExtra("NumCourses",NumCourses);
+                    for (int i = 1; i <= NumCourses; i++){
+                        intent.putExtra("Course "+i,(Parcelable)Courses.get(i-1));
+                    }
+                    startActivity(intent);
+                } else {
+                    Toast.makeText(SecondInputActivity.this,"Please fix your " +
+                                    "inputs and press the button again :).",Toast.LENGTH_SHORT).show();
                 }
-                startActivity(intent);
-
             }
         });
     }
@@ -348,10 +358,7 @@ public class SecondInputActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         Log.d("SecondInputActivity", "onBackPressed Called");
-        Intent setIntent = new Intent(Intent.ACTION_MAIN);
-        setIntent.addCategory(Intent.CATEGORY_HOME);
-        setIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        startActivity(setIntent);
+        finish();
     }
 
 }

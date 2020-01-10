@@ -254,10 +254,7 @@ public class ImportGoogleCalendarActivity extends Activity {
 
     public void onBackPressed() {
         Log.d("ImportGoogleCalendarActivity", "onBackPressed Called");
-        Intent setIntent = new Intent(Intent.ACTION_MAIN);
-        setIntent.addCategory(Intent.CATEGORY_HOME);
-        setIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        startActivity(setIntent);
+        finish();
     }
 
     private void SetFinishButtonClick() {
@@ -267,8 +264,10 @@ public class ImportGoogleCalendarActivity extends Activity {
             public void onClick(View v) {
                 //Exit the application and perhaps open Google Calendar at the starting month
                 Log.d("ImportGoogleCalendarActivity","Finish Called");
-                int pid = android.os.Process.myPid();
-                android.os.Process.killProcess(pid);
+                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                intent.putExtra("EXIT", true);
+                startActivity(intent);
             }
 
         });

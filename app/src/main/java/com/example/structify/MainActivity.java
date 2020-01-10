@@ -64,6 +64,13 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        //All activities except for MainActivity are destroyed when exit is clicked in YourCalendarActivity
+        //or ImportGoogleCalendarActivity, and this code will shut down MainActivity (and thus the whole app)
+        //if MainActivity was reached via those routes.
+        if (getIntent().getBooleanExtra("EXIT", false)) {
+            finish();
+        }
+
         //Link variables to layout
         EnterCoursesBtn = findViewById(R.id.enter_course_info);
         start = findViewById(R.id.startDate);
