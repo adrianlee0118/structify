@@ -66,6 +66,7 @@ public class ImportGoogleCalendarTask extends AsyncTask <Void,Void,Void> {
         calendar.setSummary("Structify Study Program");
         calendar.setTimeZone("America/Vancouver");
         calendar.setId("Structify");  //Use this ID in addCalendarEvent()
+        Log.d("ImportGoogleCalendarTask","New calendar Structify created");
 
         // Insert the new calendar -- we will access it again in addCalendarEvent() via its ID "Structify"
         try {
@@ -99,7 +100,7 @@ public class ImportGoogleCalendarTask extends AsyncTask <Void,Void,Void> {
             Log.d("ImportGoogleCalendarTask","Data from Course "+(i+1)+" Pulled");
 
             //Create and insert final events
-            if (Index.get(fd) != null){
+            if (Index.containsKey(fd)){
                 //If a reminder for the day has already been entered....
                 String temp = Index.get(fd);
                 int insert_pos = 0;
@@ -129,7 +130,7 @@ public class ImportGoogleCalendarTask extends AsyncTask <Void,Void,Void> {
             date.setTime(fd.getTime()-86400000);     //go to the day before the final
             //for the 13 days before the final....
             for (int j = 0; j < 14; j++){
-                if (Index.get(date) != null){
+                if (Index.containsKey(date)){
                     //if a reminder for the day exists already....
                     String desc = Index.get(date);
                     String add = "Study "+Math.round((fa/13)*10)/10.0+" hours for "+ name +
@@ -153,7 +154,7 @@ public class ImportGoogleCalendarTask extends AsyncTask <Void,Void,Void> {
             //For all midterms in the course....
             for (int k = 0; k < md.size(); k++){
                 //Create and insert midterm events
-                if (Index.get(md.get(k)) != null){
+                if (Index.containsKey(md.get(k))){
                     //If a reminder for the day has already been entered....
                     String temp = Index.get(md.get(k));
                     int insert_pos = 0;
@@ -183,7 +184,7 @@ public class ImportGoogleCalendarTask extends AsyncTask <Void,Void,Void> {
                 date.setTime(md.get(k).getTime()-86400000);  //go to the day before the current midterm
                 //for the 6 days before the midterm....
                 for (int l = 0; l < 6; l++){
-                    if (Index.get(date) != null){
+                    if (Index.containsKey(date)){
                         //if a reminder for the day exists already....
                         String desc = Index.get(date);
                         String add = "Study "+Math.round((ma/6)*10)/10.0+" hours for "+ name +
@@ -199,7 +200,9 @@ public class ImportGoogleCalendarTask extends AsyncTask <Void,Void,Void> {
                                 "'s Midterm Exam "+(k+1)+"\n"+"\n";
                         AllEvents.add(desc);
                         Index.put(date,desc);
-                        Log.d("ImportGoogleCalendarTask","Midterm Exam "+(k+1)+" Reminders for Course "+(i+1)+" Added to ArrayList, along with a new date");
+                        Log.d("ImportGoogleCalendarTask","Midterm Exam "+(k+1)+
+                                " Reminders for Course "+(i+1)+
+                                " Added to ArrayList, along with a new date");
                     }
                     date.setTime(date.getTime()-86400000);   //go to the previous day
                 }
@@ -208,7 +211,7 @@ public class ImportGoogleCalendarTask extends AsyncTask <Void,Void,Void> {
             //For all assignments in the course...
             for (int k = 0; k < ad.size(); k++){
                 //Create and insert assignment events
-                if (Index.get(ad.get(k)) != null){
+                if (Index.containsKey(ad.get(k))){
                     //If a reminder for the day has already been entered....
                     String temp = Index.get(ad.get(k));
                     int insert_pos = 0;
@@ -239,7 +242,7 @@ public class ImportGoogleCalendarTask extends AsyncTask <Void,Void,Void> {
                 date.setTime(ad.get(k).getTime()-86400000);//go to the day before the current assignment
                 //for the 3 days before the assignment....
                 for (int l = 0; l < 3; l++){
-                    if (Index.get(date) != null){
+                    if (Index.containsKey(date)){
                         //if a reminder for the day exists already....
                         String desc = Index.get(date);
                         String add = "Spend "+Math.round((aa/3)*10)/10.0+" hours on "+ name +
@@ -250,11 +253,14 @@ public class ImportGoogleCalendarTask extends AsyncTask <Void,Void,Void> {
                                 " Added to an existing day in ArrayList");
                     } else {
                         //If a reminder for the day does not exist yet...
-                        String desc = "----Exams and Assignments----"+"\n"+"\n"+"----Studying----"+"\n"+"\n"+"Spend "+Math.round((aa/3)*10)/10.0+" hours on "
+                        String desc = "----Exams and Assignments----"+"\n"+"\n"+"----Studying----"
+                                +"\n"+"\n"+"Spend "+Math.round((aa/3)*10)/10.0+" hours on "
                                 + name +"'s Assignment "+(k+1)+"\n"+"\n";
                         AllEvents.add(desc);
                         Index.put(date,desc);
-                        Log.d("ImportGoogleCalendarTask","Assignment "+(k+1)+" Reminders for Course "+(i+1)+" Added to ArrayList, along with a new day");
+                        Log.d("ImportGoogleCalendarTask","Assignment "+(k+1)+
+                                " Reminders for Course "+(i+1)+
+                                " Added to ArrayList, along with a new day");
                     }
                     date.setTime(date.getTime()-86400000);   //go to the previous day
                 }
@@ -279,7 +285,8 @@ public class ImportGoogleCalendarTask extends AsyncTask <Void,Void,Void> {
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
         String DateStr = dateFormat.format(date);
-        Log.d("ImportGoogleCalendarTask","assignment reminder startdate is "+dateFormat.format(date));
+        Log.d("ImportGoogleCalendarTask","assignment reminder startdate is "
+                +dateFormat.format(date));
 
         //Set event to occupy 9AM to 11AM on the day
         DateTime startDateTime = new DateTime(DateStr+"T09:00:00-08:00");
