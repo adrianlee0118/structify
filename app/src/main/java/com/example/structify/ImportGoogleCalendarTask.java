@@ -79,7 +79,7 @@ public class ImportGoogleCalendarTask extends AsyncTask <Void,Void,Void> {
             mService.calendars().insert(newcalendar).execute();
             Log.d("ImportGoogleCalendarTask","New calendar Structify inserted");
         } catch (UserRecoverableAuthIOException e){
-            mActivity.startActivityForResult(e.getIntent(), REQUEST_AUTHORIZATION);
+            mActivity.startActivityForResult(e.getIntent(), mActivity.REQUEST_AUTHORIZATION);
             Log.d("ImportGoogleCalendarTask","User Authorization error inserting new calendar");
         } catch (IOException e) {
             e.printStackTrace();
@@ -113,7 +113,7 @@ public class ImportGoogleCalendarTask extends AsyncTask <Void,Void,Void> {
                 Log.d("ImportGoogleCalendarTask", "Finding break in existing string: "+temp);
                 int insert_pos = 0;
                 for (int j = 0; j <= temp.length()-5;j++){
-                    if (temp.substring(j,j+4) == "----S"){
+                    if (temp.substring(j,j+4).equals("----S")){
                         insert_pos = j-1;
                         break;
                     }
@@ -185,7 +185,7 @@ public class ImportGoogleCalendarTask extends AsyncTask <Void,Void,Void> {
                     Log.d("ImportGoogleCalendarTask", "Finding break in existing string: "+temp);
                     int insert_pos = 0;
                     for (int l = 0; l <= temp.length()-5;l++){
-                        if (temp.substring(l,l+4) == "----S"){
+                        if (temp.substring(l,l+4).equals("----S")){
                             insert_pos = l-1;
                             break;
                         }
@@ -251,7 +251,7 @@ public class ImportGoogleCalendarTask extends AsyncTask <Void,Void,Void> {
                     Log.d("ImportGoogleCalendarTask", "Finding break in existing string: "+temp);
                     int insert_pos = 0;
                     for (int l = 0; l <= temp.length()-5;l++){
-                        if (temp.substring(l,l+4) == "----S"){
+                        if (temp.substring(l,l+4).equals("----S")){
                             insert_pos = l-1;
                             break;
                         }
