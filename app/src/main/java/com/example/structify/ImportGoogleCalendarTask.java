@@ -70,7 +70,6 @@ public class ImportGoogleCalendarTask extends AsyncTask <Void,Void,Void> {
                 .calendar.model.Calendar();
         newcalendar.setSummary("Structify Study Program");
         newcalendar.setTimeZone("America/Vancouver");
-        newcalendar.setId("Structify");  //Use this ID in addCalendarEvent()
         newcalendar.setDescription("Study reminders from Structify app");
         Log.d("ImportGoogleCalendarTask","New calendar Structify created");
 
@@ -84,6 +83,7 @@ public class ImportGoogleCalendarTask extends AsyncTask <Void,Void,Void> {
         } catch (IOException e) {
             e.printStackTrace();
             Log.d("ImportGoogleCalendarTask","Error inserting new calendar");
+            return;
         }
 
         //Map the event descriptions to dates, so that only one event is made for each day
