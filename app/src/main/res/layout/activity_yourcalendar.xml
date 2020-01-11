@@ -142,7 +142,7 @@
     <ScrollView
         android:id="@+id/calendar_area"
         android:layout_width="match_parent"
-        android:layout_height="534dp"
+        android:layout_height="464dp"
         android:layout_weight="1">
 
         <LinearLayout
