@@ -5,6 +5,7 @@ import android.icu.text.SimpleDateFormat;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import com.google.api.client.googleapis.extensions.android.gms.auth.UserRecoverableAuthIOException;
 import com.google.api.client.util.DateTime;
 import com.google.api.services.calendar.Calendar;
 import com.google.api.services.calendar.model.Event;
@@ -19,6 +20,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+
+import static com.example.structify.ImportGoogleCalendarActivity.REQUEST_AUTHORIZATION;
 
 
 public class ImportGoogleCalendarTask extends AsyncTask <Void,Void,Void> {
@@ -62,18 +65,18 @@ public class ImportGoogleCalendarTask extends AsyncTask <Void,Void,Void> {
 
     public void addCalendarEvents() {
 
-        /*
         // Create a new calendar
-        com.google.api.services.calendar.model.Calendar calendar = new com.google.api.services
+        com.google.api.services.calendar.model.Calendar newcalendar = new com.google.api.services
                 .calendar.model.Calendar();
-        calendar.setSummary("Structify Study Program");
-        calendar.setTimeZone("America/Vancouver");
-        calendar.setId("Structify");  //Use this ID in addCalendarEvent()
+        newcalendar.setSummary("Structify Study Program");
+        newcalendar.setTimeZone("America/Vancouver");
+        String calID = newcalendar.getId();
+        newcalendar.setId(calID);  //Use this ID in addCalendarEvent()
         Log.d("ImportGoogleCalendarTask","New calendar Structify created");
 
         // Insert the new calendar -- we will access it again in addCalendarEvent() via its ID "Structify"
         try {
-            mService.calendars().insert(calendar).execute();
+            mService.calendars().insert(newcalendar).execute();
             Log.d("ImportGoogleCalendarTask","New calendar Structify inserted");
         } catch (UserRecoverableAuthIOException e){
             mActivity.startActivityForResult(e.getIntent(), REQUEST_AUTHORIZATION);
@@ -81,7 +84,7 @@ public class ImportGoogleCalendarTask extends AsyncTask <Void,Void,Void> {
         } catch (IOException e) {
             e.printStackTrace();
             Log.d("ImportGoogleCalendarTask","Error inserting new calendar");
-        }*/
+        }
 
         //Map the event descriptions to dates, so that only one event is made for each day
         //that describes all of the study obligations and test events.
@@ -310,11 +313,11 @@ public class ImportGoogleCalendarTask extends AsyncTask <Void,Void,Void> {
         //Add all the events to the calendar!
         while (IndexIterator.hasNext()){
             Map.Entry mapElement = (Map.Entry)IndexIterator.next();
-            addCalendarEvent((Date) mapElement.getKey(),(String) mapElement.getValue());
+            addCalendarEvent((Date) mapElement.getKey(),(String) mapElement.getValue(),calID);
         }
     }
 
-    public void addCalendarEvent(Date date, String eventdesc){
+    public void addCalendarEvent(Date date, String eventdesc, String calID){
 
         Event event = new Event()
                 .setSummary(eventdesc)
@@ -347,10 +350,9 @@ public class ImportGoogleCalendarTask extends AsyncTask <Void,Void,Void> {
                 .setOverrides(Arrays.asList(reminderOverrides));
         event.setReminders(reminders);
 
-        //Add the event to the new calendar (ID: "Structify") created in the parent method
-        String calendarId = "primary";
+        //Add the event to the new calendar
         try {
-            mService.events().insert(calendarId, event).execute();
+            mService.events().insert(calID,event).execute();
             Log.d("ImportGoogleCalendarTask","New event inserted on date "+DateStr);
         } catch (IOException e) {
             e.printStackTrace();
