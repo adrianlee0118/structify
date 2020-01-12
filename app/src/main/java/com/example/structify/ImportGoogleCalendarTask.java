@@ -24,8 +24,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import static com.example.structify.ImportGoogleCalendarActivity.REQUEST_AUTHORIZATION;
-
 
 public class ImportGoogleCalendarTask extends AsyncTask <Void,Void,Void> {
 
@@ -182,13 +180,6 @@ public class ImportGoogleCalendarTask extends AsyncTask <Void,Void,Void> {
                     //If a reminder for the day has already been entered....
                     String temp = Index.get(md.get(k));
                     Log.d("ImportGoogleCalendarTask", "Finding break in existing string: "+temp);
-                    /*int insert_pos = 33;
-                    for (int l = 34; l <= temp.length()-5;l++){
-                        if (temp.substring(l,l+4).equals("----S")){
-                            insert_pos = l-1;
-                            break;
-                        }
-                    }*/
                     int insert_pos = temp.indexOf("----S");
                     Log.d("ImportGoogleCalendarTask", "Insert position will be "+insert_pos);
                     String desc = temp.substring(0,insert_pos-1)+ name +" Midterm Exam "+(k+1)+"\n"+
@@ -339,8 +330,8 @@ public class ImportGoogleCalendarTask extends AsyncTask <Void,Void,Void> {
             return;
         }
 
-        //Set color of the calendar to green same as the app
-        structify_calendar.setColorId("2");
+        //Set color of the calendar to green same as the app (as per https://stackoverflow.com/questions/31979023/google-calender-api-setcolorid)
+        structify_calendar.setColorId("9");
 
         //Add all the events to the calendar!
         Iterator IndexIterator = Index.entrySet().iterator();
@@ -364,7 +355,7 @@ public class ImportGoogleCalendarTask extends AsyncTask <Void,Void,Void> {
     public void addCalendarEvent(Date date, String eventdesc, String calID){
 
         Event event = new Event()
-                .setSummary("Structify - To Do")
+                .setSummary("Structify")
                 .setLocation("Vancouver, BC, Canada")
                 .setDescription(eventdesc);
 
