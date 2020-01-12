@@ -8,6 +8,7 @@ import android.util.Log;
 import com.google.api.client.googleapis.extensions.android.gms.auth.UserRecoverableAuthIOException;
 import com.google.api.client.util.DateTime;
 import com.google.api.services.calendar.Calendar;
+import com.google.api.services.calendar.model.CalendarList;
 import com.google.api.services.calendar.model.CalendarListEntry;
 import com.google.api.services.calendar.model.Event;
 import com.google.api.services.calendar.model.EventDateTime;
@@ -20,6 +21,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import static com.example.structify.ImportGoogleCalendarActivity.REQUEST_AUTHORIZATION;
@@ -71,7 +73,8 @@ public class ImportGoogleCalendarTask extends AsyncTask <Void,Void,Void> {
                 .calendar.model.Calendar();
         newcalendar.setSummary("Structify Study Program");
         newcalendar.setTimeZone("America/Vancouver");
-        newcalendar.setDescription("Study reminders from Structify app");
+        String calendar_description = "Study reminders from Structify app";  //used to find calendarid later
+        newcalendar.setDescription(calendar_description);
         Log.d("ImportGoogleCalendarTask","New calendar Structify created");
 
         //Insert the new calendar -- we will access it again in addCalendarEvent() via its ID "Structify"
@@ -311,31 +314,59 @@ public class ImportGoogleCalendarTask extends AsyncTask <Void,Void,Void> {
             }
         }
 
-        //Retrieve the created calendar using CalendarList.get()
-        CalendarListEntry calendarListEntry = new CalendarListEntry();
+        //Retrieve the created calendar using Calendarlist.get(), using description as identifier
+        String createdcalendarid = "";
+        String pageToken = null;
+        CalendarList calendarList = null;
         try {
-            calendarListEntry = mService.calendarList().get("Structify").execute();
-            Log.d("ImportGoogleCalendarActivity","Created calendar retrieved");
+            calendarList = mService.calendarList().list().setPageToken(pageToken).execute();
+            Log.d("ImportGoogleCalendarActivity","Calendarlist retrieved");
         } catch (IOException e) {
             e.printStackTrace();
-            Log.d("ImportGoogleCalendarActivity","Error retrieving created calendar");
+            Log.d("ImportGoogleCalendarActivity","Error retrieving CalendarList");
+            return;
+        }
+        //iterate through the CalendarList
+        List<CalendarListEntry> items = calendarList.getItems();
+        Log.d("ImportGoogleCalendarActivity","Searching for created calendar's ID in CalendarList");
+        do {
+            for (CalendarListEntry calendarListEntry : items) {
+                //Find the calendar via its description as the Id is a randomly generated email address from Google
+                if (calendarListEntry.getDescription().equals(calendar_description)){
+                    createdcalendarid = calendarListEntry.getId();
+                    Log.d("ImportGoogleCalendarTask","Created calendar's ID found from " +
+                            "CalendarList: "+createdcalendarid);
+                    break;
+                }
+            }
+            pageToken = calendarList.getNextPageToken();
+        } while (pageToken != null);
+
+        //Extract the relevant CalendarListEntry, update it and then merge the changes back in
+        CalendarListEntry structify_calendar = new CalendarListEntry();
+        try {
+            structify_calendar = mService.calendarList().get(createdcalendarid).execute();
+            Log.d("ImportGoogleCalendarActivity","Created calendar retrieved via ID");
+        } catch (IOException e) {
+            e.printStackTrace();
+            Log.d("ImportGoogleCalendarActivity","Error retrieving created calendar from ID");
             return;
         }
 
-        //Set color of the calendar to the same as the header of the app
-        calendarListEntry.setColorId("#9dc209");
+        //Set color of the calendar to green same as the app
+        structify_calendar.setColorId("2");
 
         //Add all the events to the calendar!
         Iterator IndexIterator = Index.entrySet().iterator();
         while (IndexIterator.hasNext()){
             Map.Entry mapElement = (Map.Entry)IndexIterator.next();
-            addCalendarEvent((Date) mapElement.getKey(),(String) mapElement.getValue(),calendarListEntry.getId());
+            addCalendarEvent((Date) mapElement.getKey(),(String) mapElement.getValue(),createdcalendarid);
         }
 
         // Update the altered calendar using CalendarList.update()
         try {
             CalendarListEntry updatedCalendarListEntry =
-                    mService.calendarList().update(calendarListEntry.getId(), calendarListEntry).execute();
+                    mService.calendarList().update(structify_calendar.getId(), structify_calendar).execute();
             Log.d("ImportGoogleCalendarActivity","Retrieved calendar updated");
         } catch (IOException e) {
             e.printStackTrace();
@@ -347,9 +378,9 @@ public class ImportGoogleCalendarTask extends AsyncTask <Void,Void,Void> {
     public void addCalendarEvent(Date date, String eventdesc, String calID){
 
         Event event = new Event()
-                .setSummary(eventdesc)
+                .setSummary("Structify - To Do")
                 .setLocation("Vancouver, BC, Canada")
-                .setDescription("Structify Exam Events and Study Reminders");
+                .setDescription(eventdesc);
 
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
