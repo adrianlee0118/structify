@@ -2,9 +2,14 @@ package com.example.structify;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Matrix;
+import android.graphics.Paint;
 import android.icu.text.SimpleDateFormat;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Parcelable;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -13,11 +18,16 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.text.ParseException;
 import java.time.LocalDate;
 import java.time.ZoneId;
@@ -26,6 +36,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+
+import static android.os.Environment.DIRECTORY_DCIM;
 
 public class YourCalendarActivity extends AppCompatActivity {
 
@@ -53,10 +65,13 @@ public class YourCalendarActivity extends AppCompatActivity {
             Color.parseColor("#202020")};
 
     //UI components to be manipulated
+    private ScrollView CalendarArea;
+    private LinearLayout Headings;
     private TextView Year;
     private TextView Month;
     private ImageButton PreviousMonthButton;
     private ImageButton NextMonthButton;
+    private Button ImportGalleryButton;
     private Button ImportGoogleCalendarBtn;
     private Button DoNotImportBtn;
     private LinearLayout CalendarCanvas;
@@ -77,10 +92,13 @@ public class YourCalendarActivity extends AppCompatActivity {
         StudyTime = extras.getInt("StudyTime");
 
         //Link program to UI
+        CalendarArea = findViewById(R.id.calendar_area);
+        Headings = findViewById(R.id.headings);
         Year = findViewById(R.id.date_display_year);
         Month = findViewById(R.id.date_display_date);
         PreviousMonthButton = findViewById(R.id.calendar_prev_button);
         NextMonthButton = findViewById(R.id.calendar_next_button);
+        ImportGalleryButton = findViewById(R.id.import_to_gallery_button);
         ImportGoogleCalendarBtn = findViewById(R.id.import_to_google_calendar_button);
         DoNotImportBtn = findViewById((R.id.do_not_import_button));
         CalendarCanvas = findViewById(R.id.calendar_canvas);
@@ -518,6 +536,74 @@ public class YourCalendarActivity extends AppCompatActivity {
                     NextMonthButton.setOnClickListener(null);
                 }
 
+            }
+
+        });
+    }
+
+    //Button that imports the Calendar previews as PNGs into the gallery
+    private void SetImportGalleryButtonClick() {
+        ImportGalleryButton.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+
+                //Get current month
+                String mo = Month.getText().toString();
+                int month = 0;
+                for (int i = 0; i < MonthLookup.length; i++){
+                    if (MonthLookup[i] == mo){
+                        month = i;
+                    }
+                }
+                Calendar calendar = Calendar.getInstance();
+                calendar.set(Calendar.MONTH, month);
+                calendar.set(Calendar.DAY_OF_MONTH,1);
+
+                Calendar startmonth = Calendar.getInstance();
+                startmonth.setTime(Courses.get(0).getStartDate());
+
+                Calendar lastmonth = Calendar.getInstance();
+                lastmonth.setTime(Courses.get(0).getEndDate());
+
+                int month_duration = lastmonth.get(Calendar.MONTH)-startmonth.get(Calendar.MONTH)+1;
+                Log.d("YourCalendarActivity","ImportGallery: month duration is "+month_duration);
+
+                //Bring to first month
+                while (calendar.get(Calendar.MONTH) != startmonth.get(Calendar.MONTH)){
+                    calendar.add(Calendar.MONTH,-1);
+                    calendar.set(Calendar.DAY_OF_MONTH,1);
+                    PreviousMonthButton.performClick();
+                }
+                Log.d("YourCalendarActivity","ImportGallery: startmonth reached");
+
+                //Save all months as a PNG
+                for (int i = 0; i < month_duration; i++){
+
+                    CalendarArea.setDrawingCacheEnabled(true);
+                    Bitmap a = Headings.getDrawingCache();
+                    Bitmap b = CalendarArea.getDrawingCache();
+                    Bitmap current_month_calendar = Bitmap.createBitmap(a.getWidth(), a.getHeight(), a.getConfig());
+                    Canvas calendarimage = new Canvas(a);
+                    calendarimage.drawBitmap(a, new Matrix(), null);
+                    calendarimage.drawBitmap(b, 0, 0, null);
+
+                    try {
+                        current_month_calendar.compress(Bitmap.CompressFormat.JPEG, 95,
+                                new FileOutputStream(Environment
+                                        .getExternalStoragePublicDirectory(DIRECTORY_DCIM)
+                                        .getAbsolutePath()+File.separator+"Structify_"+(i+1)+".png"));
+                        Log.d("YourCalendarActivity","Calendar "+(i+1)+" Imported to Gallery");
+                    } catch (FileNotFoundException e) {
+                        e.printStackTrace();
+                        Log.d("YourCalendarActivity","Error importing to Gallery");
+                    }
+
+                    NextMonthButton.performClick();
+                }
+
+                Toast.makeText(YourCalendarActivity.this,"Calendars for all months have been imported to your gallery!", Toast.LENGTH_SHORT).show();
+                Log.d("YourCalendarActivity","All calendar images imported to gallery");
             }
 
         });

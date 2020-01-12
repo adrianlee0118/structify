@@ -16,4 +16,5 @@
     <string name="do_not_import">Do not Import and Finish</string>
     <string name="importing">Importing to Google Calendar:</string>
     <string name="grand_finish">Exit App</string>
+    <string name="import_gallery">Import to Gallery as PNG</string>
 </resources>

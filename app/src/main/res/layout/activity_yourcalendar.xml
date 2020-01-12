@@ -2,17 +2,16 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context=".YourCalendarActivity">
 
     <RelativeLayout
         android:id="@+id/header"
         android:layout_width="match_parent"
-        android:layout_height="85dp"
+        android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
-        android:layout_weight="1"
         android:gravity="center_horizontal">
 
         <ImageButton
@@ -71,7 +70,6 @@
         android:id="@+id/headings"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
         android:background="@drawable/top_border_only"
         android:gravity="center_vertical"
         android:orientation="horizontal">
@@ -154,22 +152,28 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="80dp"
-        android:layout_weight="1"
+        android:layout_height="wrap_content"
         android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/import_to_gallery_button"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="0.33"
+            android:text="@string/import_gallery" />
 
         <Button
             android:id="@+id/import_to_google_calendar_button"
             android:layout_width="0dp"
-            android:layout_height="75dp"
-            android:layout_weight="0.5"
+            android:layout_height="match_parent"
+            android:layout_weight="0.33"
             android:text="@string/import_GC" />
 
         <Button
             android:id="@+id/do_not_import_button"
             android:layout_width="0dp"
-            android:layout_height="75dp"
-            android:layout_weight="0.5"
+            android:layout_height="match_parent"
+            android:layout_weight="0.33"
             android:text="@string/do_not_import" />
     </LinearLayout>
 

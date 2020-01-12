@@ -66,29 +66,6 @@ public class ImportGoogleCalendarTask extends AsyncTask <Void,Void,Void> {
 
     public void addCalendarEvents() {
 
-        //Create a new Google Calendar
-        com.google.api.services.calendar.model.Calendar newcalendar = new com.google.api.services
-                .calendar.model.Calendar();
-        newcalendar.setSummary("Structify Study Program");
-        newcalendar.setTimeZone("America/Vancouver");
-        String calendar_description = "Study reminders from Structify app";  //used to find calendarid later
-        newcalendar.setDescription(calendar_description);
-        Log.d("ImportGoogleCalendarTask","New calendar Structify created");
-
-        //Insert the new calendar -- we will access it again in addCalendarEvent() via its ID "Structify"
-        //Insert to calendars() --> also inserted to CalendarList by default
-        try {
-            mService.calendars().insert(newcalendar).execute();
-            Log.d("ImportGoogleCalendarTask","New calendar Structify inserted");
-        } catch (UserRecoverableAuthIOException e){
-            mActivity.startActivityForResult(e.getIntent(), mActivity.REQUEST_AUTHORIZATION);
-            Log.d("ImportGoogleCalendarTask","User Authorization error inserting new calendar");
-        } catch (IOException e) {
-            e.printStackTrace();
-            Log.d("ImportGoogleCalendarTask","Error inserting new calendar");
-            return;
-        }
-
         //Map the event descriptions to dates, so that only one event is made for each day
         //that describes all of the study obligations and test events.
         Map<Date,String> Index = new HashMap<Date,String>();
@@ -294,16 +271,33 @@ public class ImportGoogleCalendarTask extends AsyncTask <Void,Void,Void> {
             }
         }
 
+        //Create a new Google Calendar
+        com.google.api.services.calendar.model.Calendar newcalendar = new com.google.api.services
+                .calendar.model.Calendar();
+        newcalendar.setSummary("Structify Study Program");
+        newcalendar.setTimeZone("America/Vancouver");
+        String calendar_description = "Study reminders from Structify app";  //used to find calendarid later
+        newcalendar.setDescription(calendar_description);
+
+        //Insert the new calendar -- we will access it again in addCalendarEvent() using description as identifier to find calendarid
+        //Insert to calendars() --> also inserted to CalendarList by default
+        try {
+            mService.calendars().insert(newcalendar).execute();
+        } catch (UserRecoverableAuthIOException e){
+            mActivity.startActivityForResult(e.getIntent(), mActivity.REQUEST_AUTHORIZATION);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return;
+        }
+
         //Retrieve the created calendar using Calendarlist.get(), using description as identifier
         String createdcalendarid = "";
         String pageToken = null;
         CalendarList calendarList = null;
         try {
             calendarList = mService.calendarList().list().setPageToken(pageToken).execute();
-            Log.d("ImportGoogleCalendarActivity","Calendarlist retrieved");
         } catch (IOException e) {
             e.printStackTrace();
-            Log.d("ImportGoogleCalendarActivity","Error retrieving CalendarList");
             return;
         }
         //iterate through the CalendarList
