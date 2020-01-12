@@ -29,7 +29,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                app:layout_constraintGuide_end="352dp" />
+                app:layout_constraintGuide_percent="0.143" />
 
             <androidx.constraintlayout.widget.Guideline
                 android:id="@+id/hx2"
@@ -233,7 +233,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    app:layout_constraintGuide_end="352dp" />
+                    app:layout_constraintGuide_percent="0.143" />
 
                 <androidx.constraintlayout.widget.Guideline
                     android:id="@+id/x2"

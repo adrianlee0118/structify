@@ -90,9 +90,7 @@ public class ImportGoogleCalendarTask extends AsyncTask <Void,Void,Void> {
             if (Index.containsKey(fd)){
                 //If a reminder for the day has already been entered....
                 String temp = Index.get(fd);
-                Log.d("ImportGoogleCalendarTask", "Finding break in existing string: "+temp);
                 int insert_pos = temp.indexOf("----S");
-                Log.d("ImportGoogleCalendarTask", "Insert position will be "+insert_pos);
                 String desc = temp.substring(0,insert_pos-1)+ name +" Final Exam"+"\n"+"\n"
                         +temp.substring(insert_pos,temp.length()-1);
                 Index.replace(fd, desc);
@@ -156,9 +154,7 @@ public class ImportGoogleCalendarTask extends AsyncTask <Void,Void,Void> {
                 if (Index.containsKey(md.get(k))){
                     //If a reminder for the day has already been entered....
                     String temp = Index.get(md.get(k));
-                    Log.d("ImportGoogleCalendarTask", "Finding break in existing string: "+temp);
                     int insert_pos = temp.indexOf("----S");
-                    Log.d("ImportGoogleCalendarTask", "Insert position will be "+insert_pos);
                     String desc = temp.substring(0,insert_pos-1)+ name +" Midterm Exam "+(k+1)+"\n"+
                             "\n"+temp.substring(insert_pos,temp.length()-1);
                     Index.replace(md.get(k),desc);
@@ -216,9 +212,7 @@ public class ImportGoogleCalendarTask extends AsyncTask <Void,Void,Void> {
                 if (Index.containsKey(ad.get(k))){
                     //If a reminder for the day has already been entered....
                     String temp = Index.get(ad.get(k));
-                    Log.d("ImportGoogleCalendarTask", "Finding break in existing string: "+temp);
                     int insert_pos = temp.indexOf("----S");
-                    Log.d("ImportGoogleCalendarTask", "Insert position will be "+insert_pos);
                     String desc = temp.substring(0,insert_pos-1)+ name +" Assignment "+(k+1)+
                             " Due"+"\n"+"\n"+temp.substring(insert_pos,temp.length()-1);
                     Index.replace(ad.get(k),desc);
@@ -274,18 +268,23 @@ public class ImportGoogleCalendarTask extends AsyncTask <Void,Void,Void> {
         //Create a new Google Calendar
         com.google.api.services.calendar.model.Calendar newcalendar = new com.google.api.services
                 .calendar.model.Calendar();
+        Log.d("ImportGoogleCalendarTask","new calendar created");
         newcalendar.setSummary("Structify Study Program");
         newcalendar.setTimeZone("America/Vancouver");
         String calendar_description = "Study reminders from Structify app";  //used to find calendarid later
         newcalendar.setDescription(calendar_description);
+        Log.d("ImportGoogleCalendarTask","new calendar description set as: "+calendar_description);
+
 
         //Insert the new calendar -- we will access it again in addCalendarEvent() using description as identifier to find calendarid
         //Insert to calendars() --> also inserted to CalendarList by default
         try {
             mService.calendars().insert(newcalendar).execute();
+            Log.d("ImportGoogleCalendarTask","New calendar added to CalendarList");
         } catch (UserRecoverableAuthIOException e){
             mActivity.startActivityForResult(e.getIntent(), mActivity.REQUEST_AUTHORIZATION);
         } catch (IOException e) {
+            Log.d("ImportGoogleCalendarTask","Error adding new calendar to CalendarList");
             e.printStackTrace();
             return;
         }
@@ -302,9 +301,11 @@ public class ImportGoogleCalendarTask extends AsyncTask <Void,Void,Void> {
         }
         //iterate through the CalendarList
         List<CalendarListEntry> items = calendarList.getItems();
+        Log.d("ImportGoogleCalendarTask","CalendarList instantiated and being searched for description");
         do {
             for (CalendarListEntry calendarListEntry : items) {
                 //Find the calendar via its description as the Id is a randomly generated email address from Google
+                Log.d("ImportGoogleCalendarTask","Check description: "+calendarListEntry.getDescription());
                 if (calendarListEntry.getDescription().equals(calendar_description)){
                     createdcalendarid = calendarListEntry.getId();
                     Log.d("ImportGoogleCalendarTask","Created calendar's ID found from " +
@@ -319,7 +320,9 @@ public class ImportGoogleCalendarTask extends AsyncTask <Void,Void,Void> {
         CalendarListEntry structify_calendar = new CalendarListEntry();
         try {
             structify_calendar = mService.calendarList().get(createdcalendarid).execute();
+            Log.d("ImportGoogleCalendarTask","Retrieved new calendar from CalendarList");
         } catch (IOException e) {
+            Log.d("ImportGoogleCalendarTask","Error retrieving new calendar from CalendarList");
             e.printStackTrace();
             return;
         }
@@ -340,7 +343,9 @@ public class ImportGoogleCalendarTask extends AsyncTask <Void,Void,Void> {
             CalendarListEntry updatedCalendarListEntry = mService.calendarList()
                     .update(structify_calendar.getId(), structify_calendar)
                     .execute();
+            Log.d("ImportGoogleCalendarTask","New calendar updated to CalendarList");
         } catch (IOException e) {
+            Log.d("ImportGoogleCalendarTask","Error updating new calendar to CalendarList");
             e.printStackTrace();
             return;
         }

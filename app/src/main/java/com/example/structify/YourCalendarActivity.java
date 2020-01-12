@@ -38,6 +38,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static android.os.Environment.DIRECTORY_DCIM;
+import static android.os.Environment.DIRECTORY_PICTURES;
 
 public class YourCalendarActivity extends AppCompatActivity {
 
@@ -548,6 +549,8 @@ public class YourCalendarActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
+                Log.d("YourCalendarActivity", "ImportGalleryButton Clicked");
+
                 //Get current month
                 String mo = Month.getText().toString();
                 int month = 0;
@@ -559,12 +562,15 @@ public class YourCalendarActivity extends AppCompatActivity {
                 Calendar calendar = Calendar.getInstance();
                 calendar.set(Calendar.MONTH, month);
                 calendar.set(Calendar.DAY_OF_MONTH,1);
+                Log.d("YourCalendarActivity", "ImportGalleryButton: Current month is: "+month);
 
                 Calendar startmonth = Calendar.getInstance();
                 startmonth.setTime(Courses.get(0).getStartDate());
+                Log.d("YourCalendarActivity", "ImportGalleryButton: First month is: "+startmonth);
 
                 Calendar lastmonth = Calendar.getInstance();
                 lastmonth.setTime(Courses.get(0).getEndDate());
+                Log.d("YourCalendarActivity", "ImportGalleryButton: Last month is: "+lastmonth);
 
                 int month_duration = lastmonth.get(Calendar.MONTH)-startmonth.get(Calendar.MONTH)+1;
                 Log.d("YourCalendarActivity","ImportGallery: month duration is "+month_duration);
@@ -591,7 +597,7 @@ public class YourCalendarActivity extends AppCompatActivity {
                     try {
                         current_month_calendar.compress(Bitmap.CompressFormat.JPEG, 95,
                                 new FileOutputStream(Environment
-                                        .getExternalStoragePublicDirectory(DIRECTORY_DCIM)
+                                        .getExternalStoragePublicDirectory(DIRECTORY_PICTURES)
                                         .getAbsolutePath()+File.separator+"Structify_"+(i+1)+".png"));
                         Log.d("YourCalendarActivity","Calendar "+(i+1)+" Imported to Gallery");
                     } catch (FileNotFoundException e) {
