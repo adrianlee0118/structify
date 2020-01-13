@@ -7,6 +7,7 @@ import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.icu.text.SimpleDateFormat;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Parcelable;
@@ -24,6 +25,9 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ActivityCompat;
+
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GooglePlayServicesUtil;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -590,7 +594,10 @@ public class YourCalendarActivity extends AppCompatActivity {
                 }
                 Log.d("YourCalendarActivity","ImportGallery: startmonth reached");
 
-                //Save all months as a PNG
+                //Check user permissions and request if needed
+                isStoragePermissionGranted();
+
+                //Save all month views as a PNG
                 for (int i = 0; i < month_duration; i++){
 
                     CalendarArea.setDrawingCacheEnabled(true);
@@ -600,17 +607,6 @@ public class YourCalendarActivity extends AppCompatActivity {
                     //Canvas calendarimage = new Canvas(a);
                     //calendarimage.drawBitmap(a, new Matrix(), null);
                     //calendarimage.drawBitmap(b, 0, 0, null);
-
-                    //Ask for user permissions
-                    int permission = ActivityCompat.checkSelfPermission(YourCalendarActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE);
-                    Log.d("YourCalendarActivity","Checking for write external storage permissions");
-                    if (permission != PackageManager.PERMISSION_GRANTED) {
-                        Log.d("YourCalendarActivity","Permission currently denied");
-                        // We don't have permission so prompt the user
-                        ActivityCompat.requestPermissions(YourCalendarActivity.this,
-                                new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_WRITE_EXTERNAL_STORAGE);
-                        Log.d("YourCalendarActivity","External storage permission requested");
-                    }
 
                     try {
                         b.compress(Bitmap.CompressFormat.PNG, 95,
@@ -622,7 +618,6 @@ public class YourCalendarActivity extends AppCompatActivity {
                         e.printStackTrace();
                         Log.d("YourCalendarActivity","Error importing to Gallery");
                     }
-
                     NextMonthButton.performClick();
                 }
 
@@ -667,6 +662,40 @@ public class YourCalendarActivity extends AppCompatActivity {
             }
 
         });
+    }
+
+    //Method for checking and requesting storage permissions explicitly at runtime
+    private void isStoragePermissionGranted() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (checkSelfPermission(android.Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                    == PackageManager.PERMISSION_GRANTED) {
+                Log.d("YourCalendarActivity","Write storage permission is available");
+                Toast.makeText(YourCalendarActivity.this, "Write External Storage " +
+                        "permission allows us to do store images. Please allow this permission in " +
+                        "App Settings.", Toast.LENGTH_LONG).show();
+            } else {
+                Log.d("YourCalendarActivity","Write storage permission is not available");
+                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_WRITE_EXTERNAL_STORAGE);
+            }
+        }
+        else { //permission is automatically granted on sdk<23 upon installation
+            Log.d("YourCalendarActivity","Write storage permission is available");
+            Toast.makeText(YourCalendarActivity.this, "Write External Storage " +
+                    "permission allows us to do store images. Please allow this permission in " +
+                    "App Settings.", Toast.LENGTH_LONG).show();
+        }
+    }
+
+    //Permission result callback
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
+            Log.d("YourCalendarActivity","Write storage permission was granted");
+            //resume tasks needing this permission
+        } else {
+            Log.d("YourCalendarActivity","Write storage permission request was denied");
+        }
     }
 
     @Override
