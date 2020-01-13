@@ -306,7 +306,7 @@ public class ImportGoogleCalendarTask extends AsyncTask <Void,Void,Void> {
             for (CalendarListEntry calendarListEntry : items) {
                 //Find the calendar via its description as the Id is a randomly generated email address from Google
                 Log.d("ImportGoogleCalendarTask","Check description: "+calendarListEntry.getDescription());
-                if (calendarListEntry.getDescription().equals(calendar_description)){
+                if (calendarListEntry.getDescription() != null && calendarListEntry.getDescription().equals(calendar_description)){
                     createdcalendarid = calendarListEntry.getId();
                     Log.d("ImportGoogleCalendarTask","Created calendar's ID found from " +
                             "CalendarList: "+createdcalendarid);

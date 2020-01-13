@@ -200,6 +200,7 @@ public class YourCalendarActivity extends AppCompatActivity {
         PreviousMonthButton.setVisibility(View.INVISIBLE);
         PreviousMonthButton.setOnClickListener(null);  //because we are at the first month
         SetNextMonthButtonClick();
+        SetImportGalleryButtonClick();
         SetImportGoogleCalendarButtonClick();
     }
 
