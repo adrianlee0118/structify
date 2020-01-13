@@ -1,12 +1,11 @@
 package com.example.structify;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
-import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.Matrix;
-import android.graphics.Paint;
 import android.icu.text.SimpleDateFormat;
 import android.os.Bundle;
 import android.os.Environment;
@@ -24,6 +23,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.app.ActivityCompat;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -37,10 +37,11 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-import static android.os.Environment.DIRECTORY_DCIM;
 import static android.os.Environment.DIRECTORY_PICTURES;
 
 public class YourCalendarActivity extends AppCompatActivity {
+
+    static final int REQUEST_WRITE_EXTERNAL_STORAGE = 1003;
 
     //Course data from previous activities
     private int NumCourses;
@@ -64,6 +65,11 @@ public class YourCalendarActivity extends AppCompatActivity {
             Color.parseColor("#CCCC00"),Color.parseColor("#CC0066"),
             Color.parseColor("#00CCCC"),Color.parseColor("#CC6600"),
             Color.parseColor("#202020")};
+
+    //Call permissions from manifest for saving images to directory
+    private static String[] PERMISSIONS_STORAGE = {
+            Manifest.permission.WRITE_EXTERNAL_STORAGE
+    };
 
     //UI components to be manipulated
     private ScrollView CalendarArea;
@@ -588,15 +594,26 @@ public class YourCalendarActivity extends AppCompatActivity {
                 for (int i = 0; i < month_duration; i++){
 
                     CalendarArea.setDrawingCacheEnabled(true);
-                    Bitmap a = Headings.getDrawingCache();
+                    //Bitmap a = Headings.getDrawingCache();
                     Bitmap b = CalendarArea.getDrawingCache();
-                    Bitmap current_month_calendar = Bitmap.createBitmap(a.getWidth(), a.getHeight(), a.getConfig());
-                    Canvas calendarimage = new Canvas(a);
-                    calendarimage.drawBitmap(a, new Matrix(), null);
-                    calendarimage.drawBitmap(b, 0, 0, null);
+                    //Bitmap current_month_calendar = Bitmap.createBitmap(a.getWidth(), a.getHeight(), a.getConfig());
+                    //Canvas calendarimage = new Canvas(a);
+                    //calendarimage.drawBitmap(a, new Matrix(), null);
+                    //calendarimage.drawBitmap(b, 0, 0, null);
+
+                    //Ask for user permissions
+                    int permission = ActivityCompat.checkSelfPermission(YourCalendarActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE);
+                    Log.d("YourCalendarActivity","Checking for write external storage permissions");
+                    if (permission != PackageManager.PERMISSION_GRANTED) {
+                        Log.d("YourCalendarActivity","Permission currently denied");
+                        // We don't have permission so prompt the user
+                        ActivityCompat.requestPermissions(YourCalendarActivity.this,
+                                new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_WRITE_EXTERNAL_STORAGE);
+                        Log.d("YourCalendarActivity","External storage permission requested");
+                    }
 
                     try {
-                        current_month_calendar.compress(Bitmap.CompressFormat.JPEG, 95,
+                        b.compress(Bitmap.CompressFormat.PNG, 95,
                                 new FileOutputStream(Environment
                                         .getExternalStoragePublicDirectory(DIRECTORY_PICTURES)
                                         .getAbsolutePath()+File.separator+"Structify_"+(i+1)+".png"));
