@@ -564,18 +564,12 @@ public class YourCalendarActivity extends AppCompatActivity {
 
                 Log.d("YourCalendarActivity", "ImportGalleryButton Clicked");
 
-                //Get current month
-                String mo = Month.getText().toString();
-                int month = 0;
-                for (int i = 0; i < MonthLookup.length; i++){
-                    if (MonthLookup[i] == mo){
-                        month = i;
-                    }
-                }
-                Calendar calendar = Calendar.getInstance();
-                calendar.set(Calendar.MONTH, month);
-                calendar.set(Calendar.DAY_OF_MONTH,1);
-                Log.d("YourCalendarActivity", "ImportGalleryButton: Current month is: "+month);
+                //Bring to first month
+                UpdateCalendarCanvas(Courses.get(0).getStartDate());
+                Log.d("YourCalendarActivity","ImportGallery: startmonth reached");
+
+                //Check user permissions and request if needed
+                isStoragePermissionGranted();
 
                 Calendar startmonth = Calendar.getInstance();
                 startmonth.setTime(Courses.get(0).getStartDate());
@@ -588,63 +582,9 @@ public class YourCalendarActivity extends AppCompatActivity {
                 int month_duration = lastmonth.get(Calendar.MONTH)-startmonth.get(Calendar.MONTH)+1;
                 Log.d("YourCalendarActivity","ImportGallery: month duration is "+month_duration);
 
-                //Bring to first month
-                while (calendar.get(Calendar.MONTH) != startmonth.get(Calendar.MONTH)){
-                    calendar.add(Calendar.MONTH,-1);
-                    calendar.set(Calendar.DAY_OF_MONTH,1);
-                    PreviousMonthButton.performClick();
-                }
-                Log.d("YourCalendarActivity","ImportGallery: startmonth reached");
-
-                //Check user permissions and request if needed
-                isStoragePermissionGranted();
-
                 //Save all month views as a PNG
                 for (int i = 0; i < month_duration; i++){
-
-                    CalendarCanvas.setDrawingCacheEnabled(true);
-                    //Bitmap a = Headings.getDrawingCache();
-                    LinearLayout cal_area = CalendarCanvas;
-                    cal_area.setBackgroundColor(Color.WHITE);
-                    Bitmap b = Bitmap.createBitmap(cal_area.getDrawingCache());
-                    //Bitmap current_month_calendar = Bitmap.createBitmap(a.getWidth(), a.getHeight(), a.getConfig());
-                    //Canvas calendarimage = new Canvas(a);
-                    //calendarimage.drawBitmap(a, new Matrix(), null);
-                    //calendarimage.drawBitmap(b, 0, 0, null);
-
-                    String root = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).toString();
-                    File myDir = new File(root+"/structify");
-                    if(!myDir.exists()){
-                        myDir.mkdirs();
-                    }
-
-                    ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-                    File file = new File(myDir, "Structify_"+(i+1)+".png");
-
-                    try {
-                        FileOutputStream out = new FileOutputStream(file);
-                        b.compress(Bitmap.CompressFormat.PNG, 100, bytes);
-                        out.write(bytes.toByteArray());
-                        Log.d("YourCalendarActivity","Calendar "+(i+1)+" Imported to Gallery");
-                        out.flush();
-                        out.close();
-                    } catch (FileNotFoundException e) {
-                        e.printStackTrace();
-                        Log.d("YourCalendarActivity","Error importing to Gallery - File not found");
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                        Log.d("YourCalendarActivity","Error importing to Gallery - IO Exception");
-                    }
-
-                    if (i != month_duration-1){
-                        final Handler handler = new Handler();
-                        handler.postDelayed(new Runnable() {
-                            public void run() {
-                                NextMonthButton.performClick();
-                                handler.postDelayed(this, 1000);
-                            }
-                        }, 1000);
-                    }
+                    MonthToPNGAndNext();
                 }
 
                 Toast.makeText(YourCalendarActivity.this,"Calendars for all months have been imported to your gallery!", Toast.LENGTH_SHORT).show();
@@ -652,6 +592,70 @@ public class YourCalendarActivity extends AppCompatActivity {
             }
 
         });
+    }
+
+    //Combines storing bitmap as png and nextmonth
+    public void MonthToPNGAndNext(){
+
+        String mo = Month.getText().toString();
+        int month = 0;
+        for (int i = 0; i < MonthLookup.length; i++){
+            if (MonthLookup[i] == mo){
+                month = i;
+            }
+        }
+
+        CalendarCanvas.setDrawingCacheEnabled(true);
+        //Bitmap a = Headings.getDrawingCache();
+        LinearLayout cal_area = CalendarCanvas;
+        cal_area.setBackgroundColor(Color.WHITE);
+        Bitmap b = Bitmap.createBitmap(cal_area.getDrawingCache());
+        //Bitmap current_month_calendar = Bitmap.createBitmap(a.getWidth(), a.getHeight(), a.getConfig());
+        //Canvas calendarimage = new Canvas(a);
+        //calendarimage.drawBitmap(a, new Matrix(), null);
+        //calendarimage.drawBitmap(b, 0, 0, null);
+
+        String root = Environment.getExternalStorageDirectory().toString();
+        File myDir = new File(root+"/structify");
+        if(!myDir.exists()){
+            myDir.mkdirs();
+            Log.d("YourCalendarActivity","New directory made in pictures");
+        }
+
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        File file = new File(myDir, "Structify_"+mo+".png");
+
+        try {
+            FileOutputStream out = new FileOutputStream(file);
+            b.compress(Bitmap.CompressFormat.PNG, 100, bytes);
+            out.write(bytes.toByteArray());
+            Log.d("YourCalendarActivity","Calendar "+mo+" Imported to Gallery");
+            out.flush();
+            out.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+            Log.d("YourCalendarActivity","Error importing to Gallery - File not found");
+        } catch (IOException e) {
+            e.printStackTrace();
+            Log.d("YourCalendarActivity","Error importing to Gallery - IO Exception");
+        }
+
+        Calendar lastmonth = Calendar.getInstance();
+        lastmonth.setTime(Courses.get(0).getEndDate());
+
+        if (month != lastmonth.get(Calendar.MONTH)){
+            Calendar calendar = Calendar.getInstance();
+            calendar.set(Calendar.MONTH, month);
+            calendar.add(Calendar.MONTH,1);
+            calendar.set(Calendar.DAY_OF_MONTH,1);
+            UpdateCalendarCanvas(calendar.getTime());
+
+            if (PreviousMonthButton.getVisibility() == View.INVISIBLE){
+                PreviousMonthButton.setVisibility(View.VISIBLE);
+                SetPrevMonthButtonClick();
+            }
+        }
+
     }
 
     //Button that imports all events in the CalendarInfoArrayList to Google Calendar
