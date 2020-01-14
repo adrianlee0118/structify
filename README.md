@@ -3,7 +3,7 @@
 # Description: 
 Takes milestone dates (like exams, assignment due dates and other deliverable dates) from multiple course syllabi in a university semester and combines them with a user's study time preferences and relative importances of the courses (course weights) to generate a comprehensive study/work schedule for the semester that allocates available study time to all assignments and exams based on percentage weights stated in course syllabi and on overall course weights stated by the user. The idea is that all course items will be completed in a timely fashion with an adequate and not excessive amount of time spent, and the schedule owner will only need to spend minimal amounts of time planning their workflow.
 
-Time distribution ruules
+Time distribution rules
 1) Final exam study time = (Weekday time in whole semester+Weekend time in whole semester)*(Course Weight)*(Final Exam Percentage in Course)
 2) Final exam study time is distributed over the 13 days leading up to the exam date.
 3) Midterm exam study time = (Weekday time in whole semester+Weekend time in whole semester)*(Course Weight)*(Midterm Exam Percentage in Course)/(Number of Midterms in Course)
