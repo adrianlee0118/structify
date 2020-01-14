@@ -10,7 +10,9 @@ import android.icu.text.SimpleDateFormat;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
 import android.os.Parcelable;
+import android.text.Layout;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,6 +24,7 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ActivityCompat;
@@ -29,9 +32,11 @@ import androidx.core.app.ActivityCompat;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.text.ParseException;
 import java.time.LocalDate;
 import java.time.ZoneId;
@@ -40,8 +45,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-
-import static android.os.Environment.DIRECTORY_PICTURES;
 
 public class YourCalendarActivity extends AppCompatActivity {
 
@@ -76,7 +79,6 @@ public class YourCalendarActivity extends AppCompatActivity {
     };
 
     //UI components to be manipulated
-    private ScrollView CalendarArea;
     private LinearLayout Headings;
     private TextView Year;
     private TextView Month;
@@ -103,7 +105,6 @@ public class YourCalendarActivity extends AppCompatActivity {
         StudyTime = extras.getInt("StudyTime");
 
         //Link program to UI
-        CalendarArea = findViewById(R.id.calendar_area);
         Headings = findViewById(R.id.headings);
         Year = findViewById(R.id.date_display_year);
         Month = findViewById(R.id.date_display_date);
@@ -557,6 +558,7 @@ public class YourCalendarActivity extends AppCompatActivity {
     private void SetImportGalleryButtonClick() {
         ImportGalleryButton.setOnClickListener(new View.OnClickListener() {
 
+            @RequiresApi(api = Build.VERSION_CODES.Q)
             @Override
             public void onClick(View v) {
 
@@ -600,25 +602,49 @@ public class YourCalendarActivity extends AppCompatActivity {
                 //Save all month views as a PNG
                 for (int i = 0; i < month_duration; i++){
 
-                    CalendarArea.setDrawingCacheEnabled(true);
+                    CalendarCanvas.setDrawingCacheEnabled(true);
                     //Bitmap a = Headings.getDrawingCache();
-                    Bitmap b = CalendarArea.getDrawingCache();
+                    LinearLayout cal_area = CalendarCanvas;
+                    cal_area.setBackgroundColor(Color.WHITE);
+                    Bitmap b = Bitmap.createBitmap(cal_area.getDrawingCache());
                     //Bitmap current_month_calendar = Bitmap.createBitmap(a.getWidth(), a.getHeight(), a.getConfig());
                     //Canvas calendarimage = new Canvas(a);
                     //calendarimage.drawBitmap(a, new Matrix(), null);
                     //calendarimage.drawBitmap(b, 0, 0, null);
 
+                    String root = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).toString();
+                    File myDir = new File(root+"/structify");
+                    if(!myDir.exists()){
+                        myDir.mkdirs();
+                    }
+
+                    ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+                    File file = new File(myDir, "Structify_"+(i+1)+".png");
+
                     try {
-                        b.compress(Bitmap.CompressFormat.PNG, 95,
-                                new FileOutputStream(Environment
-                                        .getExternalStoragePublicDirectory(DIRECTORY_PICTURES)
-                                        .getAbsolutePath()+File.separator+"Structify_"+(i+1)+".png"));
+                        FileOutputStream out = new FileOutputStream(file);
+                        b.compress(Bitmap.CompressFormat.PNG, 100, bytes);
+                        out.write(bytes.toByteArray());
                         Log.d("YourCalendarActivity","Calendar "+(i+1)+" Imported to Gallery");
+                        out.flush();
+                        out.close();
                     } catch (FileNotFoundException e) {
                         e.printStackTrace();
-                        Log.d("YourCalendarActivity","Error importing to Gallery");
+                        Log.d("YourCalendarActivity","Error importing to Gallery - File not found");
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                        Log.d("YourCalendarActivity","Error importing to Gallery - IO Exception");
                     }
-                    NextMonthButton.performClick();
+
+                    if (i != month_duration-1){
+                        final Handler handler = new Handler();
+                        handler.postDelayed(new Runnable() {
+                            public void run() {
+                                NextMonthButton.performClick();
+                                handler.postDelayed(this, 1000);
+                            }
+                        }, 1000);
+                    }
                 }
 
                 Toast.makeText(YourCalendarActivity.this,"Calendars for all months have been imported to your gallery!", Toast.LENGTH_SHORT).show();

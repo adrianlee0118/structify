@@ -112,11 +112,11 @@
                 android:textAlignment="center"
                 android:textSize="16sp"
                 android:textStyle="bold"
-                tools:layout_editor_absoluteX="411dp"
                 app:layout_constraintBottom_toBottomOf="@id/hy1"
                 app:layout_constraintLeft_toLeftOf="@id/hx1"
                 app:layout_constraintRight_toRightOf="@id/hx2"
-                app:layout_constraintTop_toTopOf="@id/hy0" />
+                app:layout_constraintTop_toTopOf="@id/hy0"
+                tools:layout_editor_absoluteX="411dp" />
 
             <TextView
                 android:id="@+id/tuesday_number"
@@ -128,11 +128,11 @@
                 android:textAlignment="center"
                 android:textSize="16sp"
                 android:textStyle="bold"
-                tools:layout_editor_absoluteX="411dp"
                 app:layout_constraintBottom_toBottomOf="@id/hy1"
                 app:layout_constraintLeft_toLeftOf="@id/hx2"
                 app:layout_constraintRight_toRightOf="@id/hx3"
-                app:layout_constraintTop_toTopOf="@id/hy0" />
+                app:layout_constraintTop_toTopOf="@id/hy0"
+                tools:layout_editor_absoluteX="411dp" />
 
             <TextView
                 android:id="@+id/wednesday_number"
@@ -144,11 +144,11 @@
                 android:textAlignment="center"
                 android:textSize="16sp"
                 android:textStyle="bold"
-                tools:layout_editor_absoluteX="411dp"
                 app:layout_constraintBottom_toBottomOf="@id/hy1"
                 app:layout_constraintLeft_toLeftOf="@id/hx3"
                 app:layout_constraintRight_toRightOf="@id/hx4"
-                app:layout_constraintTop_toTopOf="@id/hy0" />
+                app:layout_constraintTop_toTopOf="@id/hy0"
+                tools:layout_editor_absoluteX="411dp" />
 
             <TextView
                 android:id="@+id/thursday_number"
@@ -160,11 +160,11 @@
                 android:textAlignment="center"
                 android:textSize="16sp"
                 android:textStyle="bold"
-                tools:layout_editor_absoluteX="411dp"
                 app:layout_constraintBottom_toBottomOf="@id/hy1"
                 app:layout_constraintLeft_toLeftOf="@id/hx4"
                 app:layout_constraintRight_toRightOf="@id/hx5"
-                app:layout_constraintTop_toTopOf="@id/hy0" />
+                app:layout_constraintTop_toTopOf="@id/hy0"
+                tools:layout_editor_absoluteX="411dp" />
 
             <TextView
                 android:id="@+id/friday_number"
@@ -176,11 +176,11 @@
                 android:textAlignment="center"
                 android:textSize="16sp"
                 android:textStyle="bold"
-                tools:layout_editor_absoluteX="411dp"
                 app:layout_constraintBottom_toBottomOf="@id/hy1"
                 app:layout_constraintLeft_toLeftOf="@id/hx5"
                 app:layout_constraintRight_toRightOf="@id/hx6"
-                app:layout_constraintTop_toTopOf="@id/hy0" />
+                app:layout_constraintTop_toTopOf="@id/hy0"
+                tools:layout_editor_absoluteX="411dp" />
 
             <TextView
                 android:id="@+id/saturday_number"
@@ -192,11 +192,11 @@
                 android:textAlignment="center"
                 android:textSize="16sp"
                 android:textStyle="bold"
-                tools:layout_editor_absoluteX="411dp"
                 app:layout_constraintBottom_toBottomOf="@id/hy1"
                 app:layout_constraintLeft_toLeftOf="@id/hx6"
                 app:layout_constraintRight_toRightOf="@id/hx7"
-                app:layout_constraintTop_toTopOf="@id/hy0" />
+                app:layout_constraintTop_toTopOf="@id/hy0"
+                tools:layout_editor_absoluteX="411dp" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </LinearLayout>
