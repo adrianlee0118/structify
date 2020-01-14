@@ -15,8 +15,10 @@ Time distribution ruules
 1) MainActivity (accepts basic user inputs about study time and number of courses) 
 2) SecondInputActivity (dynamically generates forms for all courses where user inputs course syllabi data)
 3) ThirdInputActivity (generates a summary of study time distributions for all courses for review by user) 
-4) YourCalendarActivity (generates a GUI so user can preview all exam events and study reminders over the semester in a graphical calendar format) 
+4) YourCalendarActivity (generates a GUI so user can preview all exam events and study reminders over the semester in a scrollable graphical calendar format) 
 
-<img src="https://github.com/adrianl0118/Structify/blob/master/YourCalendarActivity2.png" alt="" width="200"> <img src="https://github.com/adrianl0118/Structify/blob/master/YourCalendarActivity3.png" alt="" width="200"> <img src="https://github.com/adrianl0118/Structify/blob/master/YourCalendarActivity4.png" alt="" width = "200"><img src="https://github.com/adrianl0118/Structify/blob/master/YourCalendarActivity5.png" alt="" width = "200">
+<img src="https://github.com/adrianl0118/Structify/blob/master/YourCalendarActivity2.png" alt="" width="200"> <img src="https://github.com/adrianl0118/Structify/blob/master/YourCalendarActivity3.png" alt="" width="200"> <img src="https://github.com/adrianl0118/Structify/blob/master/YourCalendarActivity4.png" alt="" width = "200"> <img src="https://github.com/adrianl0118/Structify/blob/master/YourCalendarActivity5.png" alt="" width = "200">
 
 5) ImportGoogleCalendarActivity (imports all study schedule data to a new entry in the user's Google Calendar List)
+
+<img src="https://github.com/adrianl0118/Structify/blob/master/GoogleCalendar.png" alt="" width="450">
