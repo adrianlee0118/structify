@@ -21,4 +21,4 @@ Time distribution ruules
 
 5) ImportGoogleCalendarActivity (imports all study schedule data to a new entry in the user's Google Calendar List)
 
-<img src="https://github.com/adrianl0118/Structify/blob/master/GoogleCalendar.PNG" alt="" width="450">
+<img src="https://github.com/adrianl0118/Structify/blob/master/GoogleCalendar.PNG" alt="" width="800">
