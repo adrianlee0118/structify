@@ -5,7 +5,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Matrix;
 import android.icu.text.SimpleDateFormat;
 import android.os.Build;
 import android.os.Bundle;
@@ -606,14 +608,14 @@ public class YourCalendarActivity extends AppCompatActivity {
         }
 
         CalendarCanvas.setDrawingCacheEnabled(true);
-        //Bitmap a = Headings.getDrawingCache();
+        Bitmap a = Headings.getDrawingCache();
         LinearLayout cal_area = CalendarCanvas;
         cal_area.setBackgroundColor(Color.WHITE);
         Bitmap b = Bitmap.createBitmap(cal_area.getDrawingCache());
-        //Bitmap current_month_calendar = Bitmap.createBitmap(a.getWidth(), a.getHeight(), a.getConfig());
-        //Canvas calendarimage = new Canvas(a);
-        //calendarimage.drawBitmap(a, new Matrix(), null);
-        //calendarimage.drawBitmap(b, 0, 0, null);
+        Bitmap current_month_calendar = Bitmap.createBitmap(a.getWidth(), a.getHeight(), a.getConfig());
+        Canvas calendarimage = new Canvas(a);
+        calendarimage.drawBitmap(a, new Matrix(), null);
+        calendarimage.drawBitmap(b, 0, 0, null);
 
         String root = Environment.getExternalStorageDirectory().toString();
         File myDir = new File(root+"/structify");
