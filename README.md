@@ -16,5 +16,5 @@ Time distribution ruules
 2) SecondInputActivity (dynamically generates forms for all courses where user inputs course syllabi data)
 3) ThirdInputActivity (generates a summary of study time distributions for all courses for review by user) 
 4) YourCalendarActivity (generates a GUI so user can preview all exam events and study reminders over the semester in a graphical calendar format) 
-<img src="https://github.com/adrianl0118/Structify/blob/master/YourCalendarActivity3.png" alt="" width="100">
+<img src="https://github.com/adrianl0118/Structify/blob/master/YourCalendarActivity3.png" alt="" width="250">
 5) ImportGoogleCalendarActivity (imports all study schedule data to a new entry in the user's Google Calendar List)
