@@ -49,6 +49,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.Semaphore;
 
 public class YourCalendarActivity extends AppCompatActivity {
 
@@ -622,30 +623,22 @@ public class YourCalendarActivity extends AppCompatActivity {
                         Log.d("YourCalendarActivity","Error importing to Gallery - IO Exception");
                     }
 
-                    //Create a runnable around NextMonthButton so that activity waits for all UI updates
-                    //to finish before continuing actions
-                    Runnable myRunnable = new Runnable() {
+                    //Use mutex to ensure actions continue only after UI has updated.
+                    final Semaphore mutex = new Semaphore(0);
+                    YourCalendarActivity.this.runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
                             NextMonthButton.performClick();
-                            synchronized(this)
-                            {
-                                this.notify();
-                            }
+                            mutex.release();
                         }
-                    };
-                    synchronized( myRunnable ) {
-                        YourCalendarActivity.this.runOnUiThread(myRunnable) ;
+                    });
+
+                    if ( i != month_duration-1 ){
                         try {
-                            myRunnable.wait() ; // unlocks myRunable while waiting
+                            mutex.acquire();
                         } catch (InterruptedException e) {
                             e.printStackTrace();
                         }
-                    }
-
-                    //Only go to next month if we are not at last month
-                    if (i!= month_duration-1){
-                        myRunnable.run();
                     }
 
                 }
@@ -656,57 +649,6 @@ public class YourCalendarActivity extends AppCompatActivity {
 
         });
     }
-
-    /*static final int STEP_ONE_COMPLETE = 0;
-    private Handler handler = new Handler(){
-        @Override
-        public void handleMessage(Message msg) {
-            switch(msg.what){
-                case STEP_ONE_COMPLETE:
-                    NextMonthButton.performClick();
-                    break;
-            }
-        }
-    };
-
-    //Combines storing bitmap as png and nextmonth
-    public void MonthToPNG(int i){
-
-        CalendarCanvas.setBackgroundColor(Color.WHITE);
-        CalendarCanvas.setDrawingCacheEnabled(true);
-        Bitmap bitmap = Bitmap.createBitmap(CalendarCanvas.getDrawingCache());
-
-        //Create the proper file output stream
-        String dir = Environment.getExternalStorageDirectory().toString();
-        File myDir = new File(dir+"/structify");
-        if(!myDir.exists()){
-            myDir.mkdirs();
-            Log.d("YourCalendarActivity","New directory made in pictures");
-        }
-        File output_image = new File(myDir, "Structify_"+(i)+".png");
-        FileOutputStream fos = null;
-
-        try {
-            fos = new FileOutputStream(output_image);
-            bitmap.compress(Bitmap.CompressFormat.PNG, 100, fos);
-            fos.flush();
-            fos.close();
-            MediaStore.Images.Media.insertImage(getContentResolver(), bitmap,
-                    "Structify_"+i,"Structify Month "+i);
-            Log.d("YourCalendarActivity","Calendar "+(i)+" added to Gallery");
-
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-            Log.d("YourCalendarActivity","Error importing to Gallery - File not found");
-        } catch (IOException e) {
-            e.printStackTrace();
-            Log.d("YourCalendarActivity","Error importing to Gallery - IO Exception");
-        }
-
-        Message msg = Message.obtain();
-        msg.what = STEP_ONE_COMPLETE;
-        handler.sendMessage(msg);
-    }*/
 
     //Button that imports all events in the CalendarInfoArrayList to Google Calendar
     private void SetImportGoogleCalendarButtonClick() {
