@@ -570,8 +570,19 @@ public class YourCalendarActivity extends AppCompatActivity {
                 Log.d("YourCalendarActivity", "ImportGalleryButton Clicked");
 
                 //Bring to first month
-                UpdateCalendarCanvas(Courses.get(0).getStartDate());
-                Log.d("YourCalendarActivity","ImportGallery: startmonth reached");
+                Thread t = new Thread() {
+                    public void run() {
+                        UpdateCalendarCanvas(Courses.get(0).getStartDate());
+                        Log.d("YourCalendarActivity","ImportGallery: startmonth reached");
+                    }
+                };
+                t.start();
+                try {
+                    t.join();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                    Log.d("YourCalendarActivity","InterruptedException joining UpdateCalendar to first month's thread");
+                }
 
                 //Check user permissions and request if needed
                 isStoragePermissionGranted();
@@ -590,63 +601,50 @@ public class YourCalendarActivity extends AppCompatActivity {
                 //Save all month views as a PNG
                 for (int i = 0; i < month_duration; i++){
                     //Create the bitmap image of the current configuration of CalendarCanvas to be saved
-                    CalendarCanvas.setDrawingCacheEnabled(true);
-                    Bitmap b = CalendarCanvas.getDrawingCache();
-                    File sdCard = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_SCREENSHOTS);
-                    if (!sdCard.exists()){
-                        sdCard.mkdirs();
-                    }
-                    File file = new File(sdCard, "Structify"+(i+1)+".png");
-                    if (!file.exists()){
-                        try {
-                            file.createNewFile();
-                            Log.d("YourCalendarActivity","New file in gallery created");
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                            Log.d("YourCalendarActivity","Error creating new file in gallery");
+                    //Use the thread to ensure that following actions only continue after drawing has finished
+                    final String filename = "Structify"+(i+1)+".png";
+                    t = new Thread() {
+                        public void run() {
+                            CalendarCanvas.setDrawingCacheEnabled(true);
+                            CalendarCanvas.setBackgroundColor(Color.WHITE);
+                            Bitmap b = CalendarCanvas.getDrawingCache();
+                            File sdCard = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_SCREENSHOTS);
+                            if (!sdCard.exists()){
+                                sdCard.mkdirs();
+                            }
+                            File file = new File(sdCard, filename);
+                            if (!file.exists()){
+                                try {
+                                    file.createNewFile();
+                                    Log.d("YourCalendarActivity","New file in gallery created");
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                    Log.d("YourCalendarActivity","Error creating new file in gallery");
+                                }
+                            }
+                            FileOutputStream fos;
+                            try {
+                                fos = new FileOutputStream(file);
+                                b.compress(Bitmap.CompressFormat.PNG, 95, fos);
+                                fos.flush();
+                                fos.close();
+                                Log.d("YourCalendarActivity","Calendar "+filename+" added to Gallery");
+                            } catch (FileNotFoundException e) {
+                                e.printStackTrace();
+                                Log.d("YourCalendarActivity","Error importing to Gallery - File not found");
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                                Log.d("YourCalendarActivity","Error importing to Gallery - IO error");
+                            }
                         }
-                    }
-                    FileOutputStream fos;
+                    };
+                    t.start();
                     try {
-                        fos = new FileOutputStream(file);
-                        b.compress(Bitmap.CompressFormat.PNG, 95, fos);
-                        fos.flush();
-                        fos.close();
-                        Log.d("YourCalendarActivity","Calendar "+(i+1)+" added to Gallery");
-                    } catch (FileNotFoundException e) {
+                        t.join();
+                    } catch (InterruptedException e) {
                         e.printStackTrace();
-                        Log.d("YourCalendarActivity","Error importing to Gallery - File not found");
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                        Log.d("YourCalendarActivity","Error importing to Gallery - IO error");
+                        Log.d("YourCalendarActivity","InterruptedException joining Bitmap drawing's thread");
                     }
-
-                    /*//Create the proper file output stream
-                    String dir = Environment.getExternalStorageDirectory().toString();
-                    File myDir = new File(dir+"/structify");
-                    if(!myDir.exists()){
-                        myDir.mkdirs();
-                        Log.d("YourCalendarActivity","New directory made in pictures");
-                    }
-                    File output_image = new File(myDir, "Structify_"+(i+1)+".png");
-                    FileOutputStream fos = null;
-
-                    try {
-                        fos = new FileOutputStream(output_image);
-                        bitmap.compress(Bitmap.CompressFormat.PNG, 100, fos);
-                        fos.flush();
-                        fos.close();
-                        MediaStore.Images.Media.insertImage(getContentResolver(), bitmap,
-                                "Structify_"+i,"Strucify Month "+i);
-                        Log.d("YourCalendarActivity","Calendar "+(i+1)+" added to Gallery");
-
-                    } catch (FileNotFoundException e) {
-                        e.printStackTrace();
-                        Log.d("YourCalendarActivity","Error importing to Gallery - File not found");
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                        Log.d("YourCalendarActivity","Error importing to Gallery - IO Exception");
-                    }*/
 
                     //Use mutex to ensure actions continue only after UI has updated.
                     final Semaphore mutex = new Semaphore(0);
