@@ -622,20 +622,30 @@ public class YourCalendarActivity extends AppCompatActivity {
                         Log.d("YourCalendarActivity","Error importing to Gallery - IO Exception");
                     }
 
-                    //Use a new thread join to ensure NextMonthButton is performed completely before actions continue
-                    if (i != month_duration-1){
-                        Thread t = new Thread() {
-                            public void run() {
-                                NextMonthButton.performClick();
+                    //Create a runnable around NextMonthButton so that activity waits for all UI updates
+                    //to finish before continuing actions
+                    Runnable myRunnable = new Runnable() {
+                        @Override
+                        public void run() {
+                            NextMonthButton.performClick();
+                            synchronized(this)
+                            {
+                                this.notify();
                             }
-                        };
-                        t.start();
+                        }
+                    };
+                    synchronized( myRunnable ) {
+                        YourCalendarActivity.this.runOnUiThread(myRunnable) ;
                         try {
-                            t.join();
+                            myRunnable.wait() ; // unlocks myRunable while waiting
                         } catch (InterruptedException e) {
-                            Log.d("YourCalendarActivity","Problems joining NextCalendarButton Thread");
                             e.printStackTrace();
                         }
+                    }
+
+                    //Only go to next month if we are not at last month
+                    if (i!= month_duration-1){
+                        myRunnable.run();
                     }
 
                 }
