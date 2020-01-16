@@ -588,7 +588,7 @@ public class YourCalendarActivity extends AppCompatActivity {
 
                 //Save all month views as a PNG
                 for (int i = 0; i < month_duration; i++){
-                    /*//Create the bitmap image of the current configuration of CalendarCanvas to be saved
+                    //Create the bitmap image of the current configuration of CalendarCanvas to be saved
                     LinearLayout canvas = CalendarCanvas;
                     canvas.setDrawingCacheEnabled(true);
                     canvas.setBackgroundColor(Color.WHITE);
@@ -622,10 +622,22 @@ public class YourCalendarActivity extends AppCompatActivity {
                         Log.d("YourCalendarActivity","Error importing to Gallery - IO Exception");
                     }
 
+                    //Use a new thread join to ensure NextMonthButton is performed completely before actions continue
                     if (i != month_duration-1){
-                        NextMonthButton.performClick();
-                    }*/
-                    MonthToPNG(i+1);
+                        Thread t = new Thread() {
+                            public void run() {
+                                NextMonthButton.performClick();
+                            }
+                        };
+                        t.start();
+                        try {
+                            t.join();
+                        } catch (InterruptedException e) {
+                            Log.d("YourCalendarActivity","Problems joining NextCalendarButton Thread");
+                            e.printStackTrace();
+                        }
+                    }
+
                 }
 
                 Toast.makeText(YourCalendarActivity.this,"Calendars for all months have been imported to your gallery!", Toast.LENGTH_SHORT).show();
@@ -635,7 +647,7 @@ public class YourCalendarActivity extends AppCompatActivity {
         });
     }
 
-    static final int STEP_ONE_COMPLETE = 0;
+    /*static final int STEP_ONE_COMPLETE = 0;
     private Handler handler = new Handler(){
         @Override
         public void handleMessage(Message msg) {
@@ -684,7 +696,7 @@ public class YourCalendarActivity extends AppCompatActivity {
         Message msg = Message.obtain();
         msg.what = STEP_ONE_COMPLETE;
         handler.sendMessage(msg);
-    }
+    }*/
 
     //Button that imports all events in the CalendarInfoArrayList to Google Calendar
     private void SetImportGoogleCalendarButtonClick() {
