@@ -590,13 +590,38 @@ public class YourCalendarActivity extends AppCompatActivity {
                 //Save all month views as a PNG
                 for (int i = 0; i < month_duration; i++){
                     //Create the bitmap image of the current configuration of CalendarCanvas to be saved
-                    LinearLayout canvas = CalendarCanvas;
-                    canvas.setDrawingCacheEnabled(true);
-                    canvas.setBackgroundColor(Color.WHITE);
-                    canvas.buildDrawingCache(true);
-                    Bitmap bitmap = Bitmap.createBitmap(canvas.getDrawingCache());
+                    CalendarCanvas.setDrawingCacheEnabled(true);
+                    Bitmap b = CalendarCanvas.getDrawingCache();
+                    File sdCard = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_SCREENSHOTS);
+                    if (!sdCard.exists()){
+                        sdCard.mkdirs();
+                    }
+                    File file = new File(sdCard, "Structify"+(i+1)+".png");
+                    if (!file.exists()){
+                        try {
+                            file.createNewFile();
+                            Log.d("YourCalendarActivity","New file in gallery created");
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                            Log.d("YourCalendarActivity","Error creating new file in gallery");
+                        }
+                    }
+                    FileOutputStream fos;
+                    try {
+                        fos = new FileOutputStream(file);
+                        b.compress(Bitmap.CompressFormat.PNG, 95, fos);
+                        fos.flush();
+                        fos.close();
+                        Log.d("YourCalendarActivity","Calendar "+(i+1)+" added to Gallery");
+                    } catch (FileNotFoundException e) {
+                        e.printStackTrace();
+                        Log.d("YourCalendarActivity","Error importing to Gallery - File not found");
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                        Log.d("YourCalendarActivity","Error importing to Gallery - IO error");
+                    }
 
-                    //Create the proper file output stream
+                    /*//Create the proper file output stream
                     String dir = Environment.getExternalStorageDirectory().toString();
                     File myDir = new File(dir+"/structify");
                     if(!myDir.exists()){
@@ -621,7 +646,7 @@ public class YourCalendarActivity extends AppCompatActivity {
                     } catch (IOException e) {
                         e.printStackTrace();
                         Log.d("YourCalendarActivity","Error importing to Gallery - IO Exception");
-                    }
+                    }*/
 
                     //Use mutex to ensure actions continue only after UI has updated.
                     final Semaphore mutex = new Semaphore(0);
