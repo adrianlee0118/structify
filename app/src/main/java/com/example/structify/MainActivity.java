@@ -22,28 +22,17 @@ import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.Date;
 
-//This APP: Given semester start and end dates, the number of courses a student will take during the semester,
-//information on all exam and assignment dates and credit percentages (i.e. worth or weight),
-//the target amount of time per weekday/weekend a student is willing to study and even the relative importances
-//of all of the courses (course weights), this app will generate a study schedule for a student in that semester
-//that is underpinned by important exam and assignment dates and allocates study time (that the student has
-//specified) based on percentage weight and relative importance over all courses that theoretically helps a
-//student A) not miss an important due date and B) not over-study or over-commit to a given assignment or test
-//given its worth in the overall semester (percentage overall, applied to available time). This app attempts to
-//normalize the distribution of study time so that a student can ensure each assignment, test and project receives
-//an adequate and not excessive amount of attention and study ranges are based on the rules: 1) Final exam
-//studying begins 2 weeks before the day of (allocated time distributed evenly over 13 days), 2) Midterm exam
-//studying begins 1 week before the day of, and 3) Assignments are worked on for 3 days before due dates.
-//When dates are not known, this program assumes assignments or multiple midterms are spaced evenly through time.
-
-//Main activity: Basic overview inputs about the semester are input (dates, preferences).
-//Second Input Activity: Course data (exam/assignment dates and weights). Dynamic GUI magic.
-//Display activity: Shows the study allocations on a calendarview and includes option to add study schedule to
-//Google Calendar via API.
+/*
+*
+* Main activity: Basic overview inputs about the semester are input (dates, preferences).
+* Second Input Activity: Course data (exam/assignment dates and weights). Dynamic GUI magic.
+* YourCalendar activity: Shows the study allocations on a calendarview and includes option to add study schedule to
+* Google Calendar via API.
+*
+* */
 
 public class MainActivity extends AppCompatActivity {
 
-    //Structures for linking to .xml file through which we will get input for our methods
     private Button EnterCoursesBtn;
     private TextView start;
     private TextView end;
@@ -52,8 +41,6 @@ public class MainActivity extends AppCompatActivity {
     private Spinner NumberCourses;
     ProgressDialog mProgress;
 
-    //Global variables that we will use continually in methods. These four in particular are passed through the Intent
-    //to the second activity.
     private Date StartDate;
     private Date EndDate;
     private int NumCourses;
@@ -71,7 +58,6 @@ public class MainActivity extends AppCompatActivity {
             finish();
         }
 
-        //Link variables to layout
         EnterCoursesBtn = findViewById(R.id.enter_course_info);
         start = findViewById(R.id.startDate);
         end = findViewById(R.id.endDate);
@@ -79,30 +65,23 @@ public class MainActivity extends AppCompatActivity {
         weekend = findViewById(R.id.WeekendTime);
         NumberCourses = (Spinner) findViewById(R.id.NumCourses);
 
-        //Set dropdown content of spinner and its style (check layout, drawable and style resource files)
         String[] spinner = new String[]{"1","2","3","4","5","6","7","8"};
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,R.layout.spinner_item,spinner);
         adapter.setDropDownViewResource(R.layout.spinner_item);
         NumberCourses.setAdapter(adapter);
         NumberCourses.setPrompt("Please select");
 
-        mProgress = new ProgressDialog(this);
-        mProgress.setMessage("Your course forms will be along in just a moment ... :)");
-
         setEnterCoursesBtnClick();
     }
 
-    //Functionality for EnterCoursesBtn
     private void setEnterCoursesBtnClick(){
         EnterCoursesBtn.setOnClickListener(new View.OnClickListener() {
             @RequiresApi(api = Build.VERSION_CODES.O)
             @Override
             public void onClick(View v) {
 
-                //Extract inputs
                 NumCourses = Integer.parseInt( NumberCourses.getSelectedItem().toString() );
 
-                //Count the weekdays and weekends and use it with study time preferences to calculate study time
                 int wkdy = 0, wknd = 0;
                 SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
                 try {
@@ -136,13 +115,11 @@ public class MainActivity extends AppCompatActivity {
                 StudyTime = Integer.parseInt(weekday.getText().toString())*wkdy +
                         Integer.parseInt(weekend.getText().toString())*wknd;
 
-                //Dates have been checked. Study times and number of courses can not be negative.
                 if(StudyTime == 0){
                     Toast.makeText(MainActivity.this,"Please double-check number of courses and study time " +
                             "preferences are correct", Toast.LENGTH_SHORT).show();
                     throw new RuntimeException();
                 } else {
-                    //Create intent for next activity, move all important data over
                     mProgress.show();
                     Toast.makeText(MainActivity.this,"Awesome!",Toast.LENGTH_SHORT).show();
                     Intent intent = new Intent(MainActivity.this,SecondInputActivity.class);

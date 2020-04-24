@@ -1,24 +1,22 @@
 package com.example.structify;
 
 import java.util.ArrayList;
-import java.util.Date;
 
-//A class that allows the Calendar preview to see all study reminders and exam events for a given date at once
-//rather than cycling through multiple UniversityCourse objects and re-visiting the calendar preview plot multiple
-//times.
+/*
+* A class that allows the Calendar preview to see all study reminders and exam events for a given date at once
+* rather than cycling through multiple UniversityCourse objects and re-visiting the calendar preview plot multiple
+* times.
+*/
 
 public class SemesterDays {
 
-    //Store day of week position (important for the calendar UI layout)
     private int day_of_week;
 
-    //Store all exam or assignment due dates and study reminders.
     private ArrayList<String> ExamEvents;
     private ArrayList<String> StudyReminders;
-    private ArrayList<Integer> ExamCourseID;           //Correspond via indices to ExamEvents
-    private ArrayList<Integer> StudyCourseID;          //correspond via indices to StudyReminders
+    private ArrayList<Integer> ExamCourseID;
+    private ArrayList<Integer> StudyCourseID;
 
-    //Check if there are exams or if there is any studying to do.
     private boolean Exams;
     private boolean Studying;
 

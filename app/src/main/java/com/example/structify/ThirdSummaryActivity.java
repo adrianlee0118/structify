@@ -15,20 +15,17 @@ import java.time.format.TextStyle;
 import java.util.ArrayList;
 import java.util.Locale;
 
-//This activity spits out a summary of some calculations for the user to view and do a brief "sanity check"
+/* This activity spits out a summary of some calculations for the user to view and do a brief "sanity check" */
 
 public class ThirdSummaryActivity extends AppCompatActivity {
 
-    //data from previous two activities
     private int NumCourses;
     private int StudyTime;
     private ArrayList<UniversityCourse> Courses;
 
-    //for showing summary information
     private TextView OverallSummary;
     private TextView CourseSummary;
 
-    //button for moving to next activity;
     private Button PreviewCalendarBtn;
 
     @Override
@@ -48,7 +45,6 @@ public class ThirdSummaryActivity extends AppCompatActivity {
         OverallSummary = findViewById(R.id.overall_summary);
         CourseSummary = findViewById(R.id.course_summary);
 
-        //Put summaries into the GUI fields
         String overall_message = "";
         String course_message = "";
 

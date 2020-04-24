@@ -24,31 +24,31 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-//The second page, where, given the number of courses, course data is input. The button will store
-//all values from the editText fields. Steps:
-//1) Dynamically generate all input fields for courses using a for loop based on NumCourses.
-//        -EditTexts are stored in an ArrayList so that they persist
-//        -EditTexts have string IDs attached using a Map
-//2) Receive user input through GUI
-//3) Activity takes data from input fields and puts them into objects of UniversityCourse class.
+/*
+*
+* The second page, where, given the number of courses, course data is input. The button will store
+* all values from the editText fields. Steps:
+* 1) Dynamically generate all input fields for courses using a for loop based on NumCourses.
+*        -EditTexts are stored in an ArrayList so that they persist
+*        -EditTexts have string IDs attached using a Map
+* 2) Receive user input through GUI
+* 3) Activity takes data from input fields and puts them into objects of UniversityCourse class.
+*
+* */
+
 
 public class SecondInputActivity extends AppCompatActivity {
 
-    //Global variables that we will use continually in methods, passed through intent from MainActivity.
     private Date StartDate;
     private Date EndDate;
-    private LocalDate startdate;  //for checking before/after
+    private LocalDate startdate;
     private LocalDate enddate;
     private int NumCourses;
     private int StudyTime;
 
-    //Making dynamically created EditText fields readable.
     private Map<String,EditText> InputFieldIDs;
-
-    //Where we will store input data
     private ArrayList<UniversityCourse> Courses;
 
-    //The layout where we will put all of the dynamic UI-generated fields plus the enable button
     private LinearLayout Canvas;
     private Button SubmitBtn;
 
@@ -57,7 +57,6 @@ public class SecondInputActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_secondinput);
 
-        //Grabbing data from MainActivity
         Bundle extras = getIntent().getExtras();
         StartDate = new Date();
         StartDate.setTime(extras.getLong("StartDate"));
@@ -68,20 +67,16 @@ public class SecondInputActivity extends AppCompatActivity {
         NumCourses = extras.getInt("NumCourses");
         StudyTime = extras.getInt("StudyTime");
 
-        //Map for keeping track of dynamically generated edittexts and instantiate UniversityCourse storage
         InputFieldIDs = new HashMap<String,EditText>();
         Courses = new ArrayList<UniversityCourse>();
 
-        //Setting our base and creating inflater for inflating course_form template layout views
         Canvas = findViewById(R.id.canvas);
         LayoutInflater vi = (LayoutInflater) getApplicationContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
         for (int i = NumCourses; i > 0; i--){
 
-            //Inflate an instance of course form template layout for every course
             View current = vi.inflate(R.layout.course_form,null);
 
-            //Map field IDs for later access
             TextView course = current.findViewById(R.id.textView1);
             course.setText("Course "+Integer.toString(i)+" Name");
             EditText course_name = current.findViewById(R.id.course_name);
@@ -120,9 +115,7 @@ public class SecondInputActivity extends AppCompatActivity {
 
             current.setPadding(0,0,0,100);
 
-            //Add the inflated view
             Canvas.addView(current, 0, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
-
         }
 
         SubmitBtn = findViewById(R.id.submit_details);
@@ -136,24 +129,17 @@ public class SecondInputActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                //Flag for whether to proceed to next activity --instead of throwing exceptions and killing app.
                 boolean proceedFlag = true;
 
-                //In case this is not the first time the onClick was called
                 Courses.clear();
 
-                //Read all data into UniversityCourse objects to be passed to the next activity, one object
-                //for each course inputted.
                 for (int i = 1; i <= NumCourses; i++){
 
-                    //Instance of data storage
                     UniversityCourse temp = new UniversityCourse();
 
-                    //Add startdate and enddate
                     temp.setStartDate(StartDate);
                     temp.setEndDate(EndDate);
 
-                    //Add course name
                     if (TextUtils.isEmpty(InputFieldIDs.get("Course "+Integer.toString(i)+" Name")
                             .getText().toString().trim())){
                         Toast.makeText(SecondInputActivity.this,"You forgot to enter Course "
@@ -164,7 +150,6 @@ public class SecondInputActivity extends AppCompatActivity {
                         Log.d("Second","Got Course "+Integer.toString(i)+" Name");
                     }
 
-                    //Add course weight, check all weights are filled and add to 100 in first go around
                     if (i == 1){
                         int sum = 0;
                         for (int j = 1; j <= NumCourses; j++){
@@ -202,7 +187,6 @@ public class SecondInputActivity extends AppCompatActivity {
                         }
                     }
 
-                    //Add final, midterm and assignment weights if they add up to 100
                     if (Integer.parseInt(InputFieldIDs.get("Course "+Integer.toString(i)+" Final Weight").getText().toString())
                             +Integer.parseInt(InputFieldIDs.get("Course "+Integer.toString(i)+" Midterm Weight").getText().toString())
                             +Integer.parseInt(InputFieldIDs.get("Course "+Integer.toString(i)+" Assignment Weight").getText().toString())
@@ -218,7 +202,6 @@ public class SecondInputActivity extends AppCompatActivity {
                         temp.setAssignmentsAndQuizzesWt(Integer.parseInt(InputFieldIDs.get("Course "+Integer.toString(i)+" Assignment Weight").getText().toString()));
                     }
 
-                    //Add final exam date if it's filled and in semester range
                     SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
                     if (TextUtils.isEmpty(InputFieldIDs.get("Course "+Integer.toString(i)+" Final Date").getText().toString().trim())){
                         Toast.makeText(SecondInputActivity.this,"You forgot to enter Course "+Integer.toString(i)+" Final Date",Toast.LENGTH_SHORT).show();
@@ -242,7 +225,6 @@ public class SecondInputActivity extends AppCompatActivity {
                         }
                     }
 
-                    //Add midterm dates if filled and in range, or use number of midterms to calculate
                     if (TextUtils.isEmpty(InputFieldIDs.get("Course "+Integer.toString(i)+" Midterm Date 1").getText().toString().trim()) &&
                             TextUtils.isEmpty(InputFieldIDs.get("Course "+Integer.toString(i)+" Midterm Date 2").getText().toString().trim()) &&
                             TextUtils.isEmpty(InputFieldIDs.get("Course "+Integer.toString(i)+" Number Midterms").getText().toString().trim())){
@@ -286,7 +268,6 @@ public class SecondInputActivity extends AppCompatActivity {
                         temp.setMidtermDates(MTD);
                     }
 
-                    //Add assignment dates if they are worth credit and if dates are valid or calculate them, same as above
                     if (Integer.parseInt(InputFieldIDs.get("Course "+Integer.toString(i)+" Assignment Weight").getText().toString())
                             != 0 && TextUtils.isEmpty(InputFieldIDs.get("Course "+Integer.toString(i)+" Assignment 1 Date").getText().toString().trim())
                             && TextUtils.isEmpty(InputFieldIDs.get("Course "+Integer.toString(i)+" Assignment 2 Date").getText().toString().trim())
@@ -339,7 +320,6 @@ public class SecondInputActivity extends AppCompatActivity {
                 }
 
                 if (proceedFlag){
-                    //Pass the UniversityCourse objects to the next activity.
                     Intent intent = new Intent(SecondInputActivity.this, ThirdSummaryActivity.class);
                     intent.putExtra("StudyTime",StudyTime);
                     intent.putExtra("NumCourses",NumCourses);

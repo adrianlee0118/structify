@@ -3,46 +3,40 @@ package com.example.structify;
 import android.icu.text.SimpleDateFormat;
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.util.Log;
 
 import java.text.ParseException;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Date;
 
-//A container class generated for each course that stores all of that course's information.
-//Parcelable so objects can be passed between 2nd and 3rd activities.
+/*
+*
+* A container class generated for each course that stores all of that course's information.
+* Parcelable so objects can be passed between 2nd and 3rd activities.
+*
+*/
 
 public class UniversityCourse implements Parcelable {
 
-    //Course's name and possibly number as well
     private String CourseName;
 
-    //Dates of items provided in course syllabus in String format "2020-01-18T09:00:00-08:00"
-    //If these are not provided, can be calculated from start and end dates of semester
     private Date FinalDate;
     private ArrayList<Date> MidtermDates;
     private ArrayList<Date> AssignmentAndQuizDates;
 
-    //Percentage weights of respective items as shown in the course syllabus.
     private double FinalWt;
     private double MidtermWt;
     private double AssignmentsAndQuizzesWt;
-    private double CourseWt; //the portion of total available study time you wish to allocate to this particular course.
+    private double CourseWt;
 
-    //Semester dates to help make default exam/assignment dates if they are not provided
     private Date startDate;
     private Date endDate;
-
 
 
     public UniversityCourse() {
     }
 
-    //This constructor not used
     public UniversityCourse(String name, Date finex, double finwt, double mtwt, double asgnwt, Date st,
                             Date end){
 
@@ -151,7 +145,7 @@ public class UniversityCourse implements Parcelable {
     }
 
     public void calcMTDate(int howmany) throws ParseException {
-        //Use startDate and endDate to create a Midterm date if not provided.
+
         ArrayList<Date> result = new ArrayList<Date>();
         long difference = Math.abs((startDate.getTime()-endDate.getTime()))/(howmany+1);
         long curr = Math.abs(startDate.getTime());
@@ -159,7 +153,7 @@ public class UniversityCourse implements Parcelable {
             curr=difference+curr;
             Date temp1 = new Date();
             temp1.setTime(curr);
-            //Use LocalDateTime to truncate the time portion so that the date stored is a pure date and matches later indices
+
             LocalDate currld = temp1.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
             SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
             int M = currld.getMonthValue();
@@ -173,7 +167,7 @@ public class UniversityCourse implements Parcelable {
                 DD = "0"+DD;
             }
             int Y = currld.getYear();
-            //Change left_border_only to a date
+
             try {
                 temp1 = formatter.parse(Integer.toString(Y)+"-"+MM+"-"+DD);
             } catch (ParseException e) {
@@ -185,7 +179,7 @@ public class UniversityCourse implements Parcelable {
     }
 
     public void calcAssignmentDates(int howmany){
-        //Use startDate and endDate to create quiz and assignment dates.
+
         ArrayList<Date> result = new ArrayList<Date>();
         long difference = Math.abs((startDate.getTime()-endDate.getTime()))/(howmany+1);
         long curr = Math.abs(startDate.getTime());
@@ -193,7 +187,7 @@ public class UniversityCourse implements Parcelable {
             curr = difference + curr;
             Date temp1 = new Date();
             temp1.setTime(curr);
-            //Use LocalDateTime to truncate the time portion so that the date stored is a pure date and matches later indices
+
             LocalDate currld = temp1.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
             SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
             int M = currld.getMonthValue();
@@ -207,7 +201,7 @@ public class UniversityCourse implements Parcelable {
                 DD = "0"+DD;
             }
             int Y = currld.getYear();
-            //Change left_border_only to a date
+
             try {
                 temp1 = formatter.parse(Integer.toString(Y)+"-"+MM+"-"+DD);
             } catch (ParseException e) {
@@ -218,24 +212,17 @@ public class UniversityCourse implements Parcelable {
         AssignmentAndQuizDates = result;
     }
 
-    //Parcelable methods: The Parcelable properties enable objects of the UniversityCourse class to be passed
-    //from one activity to the next through intents.
-
     @Override
     public int describeContents() {
         return 0;
     }
 
-    //Write data from a UniversityCourse into a parcel to be passed in intent.
-    //The order of reading in a constructor from parcel below will retrieve data in the same order it was
-    //written here.
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(CourseName);
         dest.writeLong(FinalDate.getTime());
 
-        //Dates must be passed as longs
-        dest.writeInt(MidtermDates.size()); //this is needed for constructing the array we will write this data into
+        dest.writeInt(MidtermDates.size());
         long[] mtdateslong = new long[MidtermDates.size()];
         for (int i = 0; i < MidtermDates.size(); i++){
             mtdateslong[i] = MidtermDates.get(i).getTime();
@@ -259,8 +246,6 @@ public class UniversityCourse implements Parcelable {
 
     }
 
-    //All Parcelables must have a CREATOR that implements these two methods
-    //Used to regenerate the object in a new activity
     public static final Parcelable.Creator<UniversityCourse> CREATOR = new Parcelable.Creator<UniversityCourse>() {
         public UniversityCourse createFromParcel(Parcel in) {
             return new UniversityCourse(in);
@@ -271,12 +256,9 @@ public class UniversityCourse implements Parcelable {
         }
     };
 
-    //Constructor that takes a Parcel and gives you an object populated with its values
-    //Data must be read in same order that they were written in
     private UniversityCourse(Parcel in) {
         CourseName = in.readString();
 
-        //Time read as long, translated left_border_only into dates.
         long fdtime = in.readLong();
         FinalDate = new Date();
         FinalDate.setTime(fdtime);
