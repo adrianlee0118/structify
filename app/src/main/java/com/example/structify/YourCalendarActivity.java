@@ -5,18 +5,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
-import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.Matrix;
 import android.icu.text.SimpleDateFormat;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
-import android.os.Handler;
-import android.os.Message;
 import android.os.Parcelable;
-import android.provider.MediaStore;
-import android.text.Layout;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,7 +18,6 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
-import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -33,10 +26,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ActivityCompat;
 
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.GooglePlayServicesUtil;
-
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -54,14 +43,10 @@ import java.util.concurrent.Semaphore;
 public class YourCalendarActivity extends AppCompatActivity {
 
     static final int REQUEST_WRITE_EXTERNAL_STORAGE = 1003;
-
-    //Course data from previous activities
     private int NumCourses;
     private ArrayList<UniversityCourse> Courses;
     private int StudyTime;
 
-    //Store textviews from calendar rows so that they persist (visuals of our reminders).
-    //We don't need to reference these except for when we put the content in.
     ArrayList<TextView> CalendarEvents;
 
     //Storing all dates paired with their events and study reminders encapsulated in SemesterDays
@@ -70,7 +55,6 @@ public class YourCalendarActivity extends AppCompatActivity {
     //We will use the data structured in this way to dictate the arrangement of the dynamic UI.
     private Map<Date,SemesterDays> CalendarIndex;
 
-    //Lookups for assigning Month Strings and Colors
     private final String[] MonthLookup = {"Jan","Feb","Mar","Apr","May","Jun","July","Aug","Sep","Oct","Nov","Dec"};
     private final int[] ColorLookup = {Color.parseColor("#CC0000"),
             Color.parseColor("#000099"),Color.parseColor("#009900"),
@@ -78,12 +62,10 @@ public class YourCalendarActivity extends AppCompatActivity {
             Color.parseColor("#00CCCC"),Color.parseColor("#CC6600"),
             Color.parseColor("#202020")};
 
-    //Call permissions from manifest for saving images to directory
     private static String[] PERMISSIONS_STORAGE = {
             Manifest.permission.WRITE_EXTERNAL_STORAGE
     };
 
-    //UI components to be manipulated
     private LinearLayout Headings;
     private TextView Year;
     private TextView Month;
@@ -109,7 +91,6 @@ public class YourCalendarActivity extends AppCompatActivity {
         }
         StudyTime = extras.getInt("StudyTime");
 
-        //Link program to UI
         Headings = findViewById(R.id.headings);
         Year = findViewById(R.id.date_display_year);
         Month = findViewById(R.id.date_display_date);
@@ -120,7 +101,6 @@ public class YourCalendarActivity extends AppCompatActivity {
         DoNotImportBtn = findViewById((R.id.do_not_import_button));
         CalendarCanvas = findViewById(R.id.calendar_canvas);
 
-        //Initialize all dates in the Map, attached to SemesterDays that are blank but with day of week index
         LocalDate start = Courses.get(0).getStartDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
         LocalDate end = Courses.get(0).getEndDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
         CalendarIndex = new HashMap<Date, SemesterDays>();
@@ -133,10 +113,8 @@ public class YourCalendarActivity extends AppCompatActivity {
             CalendarIndex.put(t,temp);
         }
 
-        //Store all events and reminders in the SemesterDays instances contained in the Hashmap
         for (int i = 0; i < NumCourses; i++){
 
-            //For ease of reading, pull out all the information first
             double course_time = (Courses.get(i).getCourseWt()/100)*StudyTime;
             double fa = Courses.get(i).FinalAllocation(course_time);
             double ma = Courses.get(i).MidtermAllocation(course_time)/(Courses.get(i).getMidtermDates().size());
@@ -146,12 +124,11 @@ public class YourCalendarActivity extends AppCompatActivity {
             ArrayList<Date> md = Courses.get(i).getMidtermDates();
             ArrayList<Date> ad = Courses.get(i).getAssignmentAndQuizDates();
 
-            //Add reminders and studying to SemesterDay objects in the Map
             CalendarIndex.get(fd).addExamEvent(name+" Final Exam");
             CalendarIndex.get(fd).addExamCourse(i);
             Calendar calendar = Calendar.getInstance();
             calendar.setTime(fd);
-            //As per rules, studying for final exams spans two weeks and so reminders on all those days must be added
+
             for (int k = 1; k <=13; k++){
                 if (calendar.get(Calendar.DAY_OF_MONTH) == 1){
                     calendar.add(Calendar.MONTH,-1);
@@ -170,7 +147,7 @@ public class YourCalendarActivity extends AppCompatActivity {
                 CalendarIndex.get(md.get(j)).addExamEvent(name+" Midterm Exam "+Integer.toString(j+1));
                 CalendarIndex.get(md.get(j)).addExamCourse(i);
                 calendar.setTime(md.get(j));
-                //As per rules, studying for midterm exams spans 1 week and so reminders on those days must be added
+
                 for (int k = 1; k <=6; k++){
                     if (calendar.get(Calendar.DAY_OF_MONTH) == 1){
                         calendar.add(Calendar.MONTH,-1);
@@ -190,7 +167,7 @@ public class YourCalendarActivity extends AppCompatActivity {
                 CalendarIndex.get(ad.get(j)).addExamEvent(name+" Assignment "+Integer.toString(j+1)+" Due");
                 CalendarIndex.get(ad.get(j)).addExamCourse(i);
                 calendar.setTime(ad.get(j));
-                //As per rules, studying and working on assignments and quiz level tests spans 3 days and reminders must be added
+
                 for (int k = 1; k <=3; k++){
                     if (calendar.get(Calendar.DAY_OF_MONTH) == 1){
                         calendar.add(Calendar.MONTH,-1);
@@ -207,28 +184,21 @@ public class YourCalendarActivity extends AppCompatActivity {
             }
         }
 
-        //Inflate the weekviews in the calendars with all reminders and events as per the information in the Map
         CalendarEvents = new ArrayList<TextView>();
         UpdateCalendarCanvas(Courses.get(0).getStartDate());
 
-        //Set the button functionality to toggle months and to add events to Google Calendar!
         SetPrevMonthButtonClick();
         PreviousMonthButton.setVisibility(View.INVISIBLE);
-        PreviousMonthButton.setOnClickListener(null);  //because we are at the first month
+        PreviousMonthButton.setOnClickListener(null);
         SetNextMonthButtonClick();
         SetImportGalleryButtonClick();
         SetImportGoogleCalendarButtonClick();
     }
 
-    //Populate CalendarCanvas area with calendar_row inflated layouts with reminders
-    //current_date should be beginning of month
     public void UpdateCalendarCanvas(Date current_date){
 
-        //Clear CalendarCanvas
         CalendarCanvas.removeAllViews();
 
-        //Inflate enough rows to populate the calendar area for the month the current date is in
-        //Set text of headers
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(current_date);
         Date startmark = new Date();
@@ -254,14 +224,12 @@ public class YourCalendarActivity extends AppCompatActivity {
         Year.setText(Integer.toString(calendar.get(Calendar.YEAR)));
         Month.setText(MonthLookup[calendar.get(Calendar.MONTH)]);
         int current_month = calendar.get(Calendar.MONTH);
-        //From this point onward, current_date is used to keep track of the first day of the week of interest as we build the GUI week by week using calendar_row layouts
+
         while(calendar.get(Calendar.MONTH)==current_month){
 
-            //Inflate the calendar_row view -- calendar GUI is built row by row using the calendar_row view template layout
             LayoutInflater vi = (LayoutInflater) getApplicationContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             View current_row = vi.inflate(R.layout.calendar_row,null);
 
-            //Attach the textviews on calendar_row view so they can be accessed
             TextView Sunday = current_row.findViewById(R.id.sunday_number);
             TextView Monday = current_row.findViewById(R.id.monday_number);
             TextView Tuesday = current_row.findViewById(R.id.tuesday_number);
@@ -288,12 +256,10 @@ public class YourCalendarActivity extends AppCompatActivity {
                 e.printStackTrace();
             }
 
-            //If first day is not a Sunday, move to the previous Sunday to fill the whole row with numbers
             if(CalendarIndex.get(startmark).getDay_of_week()!=1){
                 calendar.add(Calendar.DAY_OF_MONTH,-(CalendarIndex.get(startmark).getDay_of_week()-1));
             }
 
-            //Assign numbers to each of the days in the row - text size is taken care of in the calendar_row template
             int DayOfMonth = calendar.get(Calendar.DAY_OF_MONTH);
             Sunday.setText(Integer.toString(DayOfMonth));
             calendar.add(Calendar.DAY_OF_MONTH,1);
@@ -315,27 +281,22 @@ public class YourCalendarActivity extends AppCompatActivity {
             DayOfMonth = calendar.get(Calendar.DAY_OF_MONTH);
             Saturday.setText(Integer.toString(DayOfMonth));
 
-            //Move the cursor left_border_only to the beginning of the week
             calendar.setTime(startmark);
             if(CalendarIndex.get(startmark).getDay_of_week()!=1){
                 calendar.add(Calendar.DAY_OF_MONTH,-(CalendarIndex.get(calendar.getTime()).getDay_of_week()-1));
             }
 
-            //Create Map to keep track of the Textviews generated in the row
-            //Note: The Textviews will be stored in CalendarEvents as well to ensure they persist.
             Map<String,TextView> RowRef = new HashMap<String,TextView>();
-            //Create boolean matrix to track available spaces in the calendar_row grid to guide insertion of new events--values false by default
+
             boolean occupied[][] = new boolean[10][7];
-            //Create lookup for gridlines--so we can access them based on a number index
+
             int[] xGridlines = new int[]{R.id.x0,R.id.x1,R.id.x2,R.id.x3,R.id.x4,R.id.x5,R.id.x6,
                     R.id.x7};
             int[] yGridlines = new int[]{R.id.y0,R.id.y1,R.id.y2,R.id.y3,R.id.y4,R.id.y5,R.id.y6,
                     R.id.y7,R.id.y8,R.id.y9,R.id.y10};
 
-            //Create textview reminders in the row view and set left, depth positions and width
             for (int i = 1; i <= 7; i++){
 
-                //Create current date in same format as Date in CalendarIndex:
                 Date curr = new Date();
                 M = calendar.get(Calendar.MONTH);
                 MM = Integer.toString(M+1);
@@ -354,23 +315,19 @@ public class YourCalendarActivity extends AppCompatActivity {
                     e.printStackTrace();
                 }
 
-                //Find the date in CalendarIndex
                 if (CalendarIndex.get(curr) != null){
 
-                    //Extend textviews for existing reminders
                     for (int j = 0; j < CalendarIndex.get(curr).getStudyReminders().size(); j++){
-                        //We need to check if previous days in the row have the reminder in question because
-                        //they last for periods longer than a day (they are stored by name in RowRef)
+
                         if (RowRef.containsKey(CalendarIndex.get(curr).getStudyReminders().get(j))) {
-                            //If the reminder already exists in the row, extend the existing textbox
+
                             ConstraintLayout.LayoutParams tparams =
                                     (ConstraintLayout.LayoutParams) RowRef.get(CalendarIndex.get(curr)
                                             .getStudyReminders().get(j)).getLayoutParams();
                             tparams.rightToRight = xGridlines[i];
                             RowRef.get(CalendarIndex.get(curr).getStudyReminders().get(j))
                                     .setLayoutParams(tparams);
-                            //find the y position of the existing textview, to be combined with current
-                            //x position to mark in boolean matrix as occupied
+
                             int topID = tparams.topToTop;
                             int ypos;
                             for (ypos = 0; ypos < yGridlines.length; ypos++){
@@ -382,13 +339,12 @@ public class YourCalendarActivity extends AppCompatActivity {
                         }
                     }
 
-                    //Create new textviews for new reminders that are not yet stored in RowRef
                     for (int j = 0; j < CalendarIndex.get(curr).getStudyReminders().size(); j++){
                         if (!RowRef.containsKey(CalendarIndex.get(curr).getStudyReminders().get(j))){
                             TextView temp = new TextView(this);
                             temp.setId(TextView.generateViewId());
                             ConstraintLayout.LayoutParams tparams = new ConstraintLayout.LayoutParams(0,0);
-                            //set position of view using guidelines
+
                             int xpos = i-1;
                             int ypos;
                             for (ypos = 0; ypos < occupied.length; ypos++){
@@ -401,29 +357,27 @@ public class YourCalendarActivity extends AppCompatActivity {
                             tparams.topToTop = yGridlines[ypos];
                             tparams.bottomToBottom = yGridlines[ypos+1];
                             tparams.validate();
-                            //Add content
+
                             temp.setText(CalendarIndex.get(curr).getStudyReminders().get(j));
                             temp.setTextSize(6);
                             temp.setTextColor(Color.WHITE);
                             temp.setBackgroundColor(ColorLookup[CalendarIndex.get(curr).getStudyCourseID().get(j)]);
-                            //Add textbox to list for reference and to the view
+
                             CalendarEvents.add(temp);
                             Events.addView(temp,tparams);
                             RowRef.put(CalendarIndex.get(curr).getStudyReminders().get(j),temp);
-                            //Mark space as occupied in the boolean matrix
+
                             occupied[ypos][xpos] = true;
                         }
                     }
 
-                    //Create textviews for events, all of which are new
                     for (int j = 0; j < CalendarIndex.get(curr).getExamEvents().size(); j++){
-                        //We don't have to check if a previous day has the same event--the way
-                        //inputs are designed, events are unique and only last one day.
+
                         TextView temp = new TextView(this);
                         temp.setId(TextView.generateViewId());
                         ConstraintLayout.LayoutParams tparams =
                                 new ConstraintLayout.LayoutParams(0,0);
-                        //set position of view using guidelines
+
                         int xpos = i-1;
                         int ypos;
                         for (ypos = 0; ypos < occupied.length; ypos++){
@@ -436,29 +390,27 @@ public class YourCalendarActivity extends AppCompatActivity {
                         tparams.topToTop = yGridlines[ypos];
                         tparams.bottomToBottom = yGridlines[ypos+1];
                         tparams.validate();
-                        //Add content
+
                         temp.setText(CalendarIndex.get(curr).getExamEvents().get(j));
                         temp.setTextSize(6);
                         temp.setTextColor(Color.WHITE);
                         temp.setBackgroundColor(ColorLookup[CalendarIndex.get(curr)
                                 .getExamCourseID().get(j)]);
-                        //Add textbox to list for reference and to the view
+
                         CalendarEvents.add(temp);
                         Events.addView(temp,tparams);
                         RowRef.put(CalendarIndex.get(curr).getExamEvents().get(j),temp);
-                        //Mark space as occupied in the boolean matrix
+
                         occupied[ypos][xpos] = true;
                     }
 
                 }
 
-                //Go to next day now that events and reminders for the current day have been added
                 calendar.add(Calendar.DAY_OF_MONTH,1);
             }
 
-            //Draw 6 vertical lines on top of everything to clearly delineate the days of the week
             for (int k = 1; k <= 6; k++){
-                //For the Events ConstraintLayout Area...
+
                 TextView temp = new TextView(this);
                 temp.setId(TextView.generateViewId());
                 ConstraintLayout.LayoutParams tparams = new ConstraintLayout.LayoutParams(0,
@@ -471,7 +423,6 @@ public class YourCalendarActivity extends AppCompatActivity {
                 temp.setBackgroundResource(R.drawable.left_border_only);
             }
 
-            //Now that the whole week's GUI has been built, add it to CalendarCanvas and move to the next day, the first day of the next month.
             CalendarCanvas.addView(current_row);
             calendar.add(Calendar.DAY_OF_MONTH,1);
             startmark = calendar.getTime();
@@ -485,8 +436,6 @@ public class YourCalendarActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                //Update the calendar area to show the next month
-                //Note: UpdateCalendarCanvas clears the plot area and updates the headers
                 String mo = Month.getText().toString();
                 int month = 0;
                 for (int i = 0; i < MonthLookup.length; i++){
@@ -498,19 +447,17 @@ public class YourCalendarActivity extends AppCompatActivity {
                 calendar.set(Calendar.MONTH, month);
                 calendar.add(Calendar.MONTH,-1);
                 calendar.set(Calendar.DAY_OF_MONTH,1);
-                //Check if the first day is before the first date in the semester
+
                 if (calendar.getTime().before(Courses.get(0).getStartDate())){
                     calendar.setTime(Courses.get(0).getStartDate());
                 }
                 UpdateCalendarCanvas(calendar.getTime());
 
-                //If we were on the last month before, make the next month button visible
                 if (NextMonthButton.getVisibility() == View.INVISIBLE){
                     NextMonthButton.setVisibility(View.VISIBLE);
                     SetNextMonthButtonClick();
                 }
 
-                //If we are now at the first month, make the previous month button invisible and unclickable
                 Calendar startmonth = Calendar.getInstance();
                 startmonth.setTime(Courses.get(0).getStartDate());
                 if (calendar.get(Calendar.MONTH) == startmonth.get(Calendar.MONTH)){
@@ -559,7 +506,6 @@ public class YourCalendarActivity extends AppCompatActivity {
         });
     }
 
-    //Button that imports the Calendar previews as PNGs into the gallery
     private void SetImportGalleryButtonClick() {
         ImportGalleryButton.setOnClickListener(new View.OnClickListener() {
 
@@ -569,8 +515,6 @@ public class YourCalendarActivity extends AppCompatActivity {
 
                 Log.d("YourCalendarActivity", "ImportGalleryButton Clicked");
 
-                //Bring to first month
-                //Use mutex to ensure actions continue only after UI has updated.
                 final Semaphore mutev = new Semaphore(0);
                 YourCalendarActivity.this.runOnUiThread(new Runnable() {
                     @Override
@@ -587,7 +531,6 @@ public class YourCalendarActivity extends AppCompatActivity {
                     Log.d("YourCalendarActivity","ImportGallery: error reaching startmonth with mutev Semaphore");
                 }
 
-                //Check user permissions and request if needed
                 isStoragePermissionGranted();
 
                 Calendar startmonth = Calendar.getInstance();
@@ -601,10 +544,8 @@ public class YourCalendarActivity extends AppCompatActivity {
                 final int month_duration = lastmonth.get(Calendar.MONTH)-startmonth.get(Calendar.MONTH)+1;
                 Log.d("YourCalendarActivity","ImportGallery: month duration is "+month_duration);
 
-                //Save all month views as a PNG
                 for (int i = 0; i < month_duration; i++){
-                    //Create the bitmap image of the current configuration of CalendarCanvas to be saved
-                    //Use the thread to ensure that following actions only continue after drawing has finished
+
                     final String filename = "Structify"+(i+1)+".png";
                     Thread t = new Thread() {
                         public void run() {
@@ -649,7 +590,6 @@ public class YourCalendarActivity extends AppCompatActivity {
                         Log.d("YourCalendarActivity","InterruptedException joining Bitmap drawing's thread");
                     }
 
-                    //Use mutex to ensure actions continue only after UI has updated.
                     final Semaphore mutex = new Semaphore(0);
                     YourCalendarActivity.this.runOnUiThread(new Runnable() {
                         @Override
@@ -676,7 +616,6 @@ public class YourCalendarActivity extends AppCompatActivity {
         });
     }
 
-    //Button that imports all events in the CalendarInfoArrayList to Google Calendar
     private void SetImportGoogleCalendarButtonClick() {
         ImportGoogleCalendarBtn.setOnClickListener(new View.OnClickListener() {
 
@@ -695,8 +634,6 @@ public class YourCalendarActivity extends AppCompatActivity {
         });
     }
 
-
-    //Button that exits the app without importing anything to google calendar
     private void SetDoNotImportButtonClick() {
         DoNotImportBtn.setOnClickListener(new View.OnClickListener() {
 
@@ -712,7 +649,6 @@ public class YourCalendarActivity extends AppCompatActivity {
         });
     }
 
-    //Method for checking and requesting storage permissions explicitly at runtime
     private void isStoragePermissionGranted() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (checkSelfPermission(android.Manifest.permission.WRITE_EXTERNAL_STORAGE)
@@ -726,7 +662,7 @@ public class YourCalendarActivity extends AppCompatActivity {
                 ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_WRITE_EXTERNAL_STORAGE);
             }
         }
-        else { //permission is automatically granted on sdk<23 upon installation
+        else {
             Log.d("YourCalendarActivity","Write storage permission is available");
             Toast.makeText(YourCalendarActivity.this, "Write External Storage " +
                     "permission allows us to do store images. Please allow this permission in " +
@@ -734,13 +670,11 @@ public class YourCalendarActivity extends AppCompatActivity {
         }
     }
 
-    //Permission result callback
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
             Log.d("YourCalendarActivity","Write storage permission was granted");
-            //resume tasks needing this permission
         } else {
             Log.d("YourCalendarActivity","Write storage permission request was denied");
         }

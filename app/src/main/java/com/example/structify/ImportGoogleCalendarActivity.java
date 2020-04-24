@@ -29,7 +29,6 @@ import java.util.Arrays;
 
 public class ImportGoogleCalendarActivity extends Activity {
 
-    //Course data from previous activities
     private int NumCourses;
     private ArrayList<UniversityCourse> Courses;
     private int StudyTime;
@@ -37,7 +36,6 @@ public class ImportGoogleCalendarActivity extends Activity {
     private TextView Progress;
     private Button FinishBtn;
 
-    //Variables for using Google Calendar API
     com.google.api.services.calendar.Calendar mService;
     GoogleAccountCredential credential;
     final HttpTransport transport = AndroidHttp.newCompatibleTransport();
@@ -69,7 +67,6 @@ public class ImportGoogleCalendarActivity extends Activity {
         }
         StudyTime = extras.getInt("StudyTime");
 
-        // Initialize credentials and service object.
         SharedPreferences settings = getPreferences(Context.MODE_PRIVATE);
         credential = GoogleAccountCredential.usingOAuth2(
                 this, Arrays.asList(SCOPES))
@@ -84,7 +81,6 @@ public class ImportGoogleCalendarActivity extends Activity {
         //NOTE: Import functionality occurs in background AsyncTask via refreshResults() below, which itself
         // is called OnResume().
 
-        //For exiting the application and opening Google Calendar
         SetFinishButtonClick();
 
         Log.d("ImportGoogleCalendarActivity","Credentials established and button created");
