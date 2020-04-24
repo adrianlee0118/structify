@@ -1,6 +1,4 @@
-# Structify
-
-# Description: 
+## About
 Takes milestone dates (like exams, assignment due dates and other deliverable dates) from multiple course syllabi in a university semester and combines them with a user's study time preferences and relative importances of the courses (course weights) to generate a comprehensive study/work schedule for the semester that allocates available study time to all assignments and exams based on percentage weights stated in course syllabi and on overall course weights stated by the user. The idea is that all course items will be completed in a timely fashion with an adequate and not excessive amount of time spent, and the schedule owner will only need to spend minimal amounts of time planning their workflow.
 
 Time distribution rules
@@ -21,4 +19,4 @@ Time distribution rules
 
 5) ImportGoogleCalendarActivity (imports all study schedule data to a new entry in the user's Google Calendar List, where it can all be deleted at ease if required)
 
-<img src="https://github.com/adrianl0118/Structify/blob/master/GoogleCalendar.PNG" alt="" width="800">
+<img src="https://github.com/adrianl0118/Structify/blob/master/docs/GoogleCalendar.PNG" alt="" width="800">
