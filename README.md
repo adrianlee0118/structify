@@ -17,7 +17,7 @@ Time distribution rules
 3) ThirdInputActivity (generates a summary of study time distributions for all courses for review by user) 
 4) YourCalendarActivity (generates a GUI so user can preview all exam events and study reminders over the semester in a scrollable graphical calendar format), and gives the user the option of saving the calendars as PNG to the phone's gallery or importing the schedule outright to Google Calendar
 
-<img src="https://github.com/adrianl0118/Structify/blob/master/docs/YourCalendarActivity2.png" alt="" width="200"><img src="https://github.com/adrianl0118/Structify/blob/master/docs/YourCalendarActivity3.png" alt="" width="200"><img src="https://github.com/adrianl0118/Structify/blob/master/docs/YourCalendarActivity4.png" alt="" width="200"><img src="https://github.com/adrianl0118/Structify/blob/master/docs/YourCalendarActivity5.png" alt="" width="200">
+<img src="https://github.com/adrianl0118/Structify/blob/master/docs/YourCalendarActivity2.png" alt="" width="200">   <img src="https://github.com/adrianl0118/Structify/blob/master/docs/YourCalendarActivity3.png" alt="" width="200">    <img src="https://github.com/adrianl0118/Structify/blob/master/docs/YourCalendarActivity4.png" alt="" width="200">    <img src="https://github.com/adrianl0118/Structify/blob/master/docs/YourCalendarActivity5.png" alt="" width="200">
 
 5) ImportGoogleCalendarActivity (imports all study schedule data to a new entry in the user's Google Calendar List, where it can all be deleted at ease if required)
 
