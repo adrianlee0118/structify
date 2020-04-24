@@ -570,18 +570,21 @@ public class YourCalendarActivity extends AppCompatActivity {
                 Log.d("YourCalendarActivity", "ImportGalleryButton Clicked");
 
                 //Bring to first month
-                Thread t = new Thread() {
+                //Use mutex to ensure actions continue only after UI has updated.
+                final Semaphore mutev = new Semaphore(0);
+                YourCalendarActivity.this.runOnUiThread(new Runnable() {
+                    @Override
                     public void run() {
                         UpdateCalendarCanvas(Courses.get(0).getStartDate());
                         Log.d("YourCalendarActivity","ImportGallery: startmonth reached");
+                        mutev.release();
                     }
-                };
-                t.start();
+                });
                 try {
-                    t.join();
+                    mutev.acquire();
                 } catch (InterruptedException e) {
                     e.printStackTrace();
-                    Log.d("YourCalendarActivity","InterruptedException joining UpdateCalendar to first month's thread");
+                    Log.d("YourCalendarActivity","ImportGallery: error reaching startmonth with mutev Semaphore");
                 }
 
                 //Check user permissions and request if needed
@@ -603,7 +606,7 @@ public class YourCalendarActivity extends AppCompatActivity {
                     //Create the bitmap image of the current configuration of CalendarCanvas to be saved
                     //Use the thread to ensure that following actions only continue after drawing has finished
                     final String filename = "Structify"+(i+1)+".png";
-                    t = new Thread() {
+                    Thread t = new Thread() {
                         public void run() {
                             CalendarCanvas.setDrawingCacheEnabled(true);
                             CalendarCanvas.setBackgroundColor(Color.WHITE);
