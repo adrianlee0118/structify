@@ -9,7 +9,7 @@ Time distribution rules
 5) Assignment work time = (Weekday time in whole semester+Weekend time in whole semester)*(Course Weight)*(Assignment Percentage in Course)/(Number of Assignments in Course)
 6) Assignment work time is distributed over the 3 days leading up to the exam date.
 
-# Usage:
+## Usage:
 1) MainActivity (accepts basic user inputs about study time and number of courses) 
 2) SecondInputActivity (dynamically generates forms for all courses where user inputs course syllabi data)
 3) ThirdInputActivity (generates a summary of study time distributions for all courses for review by user) 
@@ -20,3 +20,7 @@ Time distribution rules
 5) ImportGoogleCalendarActivity (imports all study schedule data to a new entry in the user's Google Calendar List, where it can all be deleted at ease if required)
 
 <img src="https://github.com/adrianl0118/Structify/blob/master/docs/GoogleCalendar.PNG" alt="" width="800">
+
+## TODO:
+- Fix bugs in gallery bitmap generation function in YourCalendarActivity
+- Upgrade GUI styles
